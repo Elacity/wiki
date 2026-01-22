@@ -1,7 +1,6 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [API Home](API/Home.md)
 
 ## Getting Started
 * [Installation](API/Getting%20Started/Installation.md)

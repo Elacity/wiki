@@ -1,7 +1,52 @@
-# Elacity SDKs Documentation
+# Elacity JS SDK Documentation
 
-Welcome to the Elacity SDK Documentation. This documentation covers use cases, technical details, and implementation guides for the various packages.
+Welcome to the official documentation for Elacity's JavaScript SDKs. Use these tools to integrate Elacity's backend services, manage NFTs, handle decentralized authentication, and build rich media experiences.
 
-## Technical Documentation
+## Overview
 
-- [[api/Home|API Package]]: Entry point for backend services, SIWE authentication, and NFT discovery.
+The Elacity SDK suite is designed to be modular, type-safe, and easy to integrate into any modern JavaScript or TypeScript environment.
+
+### Core Package: `@elacity-js/api`
+
+The API package is the primary entry point for interacting with Elacity's backend services. It provides a modular client for:
+
+*   **Authentication**: Secure login using Sign-In with Ethereum (SIWE).
+*   **NFT Services**: High-performance queries for NFT listings, metadata, and asset retrieval.
+*   **Collections**: Tools to discover and interact with NFT collections.
+*   **Channels**: Management of Elacity Channels and subscription plans.
+
+## Quick Start
+
+To get started with our core API package:
+
+1.  **Installation**:
+    ```bash
+    npm install @elacity-js/api ethers
+    ```
+
+2.  **Initialize the Client**:
+    ```typescript
+    import { ElacityClient } from '@elacity-js/api';
+
+    // Connect to Elastos (Chain ID: 20) by default
+    const client = new ElacityClient();
+    ```
+
+3.  **Explore the Documentation**:
+    *   [Installation Guide](api/Getting%20Started/Installation.md)
+    *   [Authentication & SIWE](api/Getting%20Started/Authentication.md)
+    *   [NFT Services](api/Services/NFTs.md)
+
+---
+
+## Technical Details
+
+The SDK automatically routes requests to the appropriate environment based on the network you target:
+
+| Chain ID | Network | API Environment |
+| :--- | :--- | :--- |
+| **20** | Elastos | Production |
+| **8453** | Base | Production |
+| **421614** | Arbitrum Sepolia | Staging |
+
+For more advanced configurations, including custom base URLs or storage implementations, see our [Full API Reference](api/Getting%20Started/Installation.md).
