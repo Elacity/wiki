@@ -1,12 +1,12 @@
 # Table of contents
 
-* [Introduction](README.md)
+* [Overview](README.md)
 
 ## Getting Started
-* [Installation](API/Getting%20Started/Installation.md)
-* [Authentication](API/Getting%20Started/Authentication.md)
+* [Installation](api/getting-started/installation.md)
+* [Authentication](api/getting-started/authentication.md)
 
 ## Services
-* [NFTs](API/Services/NFTs.md)
-* [Collection](API/Services/Collection.md)
-* [Channel](API/Services/Channel.md)
+* [NFTs](api/services/nfts.md)
+* [Collection](api/services/collection.md)
+* [Channel](api/services/channel.md)

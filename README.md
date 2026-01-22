@@ -33,9 +33,9 @@ To get started with our core API package:
     ```
 
 3.  **Explore the Documentation**:
-    *   [Installation Guide](api/Getting%20Started/Installation.md)
-    *   [Authentication & SIWE](api/Getting%20Started/Authentication.md)
-    *   [NFT Services](api/Services/NFTs.md)
+    *   [Installation Guide](api/getting-started/installation.md)
+    *   [Authentication & SIWE](api/getting-started/authentication.md)
+    *   [NFT Services](api/services/nfts.md)
 
 ---
 
@@ -49,4 +49,4 @@ The SDK automatically routes requests to the appropriate environment based on th
 | **8453** | Base | Production |
 | **421614** | Arbitrum Sepolia | Staging |
 
-For more advanced configurations, including custom base URLs or storage implementations, see our [Full API Reference](api/Getting%20Started/Installation.md).
+For more advanced configurations, including custom base URLs or storage implementations, see our [Full API Reference](api/getting-started/installation.md).

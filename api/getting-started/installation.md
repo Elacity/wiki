@@ -40,4 +40,4 @@ If you are using TypeScript, ensure your `tsconfig.json` is configured to suppor
 
 ## Next Steps
 
-Once installed, proceed to the [Authentication](Authentication.md) guide to learn how to sign in and interact with protected resources.
+Once installed, proceed to the [Authentication](authentication.md) guide to learn how to sign in and interact with protected resources.
