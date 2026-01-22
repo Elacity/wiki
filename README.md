@@ -14,6 +14,7 @@ The API package is the primary entry point for interacting with Elacity's backen
 *   **NFT Services**: High-performance queries for NFT listings, metadata, and asset retrieval.
 *   **Collections**: Tools to discover and interact with NFT collections.
 *   **Channels**: Management of Elacity Channels and subscription plans.
+*   **Identity**: Federated user profiles, Smart Accounts, and social relationships.
 
 ## Quick Start
 
@@ -28,7 +29,7 @@ To get started with our core API package:
     ```typescript
     import { ElacityClient } from '@elacity-js/api';
 
-    // Connect to Elastos (Chain ID: 20) by default
+    // Connect to Base (Chain ID: 8453) by default
     const client = new ElacityClient();
     ```
 
