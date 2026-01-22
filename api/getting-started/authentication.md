@@ -9,6 +9,24 @@ Authentication is typically a two-step process in the browser:
 2. The user signs a message (SIWE message) provided by the application.
 3. The resulting signature is sent to the backend via the `userLogin` mutation.
 
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Client
+    participant W as Wallet (Signer)
+    participant B as Backend API
+
+    U->>S: Calls loginWithSigner(signer)
+    S->>B: Query getNonce(address)
+    B-->>S: nonce
+    S->>W: signMessage("... nonce")
+    W-->>S: signature
+    S->>B: Mutation userLogin(address, signature)
+    B-->>S: Account with API Access Token
+    S->>S: Store Token (AuthManager)
+    S-->>U: Auth Success
+```
+
 ### Simplified Login (Recommended)
 
 The SDK provides a `loginWithSigner` helper that automates the entire flow (fetching nonce, signing, and logging in). It requires an object implementing the `AuthSigner` interface (which matches the `ethers.Signer` pattern).
@@ -67,10 +85,11 @@ By default, authentication is stored in memory and will be lost on page reload. 
 
 ### Browser Implementation
 
-The SDK uses a domain-specific storage interface. You can easily wrap `localStorage` to work with it:
+The SDK uses a domain-specific storage interface from `@elacity-js/core`. You can easily wrap `localStorage` to work with it:
 
 ```typescript
-import { ElacityClient, AuthTokenStorage, AuthUser } from '@elacity-js/api';
+import { ElacityClient } from '@elacity-js/api';
+import { AuthTokenStorage, AuthUser } from '@elacity-js/core';
 
 const browserStorage: AuthTokenStorage = {
   load: () => {
@@ -93,10 +112,10 @@ const client = new ElacityClient({
 
 ### Custom Storage (e.g. Backend)
 
-For backend environments, you can implement the same interface using Redis, files, or any other database:
+For backend environments, you can implement the same interface from `@elacity-js/core` using Redis, files, or any other database:
 
 ```typescript
-import { AuthTokenStorage } from '@elacity-js/api';
+import { AuthTokenStorage } from '@elacity-js/core';
 
 const redisStorage: AuthTokenStorage = {
   load: async () => { /* fetch from redis */ },

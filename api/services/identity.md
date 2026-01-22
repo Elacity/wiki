@@ -30,6 +30,8 @@ console.log(`Welcome, ${profile.alias}`);
 console.log(`Smart Account: ${profile.sa}`);
 ```
 
+Authentication: **Required**
+
 ### Discovery
 
 Search for other users or retrieve specific profiles.
@@ -43,8 +45,13 @@ const user = await client.identity.retrieveAccount({
 // Search users
 const result = await client.identity.fetchAccounts({
   alias: 'Elacity'
+}, {
+  limit: 10
 });
+console.log(`Found ${result.total} users`);
 ```
+
+Authentication: **Optional**
 
 ## Social Interactions
 
@@ -60,9 +67,13 @@ await client.identity.follow('0x...');
 await client.identity.unfollow('0x...');
 ```
 
+Authentication: **Required**
+
 ### Followers List
 
 ```typescript
 const result = await client.identity.listSubscribers('0x...');
 console.log(`Followers count: ${result.count}`);
 ```
+
+Authentication: **Optional**

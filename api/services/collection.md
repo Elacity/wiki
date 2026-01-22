@@ -42,3 +42,5 @@ const collection = await client.collections.retrieveCollection({
 console.log(collection.description);
 console.log(`Royalty: ${collection.royalty}%`);
 ```
+
+Authentication: **Optional**

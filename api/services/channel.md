@@ -12,6 +12,8 @@ const result = await client.channels.fetchChannels({
 });
 ```
 
+Authentication: **Optional**
+
 ### Retrieving Channel Details
 
 ```typescript
@@ -19,6 +21,8 @@ const channel = await client.channels.retrieveChannel({
   address: '0x...'
 });
 ```
+
+Authentication: **Optional**
 
 ## Management (Authenticated)
 
@@ -46,6 +50,8 @@ const newChannel = await client.channels.createChannel({
 });
 ```
 
+Authentication: **Required**
+
 ### Updating Channel Info
 
 ```typescript
@@ -54,6 +60,8 @@ await client.channels.updateChannelInformation('0x...', {
   categories: ["Art", "Lifestyle"]
 });
 ```
+
+Authentication: **Required**
 
 ### Managing Subscription Plans
 
@@ -72,3 +80,5 @@ await client.channels.updateSubscriptionPlan('0x...', [
   }
 ]);
 ```
+
+Authentication: **Required**

@@ -6,15 +6,14 @@ Welcome to the official documentation for Elacity's JavaScript SDKs. Use these t
 
 The Elacity SDK suite is designed to be modular, type-safe, and easy to integrate into any modern JavaScript or TypeScript environment.
 
-### Core Package: `@elacity-js/api`
+### Core Utility Package: `@elacity-js/core`
 
-The API package is the primary entry point for interacting with Elacity's backend services. It provides a modular client for:
+Common types, interfaces, and utilities used across the SDK:
+*   **Authentication Flow**: Shared `AuthUser` and `AuthSigner` interfaces.
+*   **Pagination**: Global types for handling large data sets.
+*   **Storage**: Shared interfaces for session persistence.
 
-*   **Authentication**: Secure login using Sign-In with Ethereum (SIWE).
-*   **NFT Services**: High-performance queries for NFT listings, metadata, and asset retrieval.
-*   **Collections**: Tools to discover and interact with NFT collections.
-*   **Channels**: Management of Elacity Channels and subscription plans.
-*   **Identity**: Federated user profiles, Smart Accounts, and social relationships.
+### API Package: `@elacity-js/api`
 
 ## Quick Start
 
@@ -22,7 +21,7 @@ To get started with our core API package:
 
 1.  **Installation**:
     ```bash
-    npm install @elacity-js/api ethers
+    npm install @elacity-js/api @elacity-js/core ethers
     ```
 
 2.  **Initialize the Client**:

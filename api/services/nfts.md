@@ -10,7 +10,7 @@ Use `fetchItems` to retrieve a paginated list of NFTs. You can filter by categor
 const result = await client.nfts.fetchItems(
   {
     category: ['Art', 'Music'],
-    variant: 'Standard' // or 'Protected'
+    variant: 'Standard'
   },
   {
     limit: 10,
@@ -22,6 +22,8 @@ const result = await client.nfts.fetchItems(
 console.log('Total items:', result.fetchNFTItems.total);
 console.log('Items:', result.fetchNFTItems.data);
 ```
+
+Authentication: **Optional**
 
 ### Filtering Options
 
@@ -41,6 +43,8 @@ const item = await client.nfts.retrieveItem(contractAddress, tokenId);
 console.log('Name:', item.retrieveNFTItem.name);
 console.log('Metadata:', item.retrieveNFTItem.metadata);
 ```
+
+Authentication: **Optional**
 
 ## Protected Assets
 

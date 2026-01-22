@@ -10,16 +10,16 @@ The SDK relies on **Ethers.js (v6)** for blockchain interaction and cryptographi
 
 ## Install the Package
 
-Install the primary API package along with its companion dependency:
+Install the primary API package along with the core utilities and companion dependency:
 
 ```bash
-npm install @elacity-js/api ethers
+npm install ethers @elacity-js/core @elacity-js/api
 ```
 
 Or using yarn:
 
 ```bash
-yarn add @elacity-js/api ethers
+yarn add ethers @elacity-js/core @elacity-js/api
 ```
 
 ## TypeScript Configuration
