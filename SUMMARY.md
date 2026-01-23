@@ -11,3 +11,6 @@
 * [Channels](api/services/channel.md)
 * [NFTs](api/services/nfts.md)
 * [Collections](api/services/collection.md)
+
+## Contracts
+* [Getting Started](contracts/Getting-Started.md)
