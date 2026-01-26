@@ -1,52 +1,53 @@
 # Elacity JS SDK Documentation
 
-Welcome to the official documentation for Elacity's JavaScript SDKs. Use these tools to integrate Elacity's backend services, manage NFTs, handle decentralized authentication, and build rich media experiences.
+Welcome to the official documentation for Elacity's JavaScript SDKs. This suite of tools enables you to integrate Elacity's backend services, manage NFTs, interact with smart contracts, and build rich media experiences.
 
-## Overview
+## SDK Packages
 
-The Elacity SDK suite is designed to be modular, type-safe, and easy to integrate into any modern JavaScript or TypeScript environment.
+The Elacity SDK suite is designed to be modular, type-safe, and easy to integrate into any modern JavaScript or TypeScript environment. Each package serves a specific purpose:
 
-### Core Utility Package: `@elacity-js/core`
+### 📦 [@elacity-js/core](core/SUMMARY.md)
 
-Common types, interfaces, and utilities used across the SDK:
-*   **Authentication Flow**: Shared `AuthUser` and `AuthSigner` interfaces.
-*   **Pagination**: Global types for handling large data sets.
-*   **Storage**: Shared interfaces for session persistence.
+Core utilities and shared interfaces used across all SDK packages:
+- **Authentication**: Shared `AuthUser` and `AuthSigner` interfaces for SIWE-based authentication
+- **Pagination**: Global types for handling large data sets efficiently
+- **Storage**: Shared interfaces for session persistence
 
-### API Package: `@elacity-js/api`
-
-## Quick Start
-
-To get started with our core API package:
-
-1.  **Installation**:
-    ```bash
-    npm install @elacity-js/api @elacity-js/core ethers
-    ```
-
-2.  **Initialize the Client**:
-    ```typescript
-    import { ElacityClient } from '@elacity-js/api';
-
-    // Connect to Base (Chain ID: 8453) by default
-    const client = new ElacityClient();
-    ```
-
-3.  **Explore the Documentation**:
-    *   [Installation Guide](api/getting-started/installation.md)
-    *   [Authentication & SIWE](api/getting-started/authentication.md)
-    *   [NFT Services](api/services/nfts.md)
+[→ View Core documentation](core/SUMMARY.md)
 
 ---
 
-## Technical Details
+### 🌐 [@elacity-js/api](api/SUMMARY.md)
 
-The SDK automatically routes requests to the appropriate environment based on the network you target:
+REST and GraphQL API client for interacting with Elacity's backend services:
+- Multi-network support (Elastos, Base, Arbitrum Sepolia)
+- SIWE (Sign-In with Ethereum) authentication
+- Services for NFTs, Collections, Channels, and Identity management
 
-| Chain ID | Network | API Environment |
-| :--- | :--- | :--- |
-| **20** | Elastos | Production |
-| **8453** | Base | Production |
-| **421614** | Arbitrum Sepolia | Staging |
+[→ View API documentation](api/SUMMARY.md)
 
-For more advanced configurations, including custom base URLs or storage implementations, see our [Full API Reference](api/getting-started/installation.md).
+---
+
+### ⚡ [@elacity-js/contracts](contracts/SUMMARY.md)
+
+Framework-agnostic smart contract wrappers for interacting with Elacity's on-chain contracts:
+- Support for popular libraries (Ethers.js, Viem, Web3.js)
+- Type-safe contract interactions
+- Factory, vault, and token contract wrappers
+
+[→ View Contracts documentation](contracts/SUMMARY.md)
+
+---
+
+## Getting Started
+
+Choose the package that best fits your needs:
+
+- **Building a web app with backend integration?** Start with the [API package](api/SUMMARY.md)
+- **Interacting directly with smart contracts?** Check out the [Contracts package](contracts/SUMMARY.md)
+- **Need shared utilities?** Explore the [Core package](core/SUMMARY.md)
+
+## Support
+
+For issues, questions, or contributions, please visit our GitHub repository or contact the Elacity team.
+
