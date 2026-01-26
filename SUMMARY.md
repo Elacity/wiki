@@ -2,7 +2,7 @@
 
 * [Overview](README.md)
 
-## API Reference
+## API Layer
 * [Introduction](api/SUMMARY.md)
 * [Installation](api/getting-started/installation.md)
 * [Authentication](api/getting-started/authentication.md)
@@ -12,11 +12,11 @@
   * [NFTs](api/services/nfts.md)
   * [Collections](api/services/collection.md)
 
-## Contracts Reference
+## Contracts (EVM-compatible)
 * [Introduction](contracts/SUMMARY.md)
 * [Architecture & Design Proposal](contracts/getting-started/design-proposal.md)
-* [Ecosystem Overvoew](contracts/getting-started/ecosystem-overview.md)
-* [Installation](contracts/getting-started/installation.md.md)
+* [Ecosystem Overview](contracts/getting-started/ecosystem-overview.md)
+* [Installation](contracts/sdk/installation.md)
 * [Contracts References](contracts/references/README.md)
 
 ## Core Reference

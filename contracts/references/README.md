@@ -4,10 +4,9 @@ This directory contains auto-generated documentation for all smart contracts in 
 
 ## Contents
 
-- **[AuthorityGateway.md](AuthorityGateway.md)** - Access control and licensing gateway
-- **[TradeGateway.md](TradeGateway.md)** - General asset trading gateway
-- **[Ecosystem.md](Ecosystem.md)** - Ecosystem contract overview
-- **[Multicall.md](Multicall.md)** - Batch transaction utility
+- **[AuthorityGateway](AuthorityGateway.md)** - Access control and licensing gateway
+- **[TradeGateway](TradeGateway.md)** - General asset trading gateway
+- **[Ecosystem](Ecosystem.md)** - Ecosystem contract overview
 
 ### Component Directories
 
@@ -19,19 +18,6 @@ This directory contains auto-generated documentation for all smart contracts in 
 - **[proxy/](proxy/)** - Proxy pattern contracts
 - **[storage/](storage/)** - CoreStorage and tracker components
 
-## Generating Documentation
-
-This documentation is automatically generated from Solidity source code using `solidity-docgen`.
-
-To regenerate:
-```bash
-npm run docs:build
-```
-
-This will:
-1. Format Solidity contracts with Prettier
-2. Generate markdown documentation from NatSpec comments
-3. Create SUMMARY.md for GitBook navigation
 
 ## Documentation Structure
 
