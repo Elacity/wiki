@@ -1,7 +1,15 @@
 ### Abstract
-This EIP proposes a set of smart contracts to standardize the handling of Intellectual Property as non-fungible tokens (NFTs), while providing a comprehensive solution for enforcing royalty payments, distribution among multiple recipients, and Digital Rights Management (DRM) protected content. 
 
-Our proposed set of smart contracts will enable a secure, decentralized, and efficient ecosystem for the issuance, transfer, and monetization of digital assets, allowing users to access and manage their digital assets with ease.
+This proposal introduces a comprehensive smart contract ecosystem for managing digital rights, access control, and marketplace operations for digital media assets on the blockchain. Built on ERC-1155 standards with enhanced royalty distribution inspired by EIP-2981, EIP-4910, and EIP-5553, the system provides:
+
+- **Advanced Digital Rights Management (DRM)** with cryptographic licensing
+- **Multi-stakeholder royalty distribution** supporting complex revenue sharing
+- **Flexible access models** including permanent ownership, resale rights, and subscriptions
+- **Dual marketplace system** via AuthorityGateway (access tokens) and TradeGateway (asset trading)
+- **Modular architecture** with specialized modules for licensing, payments, royalties, and subscriptions
+- **Centralized storage** through CoreStorage for ecosystem-wide data management
+
+Our proposed ecosystem enables creators to tokenize digital assets with sophisticated access controls, subscription models, and cryptographic licensing mechanisms, providing a secure, decentralized, and efficient platform for managing digital media rights.
 
 ### Motivation
 NFTs are normally governed by the ERC721 or ERC1155 standards. Existing solutions such as EIP-2981, EIP-4910, and EIP-5553 support royalties but do not provide a comprehensive solution for both the enforcement and distribution when multiple recipients are involved.
@@ -15,13 +23,15 @@ NFTs are normally governed by the ERC721 or ERC1155 standards. Existing solution
 Our new set of smart contracts seeks to fill this gap and lay the groundwork for a DRM-compatible NFT contract, taking into account the definition of digital assets in a distributed platform, the royalty structure, and licensing via cryptographic methods.
 
 
-These smart contracts aim to
-* Provide a registry of IP/media, with its metadata and CEL/MCO Contract 
-* Provide a registry of the IP/media stakeholders (parties, actors, beneficiaries)
-* Provide tradable and transferable NFTs that comply with the restrictions and enforcement defined in the CEL/MCO Contract
-* Enforce royalty payments and distributions as defined in the CEL/MCO Contract
-* Facilitate different user scenarios according to what is supported in the CEL/MCO Contract
-* Provide license keys to unlock IP/media for legitimate users via DRM-compatible media players (DashJS)
+The smart contract ecosystem aims to:
+* Provide a hierarchical channel system for organizing digital content (Channels and Multi-Channels)
+* Manage digital asset registration with unique content IDs and metadata
+* Provide registry of IP stakeholders (creators, distributors, royalty beneficiaries)
+* Enable tradable and transferable access tokens that comply with defined access rules
+* Enforce multi-stakeholder royalty payments and distributions
+* Support flexible access models: permanent ownership, resale rights, and subscriptions
+* Provide cryptographic license keys to unlock DRM-protected media for legitimate users
+* Separate access token marketplace (AuthorityGateway) from general asset trading (TradeGateway)
 
 ### Specification
 
@@ -29,26 +39,39 @@ The keywords “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL N
 
 #### Outline
 
-This proposal introduces several new concepts as extensions to the EIP-1155 standard that warrant explanation:
+This proposal introduces several key concepts as extensions to the ERC-1155 standard:
 
-* CEL
-* REL
-* MCO
-* SCM
-* Digital Asset Ledger
-> 1 token in this smart contract represents the IP and contains static metadata, including SCM data, in JSON format and stored on IPFS. It contains the data that will not change over time.
-* Operative Tokens
-> This part of the structure is responsible for the execution of the SCM terms. It holds all the copies represented by ERC721 like tokens (ACCESS_TOKEN type) and other entitlements, such as royalty rights, which are represented as shares (ROYALTY_SHARE type).
-* Token Type
-> There are currently four different types of tokens, each of which corresponds to a different use case: Buy & Play, Buy, Play & Sell, Rent & Play, and Pay-Per-View.
-* Access Token
-> An ERC721/ERC1155 like token that is responsible for the execution of SCM terms.
-* Royalty Shares
-> A token that represents the right to collect a share of the royalties from the sale or transfer of the NFT.
-* Distribution Rights
-> A token representing the right to trade and/or transfer an NFT / Access Token.
-* Authority Gateway
-> A smart contract with modules responsible for enforcing payments, regulating access to the content, managing all forms of trades and transfers, and issuing licenses. It handles the approval/authorization of all trades and transfers.
+##### **Core Architecture Layers**
+* **Gateway Layer**: Entry points for user interactions
+  * **AuthorityGateway**: Access control, licensing, and access token marketplace
+  * **TradeGateway**: General asset trading (royalty shares, distribution rights)
+* **Asset Layer**: Digital content management
+  * **Channels**: ERC-1155 containers for digital assets (StandardChannel, MultiChannel)
+  * **Operatives**: Access control contracts governing individual assets
+* **Module Layer**: Reusable specialized functionality
+  * **LicenseModule**: Cryptographic license generation (ECDH/ECDSA)
+  * **TradeModule**: Marketplace logic (listings, offers)
+  * **PaymentModule**: Native and ERC-20 token payments
+  * **RoyaltyModule**: ERC-2981 enhanced multi-recipient distribution
+  * **SubscriptionModule**: Time-based access management
+* **Storage Layer**: Centralized data registry
+  * **CoreStorage**: Factory tracking, IP registration, marketplace data
+
+##### **Token Types in Operative Contracts**
+* **ACCESS_TOKEN (ID: 1)**
+  > Grants permanent or temporary access rights to digital content. Required for license acquisition.
+* **RESALE_RIGHT (ID: 2)**
+  > Enables reselling of access tokens in secondary markets (OperativeBuyableSellable only).
+* **DISTRIBUTION_RIGHT (ID: 3)**
+  > Represents creator's distribution rights and controls initial sales authorization.
+* **ROYALTY_SHARE (ID: 2 in some contexts)**
+  > Represents proportional ownership stake in royalty distribution (total supply: 1000 = 100%).
+
+##### **Operative Contract Types**
+* **OperativeBuyable (Type 1)**
+  > "Buy once, play forever" model with distribution rights only for creators.
+* **OperativeBuyableSellable (Type 2)**
+  > Full resale capability with automatic distribution rights for access token holders.
 
 
 ### Rationale
@@ -57,194 +80,155 @@ Our proposed set of smart contracts provides a comprehensive solution for issuin
 The contracts are designed to enable a secure, decentralized, and efficient ecosystem for the protection and enforcement of the rights of stakeholders.
 
 
-### Smart contracts design
+### Smart Contracts Design
 
-Following is an overview of the structure of the smart contracts and how they interact with each other:
+Following is an overview of the architecture of the smart contracts and how they interact with each other:
 
-![](https://ipfs.ela.city/ipfs/QmXuJd2KPwm1BxLwvhQPqsVWAgKuddVbTutXwUvmS7EGjm)
+![Architecture Overview](https://ipfs.ela.city/ipfs/QmXuJd2KPwm1BxLwvhQPqsVWAgKuddVbTutXwUvmS7EGjm)
 
-This section provides a detailed description of each component of the smart contract structure and explains how they interact with each other, focusing on understanding the flow in which they are involved.
+The ecosystem is structured in distinct layers:
 
-#### Digital Asset Ledger (ERC721)
+```mermaid
+graph TB
+  subgraph "User Interface Layer"
+    UI[External Applications/Users]
+  end
+    
+  subgraph "Gateway Layer"
+    AG[AuthorityGateway\nAccess & Licensing]
+    TG[TradeGateway\nToken Trading]
+  end
+    
+  subgraph "Asset Layer"
+    CH[Channels\nContent Collections]
+    OP[Operatives\nAccess Control]
+  end
+    
+  subgraph "Module Layer"
+    LM[License Module]
+    TM[Trade Module]
+    PM[Payment Module]
+    RM[Royalty Module]
+    SM[Subscription Module]
+  end
+    
+  subgraph "Storage Layer"
+    CS[CoreStorage\nCentral Data Hub]
+  end
+    
+  UI --> AG
+  UI --> TG
+  AG --> CH
+  AG --> OP
+  TG --> OP
+  AG -.uses.-> LM
+  AG -.uses.-> TM
+  TG -.uses.-> TM
+  CH -.uses.-> SM
+  CH -.uses.-> RM
+  OP -.uses.-> PM
+  AG --> CS
+  TG --> CS
+  CH --> CS
+  OP --> CS
+    
+  style AG fill:#4a9eff
+  style TG fill:#4a9eff
+  style CH fill:#7ec699
+  style OP fill:#7ec699
+  style CS fill:#f4a261
+```
 
-This part of the structure represents the IP and contains static metadata and SCM data in JSON format, stored on IPFS. This data will remain static and not change over time.
+This section provides a detailed description of each component of the smart contract ecosystem and explains how they interact with each other.
 
-This contract is a `ERC721`-based; 1 token represents 1 digital asset. **It aims to be a registry of all digital assets**. Below is the metadata schema for this token:
+#### Channels (Digital Asset Containers)
+
+Channels are ERC-1155 contracts that serve as containers for digital content collections. They replace the previous Digital Asset Ledger concept with a more flexible, hierarchical system.
+
+##### **Channel Types**
+
+**StandardChannel** - Basic content containers
+- **Variants**:
+  - `DigitalAssetPublic`: Anyone can mint content
+  - `DigitalAssetPrivate`: Only channel owner can mint
+- **Features**:
+  - Individual asset tokenization with unique token IDs
+  - Subscription-based access models
+  - Royalty share distribution
+  - Automatic Operative contract deployment per asset
+
+**MultiChannel** - Channel aggregators
+- Wrapper contracts bundling multiple StandardChannels
+- Unified subscription access across all wrapped channels
+- Use cases: content networks, premium bundles, creator collaborations
+
+##### **Asset Creation Flow**
+
+1. Creator calls `createAsset(uri, opType, config)` on a Channel
+2. Channel generates deterministic `tokenId` from URI hash
+3. Channel mints NFT to creator's address
+4. Channel requests appropriate Operative factory from CoreStorage
+5. Operative contract is deployed and initialized
+6. Content ID (KID) is registered in CoreStorage IPTracker
+7. Operative address is bound to channel/tokenId pair
+
+##### **Metadata Schema**
+
+Channels use the following metadata structure (stored on IPFS):
 
 ```json
 {
-  "title": "Ledger Token Metadata",
-  "description": "Ledger Token Metadata schema",
+  "title": "Channel Token Metadata",
   "type": "object",
   "required": ["name", "description", "image", "kid", "iscc"],
   "properties": {
     "kid": {
       "type": "string",
-      "description": "Content identifier, 16-bytes hex string"
+      "description": "Content identifier, RFC-4122 compliant 128-bit hex"
     },
     "iscc": {
       "type": "string",
-      "description": "ISCC code identification"
+      "description": "International Standard Content Code"
     },
-    "name": {
-      "type": "string",
-      "description": "Token name"
-    },
-    "description": {
-      "type": "string",
-      "description": "Token description"
-    },
-    "image": {
-      "type": "string",
-      "description": "ipfs link to image"
-    },
+    "name": {"type": "string", "description": "Asset name"},
+    "description": {"type": "string", "description": "Asset description"},
+    "image": {"type": "string", "description": "IPFS link to thumbnail"},
     "media": {
       "type": "object",
-      "description": "Details about the media file",
       "required": ["contentType", "uri"],
       "properties": {
-        "uri": {
-          "type": "string",
-          "description": "ipfs link to media file, basically to MDP file for streamed video/audio"
-        },
-        "contentType": {
-          "type": "string",
-          "description": "mime-type or generic type of the content"
-        },
-        "protectionType": {
-          "type": "array",
-          "description": "Type of protection, e.g. clearkey, cenc:web3-drm, etc..."
-        },
-        "object": {
-          "type": "string",
-          "description": "ipfs link to the contract object"
-        }
+        "uri": {"type": "string", "description": "IPFS link to media (MPD manifest for streaming)"},
+        "contentType": {"type": "string", "description": "MIME type"},
+        "protectionType": {"type": "array", "description": "DRM types: clearkey, cenc:web3-drm"}
       }
     },
     "properties": {
       "type": "object",
-      "description": "Token properties",
-      "required": ["chainId", "ledger", "authority", "publisher"],
+      "required": ["chainId", "channel", "authority"],
       "properties": {
-        "chainId": {
-          "type": "number",
-          "description": "Blockchain network chain id"
-        },     
-        "ledger": {
-          "type": "string",
-          "description": "Digital Ledge address"
-        },
-        "authority": {
-          "type": "string",
-          "description": "Authority address"
-        },        
-        "publisher": {
-          "type": "string",
-          "description": "Address of the publisher, from where the token was minted"
-        },
-        "contract": {
-          "type": "string",
-          "description": "ipfs link to the contract object, only for protected content"
-        },
-        "labelType": {
-          "type": "string",
-          "description": "Label type that defined ands and have authority on distribution and license usage"
-        },
-        "distribution": {
-          "type": "string",
-          "description": "Access method, e.g. streaming, download, rent, ppv, etc..."
-        }
+        "chainId": {"type": "number"},
+        "channel": {"type": "string", "description": "Channel contract address"},
+        "authority": {"type": "string", "description": "AuthorityGateway address"},
+        "operative": {"type": "string", "description": "Operative contract address"},
+        "publisher": {"type": "string", "description": "Creator address"},
+        "distribution": {"type": "string", "description": "Access method: streaming, download, subscription"}
       }
-    },
-    "attributes": {
-      "type": "array",
-      "description": "Array of attributes"
     }
   }
 }
 ```
 
-It's the main entry point for creating new assets. The `mint` function, apart from creating the digital asset unique token, will also create the [Operative contract](#operative-contracts-group) relative to how the media will be distributed (Free, Buy-Play, Buy-Play-Sell,...).
+##### **Key Differences from Digital Asset Ledger**
 
-To do so, this contract abstracts `OperativeFactorySelectable`, which enables the ability to select a factory used to generate the operative contract relative to the `opType` requested during the creation.
+| Aspect | Previous (Digital Asset Ledger) | Current (Channels) |
+|--------|-------------------------------|-------------------|
+| **Standard** | ERC-721 | ERC-1155 |
+| **Structure** | Single registry contract | Multiple channel instances |
+| **Organization** | Flat asset list | Hierarchical channels + multi-channels |
+| **Subscriptions** | Not supported | Native subscription system |
+| **Ownership** | Meaningless | Enables creator economies |
 
-```solidity
-abstract contract OperativeFactorySelectable {
-    uint16 constant OP_TYPE_FREE = 0;
-    uint16 constant OP_TYPE_BUY = 1;
-    uint16 constant OP_TYPE_BUYSELL = 2;
-    uint16 constant OP_TYPE_PPV = 3; // not yet implemented
-    uint16 constant OP_TYPE_RENT = 4; // not yet implemented
-
-    /**
-     * @dev Returns the address of the operative factory for the given type.
-     *
-     * @param _opType The type of the operative factory.
-     * @return The address of the operative factory.
-     */
-    function _getOperativeFactory(uint16 _opType)
-        internal
-        view
-        virtual
-        returns (address);
-}
-```
-
-The `mint` function uses `_getOperativeFactory` internally and will ensure that the Operative contract is created within the ecosystem and can interact with the other smart contracts.
-
-Ownership of any token in this contract is meaningless; owning a token from this contract gives no extra benefits. The minter is the initial owner of the token.
-
-<details><summary>See Diagram</summary>
-<p>
-
-```mermaid
----
-title: Digital Asset Ledger diagram
----
-classDiagram
-    AccessControl *-- DigitalAssetLedger
-    ERC721 <|-- DigitalAssetLedger
-    ERC721URIStorage <|-- DigitalAssetLedger
-    ERC721Burnable *-- DigitalAssetLedger
-    ERC721Enumerable *-- DigitalAssetLedger
-    OperativeFactorySelectable <|.. DigitalAssetLedger
-    class DigitalAssetLedger{
-        +mint()
-        +tokenURI(uint256): string
-    }
-    DigitalAssetLedger: IStorage dataStorage
-    DigitalAssetLedger: Counters.Counter _tokenIndex
-    DigitalAssetLedger: bytes32 URI_SETTER_ROLE
-    AccessControl: bytes32 DEFAULT_ADMIN_ROLE
-    class AccessControl{
-
-    }
-    class ERC721{
-        ~_safeMint()
-    }
-    class ERC721URIStorage{
-        +tokenURI(uint256): string
-    }
-    class ERC721Burnable{
-        +burn()
-    }
-    class ERC721Enumerable{
-        +totalSupply(): uint256
-        +tokenByIndex(uint256): uint256
-        +tokenOfOwnerByIndex(uint256): uint256
-    }
-    class OperativeFactorySelectable{
-        ~_getOperativeFactory(uint16)*: address
-    }
-    OperativeFactorySelectable: uint16 OP_TYPE_FREE = 0
-    OperativeFactorySelectable: uint16 OP_TYPE_BUY = 1
-    OperativeFactorySelectable: uint16 OP_TYPE_BUYSELL = 2
-    OperativeFactorySelectable: uint16 OP_TYPE_PPV = 3
-    OperativeFactorySelectable: uint16 OP_TYPE_RENT = 4
-```
-
-</p>
-</details>
+Ownership of channel tokens (NFTs) now represents actual asset ownership and may grant benefits such as royalty shares or distribution rights, depending on the channel configuration.
 
 #### Operative contracts group
 
@@ -499,219 +483,272 @@ this token represents the right to sell or transfer an `ACCESS_TOKEN`. When rele
 ```
 
 
-#### Authority Gateway 
+#### Gateway Layer
 
-This part of the structure is responsible for enforcing payments and regulating access to the content:
-* playing the role of a native marketplace
-* managing all forms of trades and transfers
-* issuing licenses
+The Gateway Layer provides the primary entry points for all user interactions with the ecosystem, separated into two specialized contracts:
 
-What can be traded are ACCESS_TOKEN, ROYALTY_SHARE, or other future potential rights an account can own, like DISTRIBUTION_RIGHTS. 
+##### **AuthorityGateway** - Access Control & Licensing Hub
 
-This contract handles the approval/authorization of all trades and transfers. 
+The AuthorityGateway is the primary contract governing access to digital media through license acquisition and access token trading.
 
-Each feature belonging to this contract is managed by a dedicated, which implements the flows for each operation type. 
+**Core Responsibilities:**
+* **License Acquisition**: Cryptographic license generation using ECDH/ECDSA protocols
+* **Access Verification**: Check user permissions for content access
+* **Access Token Marketplace**: Buy/sell access rights with royalty enforcement
+* **Lit Protocol Integration**: Decentralized access control support
 
-The **Royalty module** is responsible for royalties payment processing based on `ROYALTY_SHARE` holdings. The role of this module is to provide utilities 
- (in occurrence with `TradeModule`) to process any form of payment according to how funds must be distributed during a trade operation. The main functions are:
-- `_payRoyalties(IERC2981Enhanced.RoyaltyInfo[] dispatch, address payToken)`: process the payment according to the dispatch defined from the operative contract that implements `IERC2981Enhanced` interface
-- `_payAmount(address to, uint256 amount, address payToken)`: a lower-level function that executes the payment, an event `PaymentLog` is emitted on successful operation.
+**Key Functions:**
+```solidity
+// License Management
+function acquireLicense(bytes calldata request) external returns (bytes memory);
+function hasAccess(address channel, uint256 tokenId, address account) external view returns (bool);
+function hasAccessByContentId(bytes16 kid, address account) external view returns (bool);
 
-These methods are internal and are used by `TradeModule`. None of them are publicly executable.
-
-
-**Trade and transfer module** responsible for all trades and transfers of Operative Tokens. It contains:
-- `sellAccess(address ledger, uint256 tokenId, uint256 qt, uint256 price, address payToken)`: this method puts an asset on sale. Note that the asset here is identified by its location in a ledger contract context
-- `sellAccessOnBehalf(address seller, address ledger, uint256 tokenId, uint256 qt, uint256 price, address payToken)`: this method puts an asset on sale on behalf of a user through a non-EOA address. Note that the asset here is identified by its location in a ledger contract context, and the executor is an approved contract in the ecosystem. The final state should be the same as `sellAccess` 
-- `buyAccess(address seller, address ledger, uint256 tokenId, uint256 qt, unit256 price) payable | buyAccess(address seller, address ledger, uint256 tokenId, uint256 qt, unit256 price, address payToken)`: this is the entry point for buying an `ACCESS_TOKEN`, the asset is identified by its location in the ledger. During this operation, two types of transfers are expected: `ACCESS_TOKEN` transfer `Seller -> Buyer` and payment `Buyer -> Stakeholders`.
-- `withdrawListing(address op, uint256 tokenId, uint256 qt)`: Allows a seller to withdraw token from listing. the quantity should be less than or equal to the quantity in the listing
-- `listings(address op, uint256 tokenId, address seller)`: retrieves sales information set by a specific seller to an asset identified within the operative context.
-- `sellersOf(address op, uint256 tokenId)`: retrieves a list of addresses of sellers who have currently listed a specific asset, identified within the operative context.
-
-For the most simple use case, the flowchart is as follows:
-
-```mermaid
-graph LR
-    B(Buyer) -->|BuyAccess| A((Authority Gateway))
-    A --> T{Trade Module}
-    T --> |_handlePayout / Amount| C{Royalty Module}
-    C -->|Share1| D(fa:fa-pie-chart Seller)
-    C -->|Share2| E(fa:fa-pie-chart Receiver #2)
-    C -->|Share3| F(fa:fa-pie-chart Receiver #3)
-    D -->|ERC1155.safeTransferFrom / Qt=1| B
-
-    classDef red fill:#f5dfdf,stroke:#b86161,stroke-width:2px,color:#b86161;
-    classDef green fill:#ebf7df,stroke:#8db861,stroke-width:2px,color:#8db861;
-    class B red
-    class D green
+// Access Token Trading
+function sellAccess(address channel, uint256 tokenId, uint256 quantity, uint256 price, address payToken) external;
+function buyAccess(address seller, address channel, uint256 tokenId, uint256 quantity) external payable;
+function withdrawListing(address operative, uint256 tokenId, uint256 quantity) external;
 ```
 
-This module has other internal methods that perform these actions and enforce royalties payout. For interoperability, we defined the interface `ITradable`:
+**Supported Cipher Suites:**
+- `ECDH-P256_RC4_ECDSA-P256-KECCAK256` - Single curve implementation
+- `ECDH-P256_RC4_ECDSA-SECP256K1-KECCAK256` - Dual curve for enhanced security
 
+**License Structure:**
 ```solidity
-interface ITradable {
-    /**
-     * @dev Put a digital asset on sale, the asset here is defined by its location in the ledger context
-     *
-     * @param ledger The address of the ledger
-     * @param tokenId The id of the token
-     * @param _quantity The quantity of the token
-     * @param _pricePerToken The price per token
-     * @param _payToken The address of the token to pay with
-     */
-    function sellAccess(
-        address ledger,
-        uint256 tokenId,
-        uint256 _quantity,
-        uint256 _pricePerToken,
-        address _payToken
-    ) external;
-
-    /**
-     * @dev Put a digital asset on sale on behalf of a user through a non-EOA address, the asset here is defined by its location in the ledger context
-     * the exection could require ERC1155 approval from the seller to succeed
-     *
-     * @param seller The address of the seller
-     * @param ledger The address of the ledger
-     * @param tokenId The id of the token
-     * @param _quantity The quantity of the token
-     * @param _pricePerToken The price per token
-     * @param _payToken The address of the token to pay with
-     */
-    function sellAccessOnBehalf(
-        address seller,
-        address ledger,
-        uint256 tokenId,
-        uint256 _quantity,
-        uint256 _pricePerToken,
-        address _payToken
-    ) external;
-
-    /**
-     * @dev Buy a digital asset, the asset here is defined by its location in the ledger context.
-     * The amount that should be passed into `msg.value` should fulfill the operation and should not be less than _quantity * _pricePerToken
-     *
-     * @notice This moethod requires ERC1155 approval from the buyer in prior to the execution
-     *
-     * @param seller The address of the seller
-     * @param ledger The address of the ledger
-     * @param tokenId The id of the token
-     * @param _quantity The quantity of the token
-     * @param _pricePerToken The price per token
-     */
-    function buyAccess(
-        address seller,
-        address ledger,
-        uint256 tokenId,
-        uint256 _quantity,
-        uint256 _pricePerToken
-    ) external payable;
-
-    /**
-     * @dev Buy a digital asset, the asset here is defined by its location in the ledger context.
-     * Payment token here should comply with ERC20 standard
-     * The amount that should be passed into `msg.value` should fulfill the operation and should not be less than _quantity * _pricePerToken
-     *
-     * @notice This moethod requires ERC1155 approval from the buyer in prior to the execution
-     *
-     * @param seller The address of the seller
-     * @param ledger The address of the ledger
-     * @param tokenId The id of the token
-     * @param _quantity The quantity of the token
-     * @param _pricePerToken The price per token
-     * @param _payToken The address of the token to pay with, should be ERC20 compliant
-     */
-    function buyAccess(
-        address seller,
-        address ledger,
-        uint256 tokenId,
-        uint256 _quantity,
-        uint256 _pricePerToken,
-        address _payToken
-    ) external;
-
-    /**
-     * @dev Allows a seller to withdraw token from listing. the quantity should be less than or
-     * equal to the quantity in the listing
-     *
-     * @param op The address of the target operative contract
-     * @param tokenId The id of the token
-     * @param quantity The quantity to withdraw
-     */
-    function withdrawListing(
-        address op,
-        uint256 tokenId,
-        uint256 quantity
-    ) external;
-
-    /**
-     * @dev Get the listing details of a digital asset, the asset here is defined directly
-     * from its location within the Operative contract
-     *
-     * @param op The address of the operative
-     * @param tokenId The id of the token
-     * @param seller The address of the seller
-     * @return The quantity, price per token and the payment token address
-     */
-    function listings(
-        address op,
-        uint256 tokenId,
-        address seller
-    )
-        external
-        view
-        returns (
-            uint256,
-            uint256,
-            address
-        );
-
-    /**
-     * @dev Get the sellers of a digital asset, the asset here is defined within the operative contract context
-     *
-     * @param op The address of the operative
-     * @param tokenId The id of the token
-     * @return The sellers of the token
-     */
-    function sellersOf(address op, uint256 tokenId)
-        external
-        view
-        returns (address[] memory);
+struct License {
+    address issuer;        // Contract address issuing license
+    address toAddress;     // User receiving license
+    IPEntity entity;       // Content identification (KID, channel, tokenId)
+    bytes16 key;           // Decryption key (encrypted in response)
 }
 ```
 
+##### **TradeGateway** - General Asset Trading
 
-The **License module** is responsible for license management, including keys registration, and license acquisition. We adopted a simple flow in the current protocol version that fulfill a [clearkey](https://www.w3.org/TR/encrypted-media/#clear-key) decryption flow and potentially another new DRM system, we format license response as defined later below.
+The TradeGateway is dedicated to trading non-access tokens (royalty shares, distribution rights, and future token types).
 
-Below are the functions that this module implements:
-- `registerIPWithKey(address ledger, bytes16 contentId, bytes16 key)`: Register new IP in the system using a full set of keys (public, private). The keys here are both [RFC 4122](https://www.ietf.org/rfc/rfc4122.txt) compliant. In this context, both keys should be generated off-chain, and they both are used to encrypt the media content as stated [in this assessment](https://www.bento4.com/developers/dash/encryption_and_drm/#encrypting-as-a-separate-step)
-- `verifyLicenseRequest(LicenseRequest lr, bytes memory sig)`: A public method to verify the authenticity of a license request. It is used by `acquireLicense` but could be used externally for verification purposes. This flow is a verification step ahead of the [ECDSA Signature Verification](https://medium.com/@VitalikButerin/exploring-elliptic-curve-pairings-c73c1864e627) where the request input is [EIP-712](https://eips.ethereum.org/EIPS/eip-712) compliant. It returns an address that should be equal to the signer's address. 
-- `acquireLicense(bytes calldata req)`: will process a license request from a blockchain perspective. Returned data could be different from what a media player expects, but it SHOULD contain all information needed to format it correctly. This method returns the `License` object as defined below. For security reason, we encrypt the license reponse to prevent sending sensitive data through network following the flow defined in [this cryptographic protocol](./5--Cryptographic-Protocol-(v1.0).md)
+**Core Responsibilities:**
+* **Token Marketplace**: Listing and trading of royalty shares and rights
+* **Offer System**: Create, accept, and cancel offers
+* **Platform Fees**: Automatic fee collection and distribution
+* **Trade Restrictions**: Enforce transfer permissions
 
-###### License definition
+**Key Functions:**
 ```solidity
-  struct License {
-    /// @notice the address of the issuer should be the contract that implements this module
-    address issuer;
-    /// @notice the address the license is issued for
-    address toAddress;
-    /// @notice Identity of the media content
-    IPEntity entity;
-    /// @notice plain decryption key
-    /// @dev the nature of this key could change over time as we can find a better
-    /// way handle the Content Decryption Module
-    bytes16 key;
-  }
+// Direct Trading
+function sellToken(address contract, uint256 tokenId, uint256 quantity, uint256 price, address payToken) external;
+function buyToken(address seller, address contract, uint256 tokenId, uint256 quantity) external payable;
+
+// Offer-Based Trading
+function createOffer(address contract, uint256 tokenId, uint256 quantity, uint256 price, address payToken) external;
+function acceptOffer(address buyer, address contract, uint256 tokenId, uint256 quantity) external;
+function cancelOffer(address contract, uint256 tokenId) external;
 ```
 
-<details><summary>See Diagram</summary>
-<p>
+**Why Two Gateways?**
 
-[![Authority contract][image4]][hyperlink4]
+| Aspect | AuthorityGateway | TradeGateway |
+|--------|----------------|-------------|
+| **Purpose** | Access control & licensing | General asset trading |
+| **Primary Assets** | ACCESS_TOKEN | ROYALTY_SHARE, DISTRIBUTION_RIGHT |
+| **Restrictions** | Enforces access rules | Minimal restrictions |
+| **Royalty Processing** | Mandatory for access sales | Standard marketplace fees |
+| **License Integration** | Yes | No |
 
-[hyperlink4]: ./assets/diagram/AuthorityGateway.svg
-[image4]: ./assets/diagram/AuthorityGateway.svg
-</p>
+#### Module System
 
-</details>
+The ecosystem uses a modular architecture where specialized modules provide reusable functionality across contracts:
 
+##### **LicenseModule**
+- Cryptographic license generation and validation
+- ECDH key agreement for secure key exchange
+- RC4/RC6 encryption for license protection
+- ECDSA signature verification (P256/Secp256k1)
+- EIP-712 structured data signing
+
+**Core Functions:**
+```solidity
+function registerIPWithKey(address channel, bytes16 contentId, bytes16 key) external;
+function verifyLicenseRequest(LicenseRequest lr, bytes memory sig) public view returns (address);
+function acquireLicense(bytes calldata req) external returns (bytes memory);
+```
+
+##### **TradeModule**
+- Marketplace logic for listings and offers
+- Sale execution with payment routing
+- Trade history tracking
+- Seller management
+
+**Core Operations:**
+- List assets for sale
+- Execute buy/sell transactions
+- Manage offers and counter-offers
+- Withdraw listings
+
+##### **PaymentModule**
+- Native ETH payment processing
+- ERC-20 token payment support
+- Multi-recipient distribution
+- Payment verification and tracking
+
+**Payment Flow:**
+```mermaid
+graph LR
+    B(Buyer) -->|Payment| PM{Payment Module}
+    PM -->|Platform Fee| PF[Platform]
+    PM -->|Reseller Cut| RS[Secondary Seller]
+    PM -->|Remaining| RM{Royalty Module}
+    RM -->|Share 1| R1[Royalty Recipient 1]
+    RM -->|Share 2| R2[Royalty Recipient 2]
+    RM -->|Share 3| R3[Royalty Recipient 3]
+    
+    classDef buyer fill:#f5dfdf,stroke:#b86161,stroke-width:2px,color:#b86161;
+    classDef seller fill:#ebf7df,stroke:#8db861,stroke-width:2px,color:#8db861;
+    class B buyer
+    class R1,R2,R3,RS seller
+```
+
+##### **RoyaltyModule**
+- Enhanced ERC-2981 implementation
+- Multi-recipient royalty distribution
+- Based on ROYALTY_SHARE token holdings
+- Proportional payment splitting (1000 = 100%)
+
+**Internal Functions:**
+```solidity
+function _payRoyalties(IERC2981Enhanced.RoyaltyInfo[] memory dispatch, address payToken) internal;
+function _payAmount(address to, uint256 amount, address payToken) internal;
+```
+
+**Example Distribution:**
+```mermaid
+pie showData title Royalty Distribution Example
+    "Creator" : 700
+    "Distributor" : 100
+    "Investor" : 200
+```
+
+##### **SubscriptionModule**
+- Time-based subscription management
+- ERC-1155 subscription tokens
+- Expiration tracking
+- Multi-tier subscription plans
+
+**Subscription Token ID Structure:**
+- Format: `0xffXX0000000000000000000000000000`
+- XX = Plan ID (uint8, max 255 plans)
+- Individual NFTs minted per subscriber
+
+##### **SecurityModule**
+- Role-based access control
+- Contract whitelisting
+- Transfer restrictions
+- Permission management
+
+##### **IPMapperModule**
+- Maps content IDs (KIDs) to on-chain assets
+- Channel/tokenId lookup by content ID
+- Operative contract resolution
+
+##### **VerifierModule**
+- EIP-712 signature verification
+- Off-chain authorization validation
+- Signer recovery and validation
+
+#### CoreStorage - Central Data Registry
+
+CoreStorage serves as the centralized data hub for the entire ecosystem, aggregating multiple specialized trackers and registries.
+
+**Composite Components:**
+
+**FactoryTracker**
+- Registers authorized factory contracts
+- Tracks deployed channels and operatives
+- Validates factory-created contracts
+
+**IPTracker**
+- Maps content IDs (KIDs) to channel/token pairs
+- Stores content encryption keys
+- Operative contract lookups by content ID
+
+**MarketplaceTracker**
+- Stores listings (price, quantity, payment token)
+- Manages offers and counter-offers
+- Tracks trade history
+- Maintains seller lists per asset
+
+**SystemTracker**
+- Authorized operator registry
+- System contract acknowledgment
+- Ecosystem membership validation
+
+**ChannelRegistry**
+- Multi-channel relationships
+- Channel hierarchy management
+- Wrapped channel tracking
+
+**ContractRegistry**
+- System contract addresses
+- Gateway locations
+- Factory registrations
+
+**FeesInformation**
+- Platform fee percentages
+- Fee recipient addresses
+- Reseller cut configurations
+
+**Key Functions:**
+```solidity
+// IP Registration
+function registerIP(bytes16 contentId, address channel, uint256 tokenId, address operative) external;
+function getOperativeByContentId(bytes16 kid) external view returns (address);
+
+// Marketplace Data
+function setListing(address op, uint256 tokenId, address seller, uint256 qty, uint256 price, address payToken) external;
+function getListing(address op, uint256 tokenId, address seller) external view returns (uint256 qty, uint256 price, address payToken);
+
+// Factory Management
+function acknowledgeFactory(address factory, string calldata factoryType) external;
+function getFactory(string calldata factoryType) external view returns (address);
+```
+
+**Why Centralized Storage?**
+- **Data Consistency**: Single source of truth across ecosystem
+- **Gas Efficiency**: Shared storage reduces redundancy
+- **Upgrade Flexibility**: Can upgrade storage independently
+- **Cross-Contract Queries**: Enables efficient data lookups
+
+##### Trading Flow with Dual Gateways
+
+For the access token trading use case, the flow is:
+
+```mermaid
+sequenceDiagram
+  participant Seller
+  participant AuthorityGateway
+  participant CoreStorage
+  participant PaymentModule
+  participant RoyaltyModule
+  participant Operative
+  participant Buyer
+    
+  Seller->>AuthorityGateway: sellAccess(channel, tokenId, qty, price)
+  AuthorityGateway->>CoreStorage: Store listing
+    
+  Buyer->>AuthorityGateway: buyAccess(seller, channel, tokenId, qty)
+  AuthorityGateway->>CoreStorage: Get listing details
+  CoreStorage-->>AuthorityGateway: Return listing
+    
+  AuthorityGateway->>PaymentModule: Process payment
+  PaymentModule->>PaymentModule: Deduct platform fee
+  PaymentModule->>RoyaltyModule: Distribute to stakeholders
+  RoyaltyModule->>Operative: Get royalty info
+  Operative-->>RoyaltyModule: Return ROYALTY_SHARE distribution
+  RoyaltyModule->>Seller: Transfer share
+  RoyaltyModule->>Seller: Transfer other shares
+    
+  AuthorityGateway->>Operative: safeTransferFrom(seller, buyer, ACCESS_TOKEN)
+  Operative-->>Buyer: Grant access token
+  AuthorityGateway->>CoreStorage: Update/remove listing
+```

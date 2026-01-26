@@ -15,7 +15,9 @@
 ## Contracts Reference
 * [Introduction](contracts/SUMMARY.md)
 * [Architecture & Design Proposal](contracts/getting-started/design-proposal.md)
+* [Ecosystem Overvoew](contracts/getting-started/ecosystem-overview.md)
 * [Installation](contracts/getting-started/installation.md.md)
+* [Contracts References](contracts/references/README.md)
 
 ## Core Reference
 * [Introduction](core/SUMMARY.md)
