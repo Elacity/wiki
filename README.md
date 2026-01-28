@@ -1,4 +1,4 @@
-# Elacity JS SDK Documentation
+# Elacity Javascript/Typescript SDK Documentation
 
 Welcome to the official documentation for Elacity's JavaScript SDKs. This suite of tools enables you to integrate Elacity's backend services, manage NFTs, interact with smart contracts, and build rich media experiences.
 

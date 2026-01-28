@@ -13,12 +13,20 @@
   * [Collections](api/services/collection.md)
 
 ## Contracts (EVM-compatible)
-* [Introduction](contracts/SUMMARY.md)
+* [Introduction](contracts/README.md)
 * [Architecture & Design Proposal](contracts/getting-started/design-proposal.md)
 * [Ecosystem Overview](contracts/getting-started/ecosystem-overview.md)
-* [Installation](contracts/sdk/installation.md)
+* Contracts SDK
+  * [Installation](contracts/sdk/installation.md)
+  * [AuthorityGateway](contracts/sdk/authority.md)
+  * [TradeGateway](contracts/sdk/trade-gateway.md)
+  * [CoreStorage](contracts/sdk/core-storage.md)
+  * [ChannelCore](contracts/sdk/channel-core.md)
+  * [StandardChannel](contracts/sdk/channel.md)
+  * [MultiChannel](contracts/sdk/multi-channel.md)
+  * [Operatives](contracts/sdk/operative.md)
 * [Contracts References](contracts/references/README.md)
 
 ## Core Reference
-* [Introduction](core/SUMMARY.md)
+* [Overview](core/SUMMARY.md)
 
