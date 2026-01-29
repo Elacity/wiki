@@ -1,6 +1,6 @@
 # Media Upload Service
 
-> **Package**: `@elacity-js/media`  
+> **Package**: `@elacity-js/media-packager`  
 > **Service**: `MediaUploadService`
 
 ## Overview
@@ -27,7 +27,7 @@ See [Installation Guide](../getting-started/installation.md) for setup instructi
 ```typescript
 import { ElacityClient } from '@elacity-js/api';
 import { EthersAdapter, EthersAbiEncoder } from '@elacity-js/contracts-ethers-adapter';
-import { MediaUploadService } from '@elacity-js/media';
+import { MediaUploadService } from '@elacity-js/media-packager';
 
 const apiClient = new ElacityClient({ chainId: ChainId.BASE_MAINNET });
 await apiClient.auth.login(address, signature);

@@ -3,11 +3,11 @@
 > **Last Updated**: 2025-01-29  
 > **Package**: `@elacity-js/api`  
 > **Service**: `BackgroundJobService`  
-> **Used By**: `@elacity-js/media` package
+> **Used By**: `@elacity-js/media-packager` package
 
 ## Overview
 
-The Background Job Service provides a comprehensive API for managing long-running asynchronous operations on the Elacity platform. It is primarily used by the `@elacity-js/media` package to track media upload, transcoding, encoding, and minting workflows, allowing users to monitor progress and resume operations across sessions.
+The Background Job Service provides a comprehensive API for managing long-running asynchronous operations on the Elacity platform. It is primarily used by the `@elacity-js/media-packager` package to track media upload, transcoding, encoding, and minting workflows, allowing users to monitor progress and resume operations across sessions.
 
 ## Key Features
 
@@ -19,7 +19,7 @@ The Background Job Service provides a comprehensive API for managing long-runnin
 
 ## Installation
 
-The Background Job Service is part of the `@elacity-js/api` package. To use it in your project (or in the `@elacity-js/media` package), install the API package:
+The Background Job Service is part of the `@elacity-js/api` package. To use it in your project (or in the `@elacity-js/media-packager` package), install the API package:
 
 ```bash
 npm install @elacity-js/api
@@ -476,7 +476,7 @@ try {
 
 ## Integration with Media Package
 
-The Background Job Service is designed to work seamlessly with the `@elacity-js/media` package for media upload workflows. The media package will use this service to:
+The Background Job Service is designed to work seamlessly with the `@elacity-js/media-packager` package for media upload workflows. The media package will use this service to:
 
 - Create background jobs when media uploads start
 - Update job progress during transcoding and encoding
@@ -484,7 +484,7 @@ The Background Job Service is designed to work seamlessly with the `@elacity-js/
 - Generate metadata URIs before blockchain minting
 - Monitor job completion status
 
-See the [Media Package Documentation](../../media/SUMMARY.md) for media-specific integration examples.
+See the [Media Package Documentation](../../media-packager/SUMMARY.md) for media-specific integration examples.
 
 ## Related Documentation
 

@@ -4,7 +4,7 @@
 
 ## Overview
 
-The media upload workflow transforms user-submitted video/audio content into blockchain-backed NFTs with DRM (Digital Rights Management) protection. This document describes the architecture and flow of the `@elacity-js/media` package.
+The media upload workflow transforms user-submitted video/audio content into blockchain-backed NFTs with DRM (Digital Rights Management) protection. This document describes the architecture and flow of the `@elacity-js/media-packager` package.
 
 ## High-Level Flow
 

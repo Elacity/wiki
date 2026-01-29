@@ -29,12 +29,12 @@
 
 
 ## Media Package
-* [Introduction](media/SUMMARY.md)
+* [Introduction](media-packager/SUMMARY.md)
 * Getting Started
-  * [Installation](media/getting-started/installation.md)
-  * [Quick Start](media/getting-started/quick-start.md)
+  * [Installation](media-packager/getting-started/installation.md)
+  * [Quick Start](media-packager/getting-started/quick-start.md)
 * Services
-  * [Media Upload Service](media/services/media-upload-service.md)
+  * [Media Upload Service](media-packager/services/media-upload-service.md)
 
 ## Media Player
 * [Introduction](media-player/SUMMARY.md)

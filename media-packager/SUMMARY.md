@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `@elacity-js/media` package provides tools for uploading, processing, and minting media content (videos, audio) as NFTs on the Elacity platform.
+The `@elacity-js/media-packager` package provides tools for uploading, processing, and minting media content (videos, audio) as NFTs on the Elacity platform.
 
 ## Getting Started
 

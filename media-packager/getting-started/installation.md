@@ -1,16 +1,16 @@
 # Media Package Installation
 
-> **Package**: `@elacity-js/media`  
+> **Package**: `@elacity-js/media-packager`  
 > **Version**: 0.0.1
 
 ## Installation
 
-The `@elacity-js/media` package depends on other Elacity SDK packages. Install all required dependencies:
+The `@elacity-js/media-packager` package depends on other Elacity SDK packages. Install all required dependencies:
 
 ```bash
-npm install @elacity-js/media @elacity-js/api @elacity-js/contracts @elacity-js/common
+npm install @elacity-js/media-packager @elacity-js/api @elacity-js/contracts @elacity-js/common
 # or
-yarn add @elacity-js/media @elacity-js/api @elacity-js/contracts @elacity-js/common
+yarn add @elacity-js/media-packager @elacity-js/api @elacity-js/contracts @elacity-js/common
 ```
 
 ### Additional Dependencies

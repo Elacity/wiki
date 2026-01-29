@@ -45,7 +45,7 @@ WebAssembly-based media player for DRM-protected MPEG-DASH streaming with blockc
 
 ---
 
-### 🎥 [@elacity-js/media](media/SUMMARY.md)
+### 🎥 [@elacity-js/media-packager](media-packager/SUMMARY.md)
 
 Media upload, processing, and NFT minting package:
 - Complete media upload workflow (thumbnail, file, transcode, encode)
@@ -54,7 +54,7 @@ Media upload, processing, and NFT minting package:
 - Optional blockchain minting integration
 - Background job tracking for long-running workflows
 
-[→ View Media documentation](media/SUMMARY.md)
+[→ View Media documentation](media-packager/SUMMARY.md)
 
 ---
 
@@ -74,7 +74,7 @@ Common utilities and shared interfaces used across all SDK packages:
 Choose the package that best fits your needs:
 
 - **Building a web app with backend integration?** Start with the [API package](api/SUMMARY.md)
-- **Uploading and minting media content?** Use the [Media package](media/SUMMARY.md)
+- **Uploading and minting media content?** Use the [Media package](media-packager/SUMMARY.md)
 - **Interacting directly with smart contracts?** Check out the [Contracts package](contracts/SUMMARY.md)
 - **Playing DRM-protected media?** Use the [Media Player package](media-player/SUMMARY.md)
 - **Need shared utilities?** Explore the [Common package](common/SUMMARY.md)

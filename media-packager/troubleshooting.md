@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Common issues and solutions when using the `@elacity-js/media` package.
+Common issues and solutions when using the `@elacity-js/media-packager` package.
 
 ## Installation Issues
 
@@ -87,7 +87,7 @@ console.log('Job status:', job.status);
 console.log('Steps:', job.steps);
 
 // Check available strategies
-import { WorkflowListenerFactory } from '@elacity-js/media';
+import { WorkflowListenerFactory } from '@elacity-js/media-packager';
 const strategies = WorkflowListenerFactory.getAvailableStrategies(apiClient.backgroundJobs);
 console.log('Available strategies:', strategies.map(s => s.constructor.name));
 
