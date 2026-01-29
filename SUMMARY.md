@@ -27,6 +27,23 @@
   * [Operatives](contracts/sdk/operative.md)
 * [Contracts References](contracts/references/README.md)
 
-## Core Reference
-* [Overview](core/SUMMARY.md)
 
+## Media Player
+* [Introduction](media-player/SUMMARY.md)
+* Getting Started
+  * [Introduction](media-player/getting-started/introduction.md)
+  * [Installation](media-player/getting-started/installation.md)
+  * [Quick Start](media-player/getting-started/quick-start.md)
+* Architecture
+  * [Overview](media-player/architecture/overview.md)
+  * [DRM Systems](media-player/architecture/drm-systems.md)
+  * [Media Formats](media-player/architecture/media-formats.md)
+* API Reference
+  * [Setup & Configuration](media-player/api/setup.md)
+  * [Player API](media-player/api/player.md)
+  * [Events](media-player/api/events.md)
+  * [Types](media-player/api/types.md)
+
+
+## Core Reference
+* [Overview](core/SUMMARY.md)  

@@ -6,16 +6,6 @@ Welcome to the official documentation for Elacity's JavaScript SDKs. This suite 
 
 The Elacity SDK suite is designed to be modular, type-safe, and easy to integrate into any modern JavaScript or TypeScript environment. Each package serves a specific purpose:
 
-### 📦 [@elacity-js/core](core/SUMMARY.md)
-
-Core utilities and shared interfaces used across all SDK packages:
-- **Authentication**: Shared `AuthUser` and `AuthSigner` interfaces for SIWE-based authentication
-- **Pagination**: Global types for handling large data sets efficiently
-- **Storage**: Shared interfaces for session persistence
-
-[→ View Core documentation](core/SUMMARY.md)
-
----
 
 ### 🌐 [@elacity-js/api](api/SUMMARY.md)
 
@@ -39,6 +29,33 @@ Framework-agnostic smart contract wrappers for interacting with Elacity's on-cha
 
 ---
 
+### 🎬 [@elacity-js/media-player](media-player/SUMMARY.md)
+
+WebAssembly-based media player for DRM-protected MPEG-DASH streaming with blockchain-based key retrieval:
+
+**⚠️ Browser-Only Platform**: Built entirely on [Media Source Extensions (MSE)](https://www.w3.org/TR/media-source/), requiring browser environment with SharedArrayBuffer support (COOP/COEP headers required).
+
+- MPEG-DASH adaptive streaming support
+- Blockchain DRM integration (Lit Protocol, Web3 DRM)
+- NFT-gated content access
+- Multi-codec support (H.264, AV1, VP9)
+- **Browser-only**: Cannot run in Node.js or server-side environments
+
+[→ View Media Player documentation](media-player/SUMMARY.md)
+
+---
+
+### 📦 [@elacity-js/core](core/SUMMARY.md)
+
+Core utilities and shared interfaces used across all SDK packages:
+- **Authentication**: Shared `AuthUser` and `AuthSigner` interfaces for SIWE-based authentication
+- **Pagination**: Global types for handling large data sets efficiently
+- **Storage**: Shared interfaces for session persistence
+
+[→ View Core documentation](core/SUMMARY.md)
+
+---
+
 ## Getting Started
 
 Choose the package that best fits your needs:
@@ -46,6 +63,7 @@ Choose the package that best fits your needs:
 - **Building a web app with backend integration?** Start with the [API package](api/SUMMARY.md)
 - **Interacting directly with smart contracts?** Check out the [Contracts package](contracts/SUMMARY.md)
 - **Need shared utilities?** Explore the [Core package](core/SUMMARY.md)
+- **Playing DRM-protected media?** Use the [Media Player package](media-player/SUMMARY.md)
 
 ## Support
 
