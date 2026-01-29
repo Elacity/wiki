@@ -129,8 +129,9 @@ if (balance < mintingFee) {
   throw new Error('Insufficient balance');
 }
 
-// Verify ABI encoder is correct
-const abiEncoder = (types, values) => defaultAbiCoder.encode(types, values);
+// Verify ABI encoder is correctly configured (Ethers example)
+import { EthersAbiEncoder } from '@elacity-js/contracts-ethers-adapter';
+const abiEncoder = new EthersAbiEncoder();
 ```
 
 ### Token ID Not Extracted

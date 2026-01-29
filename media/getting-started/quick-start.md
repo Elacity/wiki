@@ -6,10 +6,9 @@ This guide shows you how to quickly get started with uploading and minting media
 
 ```typescript
 import { ElacityClient } from '@elacity-js/api';
-import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
+import { EthersAdapter, EthersAbiEncoder } from '@elacity-js/contracts-ethers-adapter';
 import { MediaUploadService } from '@elacity-js/media';
 import { ChainId } from '@elacity-js/core';
-import { defaultAbiCoder } from '@ethersproject/abi';
 import { ethers } from 'ethers';
 
 // 1. Initialize API client
@@ -25,9 +24,8 @@ const provider = new ethers.BrowserProvider(window.ethereum);
 const signer = await provider.getSigner();
 const contractRunner = new EthersAdapter(signer);
 
-// 4. Create ABI encoder
-const abiEncoder = (types: string[], values: unknown[]) => 
-  defaultAbiCoder.encode(types, values);
+// 4. Create ABI encoder (Ethers implementation)
+const abiEncoder = new EthersAbiEncoder();
 
 // 5. Initialize media upload service
 const mediaService = new MediaUploadService(

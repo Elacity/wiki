@@ -26,20 +26,20 @@ See [Installation Guide](../getting-started/installation.md) for setup instructi
 
 ```typescript
 import { ElacityClient } from '@elacity-js/api';
-import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
+import { EthersAdapter, EthersAbiEncoder } from '@elacity-js/contracts-ethers-adapter';
 import { MediaUploadService } from '@elacity-js/media';
-import { defaultAbiCoder } from '@ethersproject/abi';
 
 const apiClient = new ElacityClient({ chainId: ChainId.BASE_MAINNET });
 await apiClient.auth.login(address, signature);
 
 const contractRunner = new EthersAdapter(signer);
+const abiEncoder = new EthersAbiEncoder();
 
 const mediaService = new MediaUploadService(
   apiClient,
   contractRunner,
   {
-    abiEncoder: (types, values) => defaultAbiCoder.encode(types, values),
+    abiEncoder,
     tokenInfo: { address: '0x...', decimals: 18 },
   }
 );
@@ -72,7 +72,7 @@ new MediaUploadService(
   contractRunner: IContractRunner,
   options?: {
     workflowListener?: WorkflowListener;
-    abiEncoder?: ABIEncoder;
+    abiEncoder?: IAbiEncoder;
     tokenInfo?: TokenInfo;
     baseUrl?: string;
   }
@@ -84,7 +84,7 @@ new MediaUploadService(
 - `contractRunner`: Contract runner adapter (EthersAdapter or ViemAdapter)
 - `options`: Optional configuration
   - `workflowListener`: Legacy custom workflow listener (deprecated - use Strategy pattern instead)
-  - `abiEncoder`: ABI encoding function (required for minting)
+  - `abiEncoder`: ABI encoder implementation (`EthersAbiEncoder`, `ViemAbiEncoder`, or custom `IAbiEncoder`)
   - `tokenInfo`: Token information for price encoding (defaults to 18 decimals)
   - `baseUrl`: Override base URL for uploads
 
