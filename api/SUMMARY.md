@@ -41,4 +41,6 @@ The API SDK automatically routes requests to the appropriate environment based o
 * [Channels](services/channel.md)
 * [NFTs](services/nfts.md)
 * [Collections](services/collection.md)
+* [Background Jobs](services/background-job.md)
+* [Background Jobs](services/background-job.md)
 

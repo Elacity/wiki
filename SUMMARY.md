@@ -28,6 +28,14 @@
 * [Contracts References](contracts/references/README.md)
 
 
+## Media Package
+* [Introduction](media/SUMMARY.md)
+* Getting Started
+  * [Installation](media/getting-started/installation.md)
+  * [Quick Start](media/getting-started/quick-start.md)
+* Services
+  * [Media Upload Service](media/services/media-upload-service.md)
+
 ## Media Player
 * [Introduction](media-player/SUMMARY.md)
 * Getting Started
