@@ -21,7 +21,7 @@ const channelCore = new ChannelCore(contractAddress, adapter);
 ChannelCore has **one fixed deployment per supported network**. Use `fromChainId` to resolve the correct address automatically:
 
 ```typescript
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 
 const chainId = ChainId.Base;
 const channelCore = ChannelCore.fromChainId(chainId, adapter);

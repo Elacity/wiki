@@ -30,7 +30,7 @@ const gateway = new TradeGateway(contractAddress, adapter);
 TradeGateway has **one fixed deployment per supported network**. Use `fromChainId` to resolve the correct address automatically:
 
 ```typescript
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 
 const chainId = ChainId.Base;
 const gateway = TradeGateway.fromChainId(chainId, adapter);

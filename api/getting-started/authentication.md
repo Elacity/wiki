@@ -85,11 +85,11 @@ By default, authentication is stored in memory and will be lost on page reload. 
 
 ### Browser Implementation
 
-The SDK uses a domain-specific storage interface from `@elacity-js/core`. You can easily wrap `localStorage` to work with it:
+The SDK uses a domain-specific storage interface from `@elacity-js/common`. You can easily wrap `localStorage` to work with it:
 
 ```typescript
 import { ElacityClient } from '@elacity-js/api';
-import { AuthTokenStorage, AuthUser } from '@elacity-js/core';
+import { AuthTokenStorage, AuthUser } from '@elacity-js/common';
 
 const browserStorage: AuthTokenStorage = {
   load: () => {
@@ -112,10 +112,10 @@ const client = new ElacityClient({
 
 ### Custom Storage (e.g. Backend)
 
-For backend environments, you can implement the same interface from `@elacity-js/core` using Redis, files, or any other database:
+For backend environments, you can implement the same interface from `@elacity-js/common` using Redis, files, or any other database:
 
 ```typescript
-import { AuthTokenStorage } from '@elacity-js/core';
+import { AuthTokenStorage } from '@elacity-js/common';
 
 const redisStorage: AuthTokenStorage = {
   load: async () => { /* fetch from redis */ },

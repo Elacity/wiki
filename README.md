@@ -58,14 +58,14 @@ Media upload, processing, and NFT minting package:
 
 ---
 
-### 📦 [@elacity-js/core](core/SUMMARY.md)
+### 📦 [@elacity-js/common](common/SUMMARY.md)
 
-Core utilities and shared interfaces used across all SDK packages:
+Common utilities and shared interfaces used across all SDK packages:
 - **Authentication**: Shared `AuthUser` and `AuthSigner` interfaces for SIWE-based authentication
 - **Pagination**: Global types for handling large data sets efficiently
 - **Storage**: Shared interfaces for session persistence
 
-[→ View Core documentation](core/SUMMARY.md)
+[→ View Common documentation](common/SUMMARY.md)
 
 ---
 
@@ -77,7 +77,7 @@ Choose the package that best fits your needs:
 - **Uploading and minting media content?** Use the [Media package](media/SUMMARY.md)
 - **Interacting directly with smart contracts?** Check out the [Contracts package](contracts/SUMMARY.md)
 - **Playing DRM-protected media?** Use the [Media Player package](media-player/SUMMARY.md)
-- **Need shared utilities?** Explore the [Core package](core/SUMMARY.md)
+- **Need shared utilities?** Explore the [Common package](common/SUMMARY.md)
 
 ## Support
 

@@ -16,7 +16,7 @@ The API SDK automatically routes requests to the appropriate environment based o
 
 1.  **Installation**:
     ```bash
-    npm install @elacity-js/api @elacity-js/core ethers
+    npm install @elacity-js/api @elacity-js/common ethers
     ```
 
 2.  **Initialize the Client**:

@@ -402,7 +402,7 @@ const tokenInfo = {
 import { ElacityClient } from '@elacity-js/api';
 import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
 import { MediaUploadService } from '@elacity-js/media';
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { ethers } from 'ethers';
 

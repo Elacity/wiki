@@ -35,7 +35,7 @@ yarn add @elacity-js/api
 
 ```typescript
 import { ElacityClient } from '@elacity-js/api';
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 
 const client = new ElacityClient({
   chainId: ChainId.BASE_MAINNET, // or your target chain

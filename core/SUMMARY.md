@@ -1,6 +1,6 @@
-# Core Reference
+# Common Reference
 
-This section documents `@elacity-js/core`, the shared foundation package used across Elacity SDKs.
+This section documents `@elacity-js/common`, the shared foundation package used across Elacity SDKs.
 It contains small, reusable primitives (chains, auth types/storage interfaces, and pagination shapes) that other packages depend on.
 
 ## What it contains

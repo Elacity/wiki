@@ -53,5 +53,5 @@
   * [Types](media-player/api/types.md)
 
 
-## Core Reference
-* [Overview](core/SUMMARY.md)  
+## Common Reference
+* [Overview](common/SUMMARY.md)  

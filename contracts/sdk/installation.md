@@ -26,7 +26,7 @@ npm install @elacity-js/contracts-viem-adapter viem
 
 ```typescript
 import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 import { ChannelCore, CoreStorage, StandardChannel, TradeGateway } from '@elacity-js/contracts';
 import { JsonRpcProvider } from 'ethers';
 
@@ -48,7 +48,7 @@ console.log('Balance:', balance.toString());
 
 ```typescript
 import { ViemAdapter } from '@elacity-js/contracts-viem-adapter';
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 import { ChannelCore, CoreStorage, StandardChannel, TradeGateway } from '@elacity-js/contracts';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';

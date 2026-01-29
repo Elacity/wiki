@@ -8,9 +8,9 @@
 The `@elacity-js/media` package depends on other Elacity SDK packages. Install all required dependencies:
 
 ```bash
-npm install @elacity-js/media @elacity-js/api @elacity-js/contracts @elacity-js/core
+npm install @elacity-js/media @elacity-js/api @elacity-js/contracts @elacity-js/common
 # or
-yarn add @elacity-js/media @elacity-js/api @elacity-js/contracts @elacity-js/core
+yarn add @elacity-js/media @elacity-js/api @elacity-js/contracts @elacity-js/common
 ```
 
 ### Additional Dependencies
@@ -39,7 +39,7 @@ npm install form-data
 
 - `@elacity-js/api` - API client and background job service
 - `@elacity-js/contracts` - Smart contract interactions
-- `@elacity-js/core` - Core utilities and types
+- `@elacity-js/common` - Core utilities and types
 - `tslib` - TypeScript helper library
 
 ## TypeScript Support

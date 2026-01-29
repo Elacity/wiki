@@ -28,7 +28,7 @@ The media package uses services from other packages:
 - **`@elacity-js/api`** - API client and services
   - [Background Job Service](../api/services/background-job.md) - Track long-running media processing workflows
 - **`@elacity-js/contracts`** - Smart contract interactions for minting
-- **`@elacity-js/core`** - Core utilities and types
+- **`@elacity-js/common`** - Common utilities and types
 
 ## Architecture
 
@@ -63,4 +63,4 @@ The media upload process follows these steps:
 
 - `@elacity-js/api` - API client and services
 - `@elacity-js/contracts` - Smart contract interactions
-- `@elacity-js/core` - Core utilities and types
+- `@elacity-js/common` - Common utilities and types

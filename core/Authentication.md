@@ -1,6 +1,6 @@
 # Authentication Types
 
-The `@elacity-js/core` package defines the fundamental interfaces and types for authentication used across the Elacity SDK ecosystem.
+The `@elacity-js/common` package defines the fundamental interfaces and types for authentication used across the Elacity SDK ecosystem.
 
 ## AuthUser
 
@@ -32,7 +32,7 @@ export interface AuthTokenStorage {
 A built-in implementation that stores the token in memory (non-persistent).
 
 ```typescript
-import { MemoryTokenStorage } from '@elacity-js/core';
+import { MemoryTokenStorage } from '@elacity-js/common';
 
 const storage = new MemoryTokenStorage();
 ```

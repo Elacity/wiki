@@ -8,7 +8,7 @@ This guide shows you how to quickly get started with uploading and minting media
 import { ElacityClient } from '@elacity-js/api';
 import { EthersAdapter, EthersAbiEncoder } from '@elacity-js/contracts-ethers-adapter';
 import { MediaUploadService } from '@elacity-js/media';
-import { ChainId } from '@elacity-js/core';
+import { ChainId } from '@elacity-js/common';
 import { ethers } from 'ethers';
 
 // 1. Initialize API client
