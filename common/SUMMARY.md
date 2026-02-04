@@ -24,9 +24,27 @@ It contains small, reusable primitives (chains, auth types/storage interfaces, a
 - `PaginatedResponse<T>`: common paginated response shape.
 - See: [Pagination](Pagination.md)
 
+### Token Management
+
+- `TokenID`: For robust token ID handling (hex vs number, BigInt support).
+- See: [TokenID](TokenID.md)
+
+### Waitable Pattern
+
+- `Waitable`/`Waiter`: Promise wrappers for event-based async management.
+- See: [Waitable](Waitable.md)
+
+### Utilities
+
+- A collection of helper functions for Async, String, URL/IPFS, Date, and more.
+- See: [Utilities](Utilities.md)
+
 
 ## References
 
 * [Authentication](Authentication.md)
 * [Pagination](Pagination.md)
 * [Chains](Chains.md)
+* [TokenID](TokenID.md)
+* [Waitable](Waitable.md)
+* [Utilities](Utilities.md)
