@@ -48,13 +48,17 @@ const mediaService = new MediaUploadService(
 ### Upload Media
 
 ```typescript
+// 1. Create a session
+const session = await mediaService.createSession({
+  title: 'My Video',
+  assetFile: videoFile,
+  assetThumbnail: thumbnailFile,
+  // ... other required fields
+});
+
+// 2. Start the upload process
 const result = await mediaService.uploadMedia(
-  {
-    title: 'My Video',
-    assetFile: videoFile,
-    assetThumbnail: thumbnailFile,
-    // ... other required fields
-  },
+  session,
   {
     onProgress: (progress) => console.log(`${progress.progress}%`),
     autoMint: false,
@@ -90,61 +94,63 @@ new MediaUploadService(
 
 **Listener Strategy (Automatic):**
 
-The SDK uses the **Strategy pattern** to automatically select the best listener:
+The SDK uses a **Polling Strategy** to track background job progress:
 
-1. **FirebaseListenerStrategy** (Priority 10): Auto-detects Firebase Firestore if initialized
-   - Real-time updates via Firestore listeners
-   - Preferred for browser environments
-   - Automatically used if Firebase is available
-
-2. **PollingListenerStrategy** (Priority 1): Falls back to polling
+1. **PollingListenerStrategy** (Default):
    - Polls background job API every 2 seconds
-   - Always available when `BackgroundJobService` is provided
-   - Used automatically if Firebase is not available
-
-The `WorkflowListenerFactory` handles strategy selection automatically. No configuration needed!
+   - Automatically calculates overall workflow completion based on step weights
+   - Provides consistent updates across all environments (Browser & Node.js)
 
 ### Methods
 
-#### `uploadMedia(input, options): Promise<MediaUploadResult>`
+#### `createSession(input): Promise<UploadSession>`
 
-Uploads media content and optionally mints it as an NFT.
+Creates a new upload session, initializes the background job, and prepares the workflow state.
 
 **Parameters:**
-- `input`: `MediaUploadInput` - Media upload configuration
-- `options`: `MediaUploadOptions` - Upload options
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `input` | `MediaUploadInput` | The complete media configuration. |
+
+**Returns:** `Promise<UploadSession>` - A session object for progress tracking.
+
+---
+
+#### `uploadMedia(session, options?): Promise<MediaUploadResult>`
+
+Orchestrates the upload and optionally mints the media as an NFT.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `session` | `UploadSession` | The session created via `createSession`. |
+| `options` | `MediaUploadOptions` | (Optional) Callback and minting preferences. |
 
 **Returns:** `Promise<MediaUploadResult>`
 
-**Example:**
 ```typescript
-const result = await mediaService.uploadMedia(
-  {
-    title: 'My Video',
-    description: 'Video description',
-    assetFile: videoFile,
-    assetThumbnail: thumbnailFile,
-    pricePerSale: 4.99,
-    copiesNumber: 10000,
-    accessMethod: 'buy_once',
-    priceCurrency: '0x0000000000000000000000000000000000000000',
-    channel: '0x...',
-    gateway: '0x...',
-    categories: ['Music'],
-    previewEnabled: true,
-    previewDuration: 30,
-    royalties: [
-      { identifier: 'A', address: creatorAddress, royalty: 95 },
-    ],
+const result = await mediaService.uploadMedia(session, {
+  onProgress: (progress) => {
+    console.log(`${progress.progress}% - ${progress.step}`);
   },
-  {
-    onProgress: (progress) => {
-      console.log(`${progress.progress}% - ${progress.step}`);
-    },
-    autoMint: true,
-  }
-);
+  autoMint: true,
+});
 ```
+
+---
+
+#### `requestEncoding(requestId, input, uploadedPath?): Promise<EncodeResult>`
+
+Manually requests or resumes DASH encoding from the backend. This is useful for recovering from rare stale states where the backend did not auto-trigger encoding.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `requestId` | `string` | The background job ID. |
+| `input` | `MediaUploadInput` | The original form configuration. |
+| `uploadedPath` | `string` | (Optional) The server path of the uploaded file. |
+
+**Returns:** `Promise<EncodeResult>`
 
 ## Input Types
 
@@ -217,32 +223,23 @@ The service handles these steps automatically:
 1. **Create Background Job** (0%)
    - Creates a background job for tracking progress
 
-2. **Upload Thumbnail** (5%)
+2. **Upload Thumbnail** (Contribution: 5% weight)
    - Uploads thumbnail to IPFS
-   - Returns IPFS CID
 
-3. **Upload Media File** (10-40%)
+3. **Upload Media File** (Contribution: 40% weight)
    - Uploads media file to backend
-   - Triggers transcode workflow
-   - Returns uploaded path and requestId
+   - Progress is tracked via session and mapped to the overall completion
 
-4. **Wait for Transcode** (40-50%)
-   - Polls background job for transcode completion
-   - Updates progress as transcode progresses
+4. **Transcode & Encode** (Contribution: 10% + 40% weights)
+   - Backend automatically processes transcode and encoding
+   - SDK polls the background job status until completion
+   - Encoding result is extracted from the job payload
 
-5. **Request Encoding** (50-90%)
-   - Requests DASH encoding with DRM protection
-   - Waits for encoding completion
-   - Returns encode result with CID, KID, and metadata
-
-6. **Generate Metadata** (90-95%)
+5. **Generate Metadata** (Contribution: 5% weight)
    - Generates IPFS metadata URI
-   - Includes thumbnail, encode result, and form data
 
-7. **Mint to Blockchain** (95-100%, optional)
-   - Formats mint data
-   - Executes mint transaction
-   - Extracts token ID from transaction
+6. **Mint to Blockchain** (Contribution: 5% weight, optional)
+   - Formats mint data and executes transaction
 
 ## Progress Tracking
 

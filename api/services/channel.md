@@ -2,9 +2,21 @@
 
 The `ChannelService` provides methods for discovering, creating, and managing Elacity Channels, including subscription plans and access control.
 
-## Discovery
+## Methods
 
-### Fetching Channels
+### Discovery
+
+#### `fetchChannels(query?, options?): Promise<FetchChannelsResponse>`
+
+Fetches a paginated list of channels based on filtering criteria.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `query` | `ChannelQueryInput` | Filtering criteria (categories, creator, address, etc.) |
+| `options` | `FilterPaginationInput` | [Pagination options](../../common/Pagination.md) |
+
+**Returns:** `Promise<FetchChannelsResponse>` - A paginated list of `Channel` objects.
 
 ```typescript
 const result = await client.channels.fetchChannels({
@@ -14,7 +26,14 @@ const result = await client.channels.fetchChannels({
 
 Authentication: **Optional**
 
-### Retrieving Channel Details
+#### `retrieveChannel(query): Promise<Channel>`
+
+Retrieves detailed information for a specific channel.
+
+**Parameters:**
+- `query`: `ChannelQueryInput` - Must contain at least `address` or `_id`.
+
+**Returns:** `Promise<Channel>`
 
 ```typescript
 const channel = await client.channels.retrieveChannel({
@@ -24,11 +43,42 @@ const channel = await client.channels.retrieveChannel({
 
 Authentication: **Optional**
 
-## Management (Authenticated)
+#### `fetchUserChannels(options?): Promise<FetchChannelsResponse>`
 
-Most management methods require the user to be logged in.
+Fetches a paginated list of channels created by the currently authenticated user.
 
-### Creating a Channel
+**Parameters:**
+- `options`: `FilterPaginationInput` - [Pagination options](../../common/Pagination.md)
+
+**Returns:** `Promise<FetchChannelsResponse>`
+
+Authentication: **Required**
+
+#### `fetchMintableChannels(options?): Promise<FetchChannelsResponse>`
+
+Fetches a paginated list of channels where the authenticated user has minting permissions.
+
+**Parameters:**
+- `options`: `FilterPaginationInput` - [Pagination options](../../common/Pagination.md)
+
+**Returns:** `Promise<FetchChannelsResponse>`
+
+Authentication: **Required**
+
+---
+
+### Management
+
+#### `createChannel(input): Promise<Channel>`
+
+Creates a new channel on the platform.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `input` | `ChannelInput` | Complete profile for the new channel. |
+
+**Returns:** `Promise<Channel>`
 
 ```typescript
 const newChannel = await client.channels.createChannel({
@@ -52,33 +102,56 @@ const newChannel = await client.channels.createChannel({
 
 Authentication: **Required**
 
-### Updating Channel Info
+#### `updateChannelInformation(address, input): Promise<Channel>`
 
-```typescript
-await client.channels.updateChannelInformation('0x...', {
-  description: "Updated description for my channel",
-  categories: ["Art", "Lifestyle"]
-});
-```
+Updates the profile of an existing channel.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `address` | `string` | The contract address of the channel. |
+| `input` | `ChannelInformationInput` | Updated metadata fields. |
+
+**Returns:** `Promise<Channel>`
+
+Authentication: **Required**
+
+#### `updateSubscriptionPlan(address, actions): Promise<Channel>`
+
+Manages subscription tiers for a channel.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `address` | `string` | The contract address of the channel. |
+| `actions` | `SubscriptionPlanUpdateAction[]` | List of plan updates (ADD, UPDATE, REMOVE). |
+
+**Returns:** `Promise<Channel>`
 
 Authentication: **Required**
 
-### Managing Subscription Plans
+## Types
 
-You can add, update, or remove subscription tiers using the `updateSubscriptionPlan` method.
-
+### Channel
 ```typescript
-await client.channels.updateSubscriptionPlan('0x...', [
-  {
-    action: 'ADD',
-    args: {
-      label: "Premium Tier",
-      duration: { value: 365, unit: "days" },
-      price: "100",
-      payToken: "0x..."
-    }
-  }
-]);
+interface Channel {
+  _id: string;
+  name: string;
+  address: string;
+  description?: string;
+  channelType: string;
+  imageURL: string;
+  coverImageURL: string;
+  itemsCount: number;
+}
 ```
 
-Authentication: **Required**
+### ChannelInput
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | Display name for the channel. |
+| `address` | `string` | Deploy contract address. |
+| `creator` | `string` | Owner wallet address. |
+| `channelType` | `string` | Category ID. |
+| `scope` | `string` | visibility ('public' or 'private'). |
+| `plans` | `SubscriptionPlanInput[]` | List of Tiers. |

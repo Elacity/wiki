@@ -13,270 +13,139 @@ import { StandardChannel } from '@elacity-js/contracts';
 ## Initialization
 
 ```typescript
-const channel = new StandardChannel(contractAddress, adapter);
+const channel = new StandardChannel(contractAddress, runner);
 ```
 
-### Parameters
-
-- `contractAddress` (`string`): The deployed address of the StandardChannel contract.
-- `adapter` (`IContractRunner`): An instance of an adapter (e.g., `EthersAdapter`, `ViemAdapter`).
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `contractAddress` | `string` | The deployed address of the StandardChannel contract. |
+| `runner` | `IContractRunner` | An instance of an adapter (e.g. `EthersAdapter`, `ViemAdapter`). See [Interfaces](../interfaces.md). |
 
 ## ERC-1155 Methods
 
-### Get Token Balance
+### `balanceOf(account, id): Promise<bigint>`
 
 Retrieve the balance of a specific token ID for an account.
 
-```typescript
-const balance = await channel.balanceOf(
-  accountAddress, // Address to check
-  tokenId         // Token ID
-);
-console.log(`Balance: ${balance.toString()}`);
-```
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `account` | `string` | Address to check balance for. |
+| `id` | `bigint` \| `number` | Token ID to check. |
 
 **Returns:** `Promise<bigint>`
 
-### Batch Balance Check
+```typescript
+const balance = await channel.balanceOf(accountAddress, tokenId);
+```
+
+### `balanceOfBatch(accounts, ids): Promise<bigint[]>`
 
 Check balances for multiple accounts and token IDs in a single call.
 
-```typescript
-const balances = await channel.balanceOfBatch(
-  [account1, account2], // Array of accounts
-  [id1, id2]            // Array of token IDs
-);
-```
+**Parameters:**
+- `accounts`: `string[]` - Array of accounts.
+- `ids`: `(bigint | number)[]` - Array of token IDs.
 
 **Returns:** `Promise<bigint[]>`
 
-### Safe Transfer
+### `safeTransferFrom(from, to, id, amount, data?): Promise<IContractTransactionResponse>`
 
 Transfer tokens from one account to another.
 
-```typescript
-const tx = await channel.safeTransferFrom(
-  fromAddress,    // Current owner
-  toAddress,      // Recipient
-  tokenId,        // Token ID
-  amount,         // Amount to transfer
-  data            // Optional data (default: '0x')
-);
-```
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `from` | `string` | Current owner address. |
+| `to` | `string` | Recipient address. |
+| `id` | `bigint` \| `number` | Token ID to transfer. |
+| `amount` | `bigint` \| `number` | Amount to transfer. |
+| `data` | `string` | (Optional) Hex data (default: '0x'). |
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<IContractTransactionResponse>` - See [Interfaces](../interfaces.md#icontracttransactionresponse).
 
-### Batch Transfer
+### `safeBatchTransferFrom(from, to, ids, amounts, data?): Promise<IContractTransactionResponse>`
 
 Transfer multiple token types in a single transaction.
 
-```typescript
-const tx = await channel.safeBatchTransferFrom(
-  fromAddress,
-  toAddress,
-  [tokenId1, tokenId2],  // Array of token IDs
-  [amount1, amount2],   // Array of amounts
-  '0x'                  // Optional data
-);
-```
+**Returns:** `Promise<IContractTransactionResponse>`
 
-**Returns:** `Promise<TransactionResponse>`
+### `uri(id): Promise<string>`
 
-### Get Metadata URI
-
-Retrieve the metadata URI for a specific token.
-
-```typescript
-const uri = await channel.uri(tokenId);
-```
+Retrieve the metadata URI for a specific token ID.
 
 **Returns:** `Promise<string>`
 
-### Get Token URI
-
-Retrieve the token URI for a specific token ID (alternative to `uri`).
-
-```typescript
-const tokenUri = await channel.tokenURI(tokenId);
-```
-
-**Returns:** `Promise<string>`
-
-### Metadata
-
-Retrieve contract-level metadata.
-
-```typescript
-const name = await channel.name();
-const symbol = await channel.symbol();
-```
-
-### Approval Management
-
-Manage operator approvals for asset transfers.
-
-```typescript
-// Check if an operator is approved for all assets
-const isApproved = await channel.isApprovedForAll(owner, operator);
-
-// Set approval for an operator
-await channel.setApprovalForAll(operator, true); // true to approve, false to revoke
-```
-
-### Token Existence
-
-Check if a token ID exists.
-
-```typescript
-const exists = await channel.exists(tokenId);
-```
-
-**Returns:** `Promise<boolean>`
-
-### Total Supply
-
-Get the total supply of tokens (all tokens or a specific token ID).
-
-```typescript
-// Total supply of all tokens
-const total = await channel.totalSupply();
-
-// Total supply of a specific token ID
-const tokenTotal = await channel.totalSupply(tokenId);
-```
-
-**Returns:** `Promise<bigint>`
+---
 
 ## Minting
 
-### Mint New Token
+### `mint(uri, opType, opRawData, sellRawData): Promise<IContractTransactionResponse>`
 
 Mint a new token in the channel. **Note:** MultiChannel does not support minting.
 
-```typescript
-const tx = await channel.mint(
-  uri,           // Token metadata URI
-  opType,        // Operative type (uint16)
-  opRawData,     // Raw data for the operative (hex string)
-  sellRawData    // Raw data for selling (hex string)
-);
-```
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `uri` | `string` | Token metadata URI (typically ipfs://...). |
+| `opType` | `number` | Operative type (uint16). |
+| `opRawData` | `string` | Raw data for the operative (hex string). |
+| `sellRawData` | `string` | Raw data for selling (hex string). |
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<IContractTransactionResponse>`
+
+---
 
 ## Subscription Management
 
-### Subscribe to Plan
+### `subscribePlan(planId, recurring, value?): Promise<IContractTransactionResponse>`
 
 Subscribe to a subscription plan.
 
-```typescript
-const tx = await channel.subscribePlan(
-  planId,      // Plan ID (uint8)
-  recurring,   // Whether subscription is recurring (boolean)
-  value        // Optional: native value to send (for native payment)
-);
-```
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `planId` | `number` | Plan ID (uint8). |
+| `recurring` | `boolean` | Whether subscription should be recurring. |
+| `value` | `bigint` \| `string` | (Optional) Native value to send (for native payment). |
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<IContractTransactionResponse>`
 
-### Check Active Subscription
+### `hasActiveSubscription(subscriber): Promise<boolean>`
 
 Check if an account has an active subscription.
 
-```typescript
-const hasActive = await channel.hasActiveSubscription(subscriberAddress);
-```
-
 **Returns:** `Promise<boolean>`
 
-### Unsubscribe from Plan
-
-Unsubscribe from a subscription plan.
-
-```typescript
-const tx = await channel.unsubscribePlan(planId);
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
-### Get All Plans
+### `getPlans(): Promise<SubscriptionPlan[]>`
 
 Retrieve all subscription plans.
 
-```typescript
-const plans = await channel.getPlans();
-// Returns: Array<{ planId, payToken, price, duration, active }>
-```
-
-**Returns:** `Promise<Array<{ planId: number; payToken: string; price: bigint; duration: bigint; active: boolean }>>`
-
-### Get Plan by ID
-
-Retrieve a specific plan by its ID.
+**Returns:** `Promise<SubscriptionPlan[]>`
 
 ```typescript
-const plan = await channel.plans(planId);
-// Returns: { planId, payToken, price, duration, active }
+interface SubscriptionPlan {
+  planId: number;
+  payToken: string;
+  price: bigint;
+  duration: bigint;
+  active: boolean;
+}
 ```
 
-**Returns:** `Promise<{ planId: number; payToken: string; price: bigint; duration: bigint; active: boolean }>`
-
-### Get Next Plan ID
-
-Get the next available plan ID.
-
-```typescript
-const nextId = await channel.nextPlanId();
-```
-
-**Returns:** `Promise<number>`
+---
 
 ## Rewards Management
 
-### Withdraw Rewards
+### `withdrawRewards(paymentToken): Promise<IContractTransactionResponse>`
 
 Withdraw accrued rewards for a specific payment token.
 
-```typescript
-const tx = await channel.withdrawRewards(paymentTokenAddress);
-```
+**Returns:** `Promise<IContractTransactionResponse>`
 
-**Returns:** `Promise<TransactionResponse>`
-
-### Get Rewards Balance
+### `rewardsOf(user, token): Promise<bigint>`
 
 Get the rewards balance for a specific user and token.
 
-```typescript
-const rewards = await channel.rewardsOf(userAddress, tokenAddress);
-```
-
 **Returns:** `Promise<bigint>`
-
-### Increment Rewards
-
-Increment rewards for a user (admin function).
-
-```typescript
-const tx = await channel.incrementRewards(
-  toAddress,      // Recipient address
-  amount,         // Amount to increment
-  paymentToken    // Payment token address
-);
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
-## Royalty Information
-
-### Get Royalty Info
-
-Get royalty information for a sale price.
-
-```typescript
-const royalties = await channel.royaltyInfo(salePrice);
-// Returns: Array<{ receiver, amount }>
-```
-
-**Returns:** `Promise<Array<{ receiver: string; amount: bigint }>>`

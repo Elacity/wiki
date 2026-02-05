@@ -38,25 +38,32 @@ const signer = await provider.getSigner();
 
 // Automates nonce fetching, message construction, signing, and login
 await client.auth.loginWithSigner(signer);
+
+// Optional: Login with a Smart Account
+await client.auth.loginWithSigner(signer, '0x...smartAccountAddress');
 ```
 
-### Advanced: Custom Signature Generation
+**Parameters:**
+- `signer`: `AuthSigner` - Wallet signer (e.g. `ethers.Signer`)
+- `sa`: `string` (optional) - Smart Account address to associate with the session.
 
-If you need full control over the message generation, you can still perform the steps manually:
+**Returns:** `Promise<AuthUser>` - The authenticated user session.
+
+#### `login(address, signature, sa?): Promise<AuthUser>`
+
+Performs login with an existing signature.
+
+**Parameters:**
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `address` | `string` | The wallet address. |
+| `signature` | `string` | The signature string. |
+| `sa` | `string` | (Optional) Smart Account address. |
+
+**Returns:** `Promise<AuthUser>` - The [AuthUser](../../common/Authentication.md#authuser) object.
 
 ```typescript
-const address = await signer.getAddress();
-
-// 2. Prepare the SIWE message
-// The backend expects a specific format:
-const nonce = await client.auth.getNonce(address);
-const message = `Approve signature on https://ela.city with nonce ${nonce || 0}`;
-
-// 3. Sign the message
-const signature = await signer.signMessage(message);
-
-// 4. Use the signature with the SDK
-await client.auth.login(address, signature);
+await client.auth.login(address, signature, sa);
 ```
 
 > [!IMPORTANT]
@@ -71,7 +78,17 @@ Once logged in, the `AuthManager` automatically stores the token and injects it 
 ```typescript
 const user = client.auth.getUser();
 const token = client.auth.getToken();
+const account = client.auth.getAccount();
 ```
+
+#### `getUser(): AuthUser | null`
+Returns the raw [AuthUser](../../common/Authentication.md#authuser) session from the backend.
+
+#### `getToken(): string | undefined`
+Returns only the JWT access token.
+
+#### `getAccount(): AuthAccount | null`
+Returns an [AuthAccount](../../common/Authentication.md#authaccount) object containing the active address and owner. Useful for operations where you need to know if the user is using a Smart Account.
 
 ### Logging Out
 

@@ -255,30 +255,34 @@ interface JobStep {
 
 ### Methods
 
-#### `createBackgroundJob<T>(input: BackgroundJobInput<T>): Promise<BackgroundJob<T>>`
+### Methods
 
-Creates a new background job.
+#### `createBackgroundJob<T>(input): Promise<BackgroundJob<T>>`
+
+Creates a new background job to track a workflow.
 
 **Parameters:**
-- `input`: Job configuration including title, status, payload, and steps
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `input` | `BackgroundJobInput` | Initial job configuration. |
 
-**Returns:** Created job with generated `requestId`
+**Returns:** `Promise<BackgroundJob<T>>` - The created job entity with a unique `requestId`.
 
-**Authentication:** Required
+Authentication: **Required**
 
 ---
 
-#### `updateBackgroundJob<T>(requestId: string, input: Record<string, any>): Promise<BackgroundJob<T>>`
+#### `updateBackgroundJob<T>(requestId, input): Promise<BackgroundJob<T>>`
 
 Updates an existing job using MongoDB-style update operations.
 
 **Parameters:**
-- `requestId`: Unique job identifier
-- `input`: Update payload (typically uses `$set` operations)
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `requestId` | `string` | The unique identifier of the job. |
+| `input` | `UpdateBackgroundJobInput` | Update operations (e.g. `$set`, `$unset`). |
 
-**Returns:** Updated job entity
-
-**Authentication:** Required
+**Returns:** `Promise<BackgroundJob<T>>`
 
 **Example:**
 ```typescript
@@ -293,59 +297,57 @@ await backgroundJobs.updateBackgroundJob(requestId, {
 });
 ```
 
+Authentication: **Required**
+
 ---
 
-#### `retrieveBackgroundJob<T>(requestId: string): Promise<BackgroundJob<T> | null>`
+#### `retrieveBackgroundJob<T>(requestId): Promise<BackgroundJob<T> | null>`
 
 Retrieves a single job by its `requestId`.
 
-**Parameters:**
-- `requestId`: Unique job identifier
+**Returns:** `Promise<BackgroundJob<T> | null>`
 
-**Returns:** Job entity or `null` if not found
-
-**Authentication:** Required
+Authentication: **Required**
 
 ---
 
-#### `fetchBackgroundJobs<T>(query?: BackgroundJobQueryInput, options?: FilterPaginationInput): Promise<FetchBackgroundJobsResponse>`
+#### `fetchBackgroundJobs<T>(query?, options?): Promise<FetchBackgroundJobsResponse>`
 
 Fetches a paginated list of jobs scoped to the authenticated user.
 
 **Parameters:**
-- `query`: Filter criteria (account, requestId, status)
-- `options`: Pagination and sorting options
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `query` | `BackgroundJobQueryInput` | Filtering criteria (status, title). |
+| `options` | `FilterPaginationInput` | [Pagination options](../../common/Pagination.md) |
 
-**Returns:** Paginated response with job list
+**Returns:** `Promise<FetchBackgroundJobsResponse>`
 
-**Authentication:** Required
+Authentication: **Required**
 
 ---
 
-#### `generateMetadata(requestId: string, payload?: Record<string, any>): Promise<string>`
+#### `generateMetadata(requestId, payload?): Promise<string>`
 
-Generates IPFS metadata URI for NFT minting workflows.
+Generates IPFS metadata URI for NFT minting workflows. This method combines the job payload with provided additional metadata.
 
 **Parameters:**
-- `requestId`: Unique job identifier
-- `payload`: Optional additional metadata
+- `requestId`: `string`
+- `payload`: `Record<string, any>` (optional) - Additional metadata to include.
 
-**Returns:** Metadata URI (typically IPFS CID)
+**Returns:** `Promise<string>` - The IPFS URI (e.g. `ipfs://Qm...`).
 
-**Authentication:** Required
+Authentication: **Required**
 
 ---
 
-#### `deleteBackgroundJob(requestId: string): Promise<{ success: boolean }>`
+#### `deleteBackgroundJob(requestId): Promise<{ success: boolean }>`
 
 Deletes a background job.
 
-**Parameters:**
-- `requestId`: Unique job identifier
+**Returns:** `Promise<{ success: boolean }>`
 
-**Returns:** Success indicator
-
-**Authentication:** Required
+Authentication: **Required**
 
 ## Common Workflows
 
