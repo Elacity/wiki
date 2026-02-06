@@ -452,6 +452,6 @@ async function uploadVideo() {
 
 ## Related Documentation
 
-- [Background Job Service](../api/services/background-job.md) - Workflow tracking
-- [Channel Service](../api/services/channel.md) - Channel management
-- [Contracts SDK](../contracts/sdk/channel.md) - Smart contract interactions
+- [Background Job Service](../../api/services/background-job.md) - Workflow tracking
+- [Channel Service](../../api/services/channel.md) - Channel management
+- [Contracts SDK](../../contracts/sdk/channel.md) - Smart contract interactions

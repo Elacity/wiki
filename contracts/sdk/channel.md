@@ -20,7 +20,7 @@ const channel = new StandardChannel(contractAddress, runner);
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `contractAddress` | `string` | The deployed address of the StandardChannel contract. |
-| `runner` | `IContractRunner` | An instance of an adapter (e.g. `EthersAdapter`, `ViemAdapter`). See [Interfaces](../interfaces.md). |
+| `runner` | `IContractRunner` | An instance of an adapter (e.g. `EthersAdapter`, `ViemAdapter`). See [Installation](installation.md). |
 
 ## ERC-1155 Methods
 
@@ -63,7 +63,7 @@ Transfer tokens from one account to another.
 | `amount` | `bigint` \| `number` | Amount to transfer. |
 | `data` | `string` | (Optional) Hex data (default: '0x'). |
 
-**Returns:** `Promise<IContractTransactionResponse>` - See [Interfaces](../interfaces.md#icontracttransactionresponse).
+**Returns:** `Promise<IContractTransactionResponse>` - Transaction response with `hash` and `wait()` method.
 
 ### `safeBatchTransferFrom(from, to, ids, amounts, data?): Promise<IContractTransactionResponse>`
 
