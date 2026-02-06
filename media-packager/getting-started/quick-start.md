@@ -44,7 +44,7 @@ const mediaService = new MediaUploadService(
 ## Upload Media (Without Auto-Mint)
 
 ```typescript
-const result = await mediaService.uploadMedia(
+const result = await mediaService.execute(
   {
     title: 'My Awesome Video',
     description: 'A great video about...',
@@ -83,7 +83,7 @@ console.log('Upload complete! Request ID:', result.requestId);
 ## Upload and Auto-Mint
 
 ```typescript
-const result = await mediaService.uploadMedia(
+const result = await mediaService.execute(
   {
     // ... same input as above
   },

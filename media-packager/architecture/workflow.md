@@ -286,7 +286,7 @@ The service automatically:
 
 ```typescript
 try {
-  const result = await mediaService.uploadMedia(input, options);
+  const result = await mediaService.execute(input, options);
 } catch (error) {
   // Retrieve job to see which step failed
   const job = await apiClient.backgroundJobs.retrieveBackgroundJob(result.requestId);

@@ -48,8 +48,8 @@ const mediaService = new MediaUploadService(
 ### Upload Media
 
 ```typescript
-// 1. Create a session
-const session = await mediaService.createSession({
+// 1. Create a request
+const request = await mediaService.createRequest({
   title: 'My Video',
   assetFile: videoFile,
   assetThumbnail: thumbnailFile,
@@ -57,8 +57,8 @@ const session = await mediaService.createSession({
 });
 
 // 2. Start the upload process
-const result = await mediaService.uploadMedia(
-  session,
+const result = await mediaService.execute(
+  request,
   {
     onProgress: (progress) => console.log(`${progress.progress}%`),
     autoMint: false,
@@ -103,33 +103,33 @@ The SDK uses a **Polling Strategy** to track background job progress:
 
 ### Methods
 
-#### `createSession(input): Promise<UploadSession>`
+#### `createRequest(input): Promise<UploadRequest>`
 
-Creates a new upload session, initializes the background job, and prepares the workflow state.
+Creates a new upload request, initializes the background job, and prepares the workflow state.
 
 **Parameters:**
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `input` | `MediaUploadInput` | The complete media configuration. |
 
-**Returns:** `Promise<UploadSession>` - A session object for progress tracking.
+**Returns:** `Promise<UploadRequest>` - A request object for progress tracking.
 
 ---
 
-#### `uploadMedia(session, options?): Promise<MediaUploadResult>`
+#### `execute(request, options?): Promise<MediaUploadResult>`
 
 Orchestrates the upload and optionally mints the media as an NFT.
 
 **Parameters:**
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `session` | `UploadSession` | The session created via `createSession`. |
+| `request` | `UploadRequest` | The request created via `createRequest`. |
 | `options` | `MediaUploadOptions` | (Optional) Callback and minting preferences. |
 
 **Returns:** `Promise<MediaUploadResult>`
 
 ```typescript
-const result = await mediaService.uploadMedia(session, {
+const result = await mediaService.execute(request, {
   onProgress: (progress) => {
     console.log(`${progress.progress}% - ${progress.step}`);
   },
@@ -268,7 +268,7 @@ The service automatically updates background job status on errors:
 
 ```typescript
 try {
-  const result = await mediaService.uploadMedia(input, options);
+  const result = await mediaService.execute(input, options);
 } catch (error) {
   // Job status is automatically set to FAILED
   // You can retrieve the job to see error details
@@ -418,7 +418,7 @@ async function uploadVideo() {
   });
 
   // 2. Upload
-  const result = await mediaService.uploadMedia(
+  const result = await mediaService.execute(
     {
       title: 'My Awesome Video',
       description: 'A great video',
