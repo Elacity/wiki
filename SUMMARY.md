@@ -25,6 +25,8 @@
   * [StandardChannel](contracts/sdk/channel.md)
   * [MultiChannel](contracts/sdk/multi-channel.md)
   * [Operatives](contracts/sdk/operative.md)
+  * [Transaction Handling](contracts/sdk/transactions.md)
+  * [Universal Account Executor](contracts/sdk/universal-account-executor.md)
 * [Contracts References](contracts/references/README.md)
 
 

@@ -106,3 +106,56 @@ You can instantiate them with `fromChainId(chainId, runner)`, or use `getEcosyst
 
 ### Module Contracts
 - `SubscriptionModule`: Core subscription management module (inherited by all channel types).
+
+## Transaction Executors
+
+The SDK supports pluggable transaction execution strategies via the `ITransactionExecutor` interface. This allows switching between standard (one-at-a-time) and bundled (smart account) transaction execution without changing contract wrapper code.
+
+The executor toggles the runner's `dryRun` flag so that contract method calls return raw call data instead of submitting on-chain. The executor then collects the raw data and performs the actual submission.
+
+### Standard Execution (default)
+
+```typescript
+import { StandardTransactionExecutor } from '@elacity-js/contracts';
+
+const runner = new EthersAdapter(new BrowserProvider(provider));
+const channel = new StandardChannel('0x...', runner);
+const executor = new StandardTransactionExecutor(runner);
+
+// With StandardTransactionExecutor, dryRun stays false.
+// Contract calls execute normally — same as calling channel.mint() directly.
+const result = await executor.execute(runner, [
+  channel.mint(uri, opType, opRawData, sellRawData),
+]);
+const receipt = await result.wait();
+```
+
+### Bundled Execution via Particle Universal Account
+
+Install the UA executor package:
+
+```bash
+npm install @elacity-js/contracts-ua-executor @particle-network/universal-account-sdk
+```
+
+```typescript
+import { UniversalAccountTransactionExecutor } from '@elacity-js/contracts-ua-executor';
+
+const executor = new UniversalAccountTransactionExecutor(runner, {
+  ua,
+  chainId: 8453,
+  signMessage: (msg) => provider.request({ method: 'personal_sign', params: [msg, eoaAddress] }),
+});
+
+// Bundle multiple contract calls into one UA meta-transaction.
+// The executor toggles dryRun, collects raw calldata, then sends via UA.
+const result = await executor.execute([
+  channel.mint(uri, opType, opRawData, sellRawData),
+  operative.setApprovalForAll(operator, true),
+]);
+```
+
+For more in-depth information on how transactions are handled in the SDK, please refer to:
+- [**Transaction Handling**](transactions.md)
+- [**Universal Account Executor**](universal-account-executor.md)
+

@@ -82,8 +82,21 @@ const provider = new JsonRpcProvider('https://rpc-evm.ela.city');
 const adapter = new EthersAdapter(provider);
 
 const gateway = new AuthorityGateway('0x...', adapter);
-const hasAccess = await gateway.hasAccess(channelAddress, tokenId, userAddress);
+const commitTx = await gateway.sellAccess(ledgerAddress, tokenId, quantity, pricePerToken, payToken);
+
+// Direct commitment
+const tx = await commitTx.commit();
+const receipt = await tx.wait();
 ```
+
+## Transaction Handling
+
+The SDK supports two ways to execute state-changing transactions:
+
+1.  **Direct Commitment**: Call `.commit()` on the object returned by a contract method.
+2.  **Transaction Executor**: Use an `ITransactionExecutor` (like the `UniversalAccountTransactionExecutor`) to bundle operations or handle complex execution logic.
+
+For more details, see the [**Transaction Handling**](sdk/transactions.md) guide.
 
 ## Documentation Navigation
 
