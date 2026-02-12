@@ -1,6 +1,6 @@
 # Media Upload Workflow Architecture
 
-> **Last Updated**: 2025-01-29
+> **Last Updated**: 2026-02-12
 
 ## Overview
 
@@ -10,25 +10,62 @@ The media upload workflow transforms user-submitted video/audio content into blo
 
 ```mermaid
 flowchart TD
-    A[User] -->|Upload Files| B[MediaUploadService]
+    A[User] -->|createRequest + execute| B[MediaUploadService]
     B --> C[Create Background Job]
     C --> D[Upload Thumbnail to IPFS]
     D --> E[Upload Media File to Backend]
-    E --> F[Backend Triggers Transcode]
-    F --> G[Wait for Transcode Completion]
-    G --> H[Request DASH Encoding]
-    H --> I[Wait for Encoding Completion]
-    I --> J[Generate Metadata]
-    J --> K{autoMint?}
-    K -->|Yes| L[Mint to Blockchain]
-    K -->|No| M[Return requestId]
-    L --> N[Return tokenId + txHash]
-    
+    E --> F[Return MediaUploadHandle]
+    F --> G[Backend Triggers Transcode + Encode]
+    G --> H[Track Progress via WebSocket + Polling]
+    H --> I{generate_metadata completed?}
+    I -->|Yes| J{mint?}
+    J -->|Yes| K[Mint to Blockchain]
+    J -->|No| L[Return handle]
+    K --> M[Return tokenId + txHash]
+
     style B fill:#e1f5ff
     style C fill:#fff4f6
-    style F fill:#fff4f6
-    style H fill:#fff4f6
-    style L fill:#e8f5e9
+    style G fill:#fff4f6
+    style H fill:#e1f5ff
+    style K fill:#e8f5e9
+```
+
+## WebSocket Progress Flow
+
+```mermaid
+sequenceDiagram
+    participant Client as Client (SDK)
+    participant Handle as MediaUploadHandle
+    participant WS as wfp-socket (WebSocket)
+    participant API as Background Job API
+    participant Backend as Backend Workflows
+
+    Client->>Handle: execute() returns handle
+    Client->>Handle: handle.onProgress(callback)
+    Client->>Handle: handle.startListening()
+
+    Handle->>WS: Connect to /wfp-socket/ws/{requestId}
+    Handle->>API: Start polling loop (every 2s)
+
+    Backend->>WS: WorkflowProgressPayload (transcode update)
+    WS->>Handle: onmessage → reportProgress()
+    Handle->>Client: callback({ step, progress, caption })
+
+    Backend->>API: Update background job status
+    API->>Handle: Poll response → syncFromJob()
+    Handle->>Client: callback({ step, progress, caption })
+
+    Backend->>WS: WorkflowProgressPayload (encode complete)
+    WS->>Handle: onmessage → reportProgress()
+    Handle->>Client: callback({ step: 'dash_encode', progress: 90 })
+
+    Note over Handle: completion >= 95% → stop polling
+
+    Client->>Handle: waitCompletionOf('generate_metadata')
+    Handle-->>Client: resolves with StepProgress
+
+    Client->>Handle: handle.stopListening()
+    Handle->>WS: close()
 ```
 
 ## Component Architecture
@@ -40,42 +77,53 @@ MediaUploadService
 │   ├── uploadThumbnail() → IPFS
 │   ├── uploadMediaFile() → Backend
 │   └── uploadMetadataFolder() → IPFS
-├── MediaEncoder
-│   ├── requestEncoding() → Backend API
-│   └── waitForEncodingCompletion() → Strategy Pattern
-│       ├── WorkflowListenerFactory → Selects best strategy
-│       ├── FirebaseListenerStrategy → Real-time Firebase (Priority 10)
-│       └── PollingListenerStrategy → Poll background jobs (Priority 1)
+├── MediaUploadHandle (from transport.ts)
+│   ├── WebSocket connection → wfp-socket/ws/{requestId}
+│   ├── Polling loop → Background Job API (every 2s)
+│   ├── onProgress(callback) → subscribe to progress events
+│   ├── reportProgress(payload) → emit progress to listeners
+│   ├── startListening() → activate WebSocket + polling
+│   ├── stopListening() → close WebSocket + stop polling
+│   └── waitCompletionOf(step) → await step completion
+├── UploadRequest (from transport.ts)
+│   ├── acquire() → create BackgroundJob + return MediaUploadHandle
+│   ├── id → requestId
+│   └── payload → MediaUploadInput
 ├── BackgroundJobService (from @elacity-js/api)
 │   ├── createBackgroundJob()
 │   ├── updateBackgroundJob()
+│   ├── retrieveBackgroundJob()
 │   └── generateMetadata()
 └── StandardChannel (from @elacity-js/contracts)
-    └── mint() → Blockchain
+    └── mint() → Blockchain (via ITransactionExecutor)
 ```
 
 ## Workflow Steps
 
-### Step 1: Create Background Job (0%)
+### Step 1: Create Request + Background Job (0%)
 
-Creates a background job entity to track the entire workflow:
+Creates an `UploadRequest` wrapping the input, then `acquire()` creates the background job:
 
 ```typescript
-const job = await apiClient.backgroundJobs.createBackgroundJob({
-  title: `Uploading: ${input.title}`,
-  status: JobStatus.INITIALIZED,
-  payload: input,
-  steps: [
-    { step: 'upload_file', status: JobStatus.PENDING },
-    { step: 'transcode', status: JobStatus.INITIALIZED },
-    { step: 'dash_encode', status: JobStatus.INITIALIZED },
-    { step: 'generate_metadata', status: JobStatus.INITIALIZED },
-    { step: 'broadcast_tx', status: JobStatus.INITIALIZED },
-  ],
-});
+const request = await mediaService.createRequest(input);
+// internally: new UploadRequest(input, apiClient)
+
+const handle = await mediaService.execute(request);
+// internally: request.acquire() → creates BackgroundJob → returns MediaUploadHandle
 ```
 
-**Returns:** Background job with `requestId`
+**Background Job Steps:**
+```typescript
+steps: [
+  { step: 'upload_file', status: 'PENDING' },
+  { step: 'transcode', status: 'PENDING', estimatedDuration: 180 },
+  { step: 'dash_encode', status: 'PENDING', estimatedDuration: 300 },
+  { step: 'generate_metadata', status: 'PENDING' },
+  { step: 'broadcast_tx', status: 'PENDING' },
+]
+```
+
+**Returns:** `IMediaUploadHandle` with `requestId`
 
 ---
 
@@ -84,7 +132,7 @@ const job = await apiClient.backgroundJobs.createBackgroundJob({
 Uploads thumbnail image to IPFS:
 
 ```typescript
-const thumbnailCID = await uploader.uploadThumbnail(thumbnail, title);
+const thumbnailCID = await uploader.uploadThumbnail(thumbnail, requestId);
 // POST /2.0/files/upload
 // Headers: { 'X-Target-Flow': 'ipfs' }
 // Returns: [{ path: 'Qm...' }] - IPFS CID
@@ -106,6 +154,10 @@ const result = await uploader.uploadMediaFile(file, {
   onProgress: (progress) => {
     // Progress: 0-100% mapped to 10-40% of overall workflow
   },
+  headers: {
+    'X-Request-Id': requestId,
+    'X-Target-Flow': 'mp4dump,thumbnail,gcloud:wf-transcode,preview(15)',
+  },
 });
 // POST /2.0/files/upload
 // Returns: { path: '/uploads/...', requestId: '...' }
@@ -113,7 +165,7 @@ const result = await uploader.uploadMediaFile(file, {
 
 **Backend Processing:**
 - Stores file in backend storage
-- Triggers `wf-transcode-requests` Google Workflow
+- Triggers transcode + encode workflows
 - Returns `uploadedPath` and `requestId`
 
 **Progress Tracking:**
@@ -122,69 +174,27 @@ const result = await uploader.uploadMediaFile(file, {
 
 ---
 
-### Step 4: Wait for Transcode (40-50%)
+### Step 4: Transcode + Encode (40-90%)
 
-Waits for backend transcode workflow to complete:
+After the media file is uploaded, the backend runs transcode and DASH encoding workflows. Progress is tracked via two channels:
 
-```typescript
-await waitForTranscode(requestId, (progress) => {
-  // Polls background job for transcode step completion
-  // Updates progress based on step status
-});
-```
+**WebSocket (`wfp-socket`):**
+- Handle connects to `wfp-socket/ws/{requestId}`
+- Receives `WorkflowProgressPayload` messages in real time
+- Each message contains `completion`, `currentStep.step`, `currentStep.caption`, `currentStep.progress`
 
-**Implementation:**
+**Polling (fallback):**
 - Polls `backgroundJobs.retrieveBackgroundJob(requestId)` every 2 seconds
-- Checks `transcode` step status
-- Estimates progress based on `estimatedDuration` and elapsed time
-- Completes when step status = `COMPLETED`
-
-**Backend Workflow:**
-- Google Workflow transcodes media to h264/av1
-- Enforces max 1080p resolution
-- Publishes progress to Firebase (frontend can listen)
-- Updates background job when complete
-
----
-
-### Step 5: Request Encoding (50-90%)
-
-Requests DASH encoding with DRM protection:
-
-```typescript
-const encodeResult = await encoder.requestEncoding({
-  path: transcodeResult.uploadedPath,
-  payload: {
-    requestId,
-    title,
-    thumbnailHash: thumbnailCID,
-    accessMethod: 'B', // A=free, B=buy_once, C=resellable
-    encrypted: '1',
-    protectionType: 'CencDRM_V1',
-    price: '4.99',
-    payToken: '0x...',
-    ledger: channelAddress,
-    authority: gatewayAddress,
-    publisher: creatorAddress,
-  },
-});
-
-// Wait for completion
-const result = await encodeResult.waitCompletion();
-```
+- Syncs internal step state from the job entity
+- Stops automatically when completion reaches 95%
 
 **Backend Processing:**
-- Triggers `wf-encode-requests` Google Workflow
+- Transcodes media to h264/av1 (max 1080p)
 - Creates MPEG-DASH segments
 - Applies CENC (Common Encryption) DRM
 - Generates KID (Key ID) for DRM
 - Creates preview content
 - Generates ISCC fingerprint
-
-**Completion:**
-- **Strategy Pattern**: `WorkflowListenerFactory` selects best available strategy
-- **Frontend**: FirebaseListenerStrategy (if Firebase initialized) or PollingListenerStrategy (fallback)
-- **Backend**: PollingListenerStrategy (Firebase not available in Node.js)
 
 **Returns:**
 ```typescript
@@ -203,9 +213,9 @@ const result = await encodeResult.waitCompletion();
 
 ---
 
-### Step 6: Generate Metadata (90-95%)
+### Step 5: Generate Metadata (90-95%)
 
-Generates IPFS metadata URI:
+Generates IPFS metadata URI (handled by backend):
 
 ```typescript
 const metadataURI = await apiClient.backgroundJobs.generateMetadata(requestId, {
@@ -226,24 +236,18 @@ const metadataURI = await apiClient.backgroundJobs.generateMetadata(requestId, {
 
 ---
 
-### Step 7: Mint to Blockchain (95-100%, Optional)
+### Step 6: Mint to Blockchain (95-100%, Optional)
 
-Mints NFT using channel contract:
+Mints NFT using channel contract via `ITransactionExecutor`:
 
 ```typescript
-const mintResult = await mintToBlockchain(
-  requestId,
-  channelAddress,
-  metadataURI,
-  encodeResult,
-  input
-);
+const mintResult = await mediaService.mint(handle);
 ```
 
 **Process:**
 1. Format mint data using `formatMintData()`
 2. Encode operative and sell data using ABI encoder
-3. Call `channel.mint(metadataURI, opType, opRawData, sellRawData)`
+3. Call `contractExecutor.execute([channel.mint(...)])`
 4. Wait for transaction confirmation
 5. Extract token ID from transaction
 
@@ -268,9 +272,9 @@ mint(
 | Create Job | 0% | ~1s | Service |
 | Upload Thumbnail | 5% | ~5s | Service |
 | Upload Media | 10-40% | ~30s-2min | FileUploader (XMLHttpRequest) |
-| Transcode | 40-50% | ~2-4 min | Background Job Polling |
-| Encode DASH | 50-90% | ~4-8 min | Firebase Listener / Polling |
-| Generate Metadata | 90-95% | ~10s | Service |
+| Transcode | 40-50% | ~2-4 min | WebSocket / Polling |
+| Encode DASH | 50-90% | ~4-8 min | WebSocket / Polling |
+| Generate Metadata | 90-95% | ~10s | Backend (via polling) |
 | Mint | 95-100% | ~15-30s | Service |
 
 ## Error Handling
@@ -286,45 +290,56 @@ The service automatically:
 
 ```typescript
 try {
-  const result = await mediaService.execute(input, options);
+  const handle = await mediaService.execute(request);
+  handle.startListening();
+  await handle.waitCompletionOf('generate_metadata');
 } catch (error) {
   // Retrieve job to see which step failed
-  const job = await apiClient.backgroundJobs.retrieveBackgroundJob(result.requestId);
+  const job = await apiClient.backgroundJobs.retrieveBackgroundJob(handle.requestId);
   const failedStep = job.steps?.find(s => s.status === JobStatus.FAILED);
-  
+
   console.error('Failed at:', failedStep?.step);
   console.error('Error:', failedStep?.caption);
-  
+
   // User can retry from the failed step
 }
+```
+
+### Resuming After Disconnection
+
+```typescript
+// Reconnect to an existing upload after page reload
+const handle = await mediaService.resumeFromJob(requestId);
+handle.onProgress((p) => console.log(p));
+handle.startListening();
+await handle.waitCompletionOf('generate_metadata');
 ```
 
 ## Frontend vs Backend Differences
 
 ### Frontend (Browser)
 
-**Strategy Selection:**
-- `WorkflowListenerFactory` checks available strategies
-- **FirebaseListenerStrategy** selected if Firebase Firestore initialized (Priority 10)
-- **PollingListenerStrategy** selected as fallback if Firebase unavailable (Priority 1)
+**Progress Channels:**
+- WebSocket connects to `wfp-socket/ws/{requestId}` for push-based updates
+- Polling runs as fallback every 2 seconds
 - XMLHttpRequest progress tracking for file uploads
 
 **Requirements:**
 - Browser environment with File API
-- Firebase initialized (optional - polling fallback available)
+- WebSocket support (standard in modern browsers)
 
 ### Backend (Node.js)
 
-**Strategy Selection:**
-- **PollingListenerStrategy** automatically selected (Firebase not available)
+**Progress Channels:**
+- Polling only (WebSocket may not be available without a polyfill)
 - Polls background job API every 2 seconds
-- No Firebase dependency needed
-- Suitable for server-side processing
+- No file upload progress tracking (uses fetch)
 
 **Requirements:**
 - `form-data` package for FormData support
 - File-like objects instead of browser File objects
 - Background job service available via `apiClient.backgroundJobs`
+- Optional: WebSocket polyfill (e.g. `ws`) for push-based progress
 
 ## Integration Points
 
@@ -337,19 +352,18 @@ try {
 ### With Contracts SDK
 
 - **StandardChannel**: NFT minting
-- **IContractRunner**: Transaction execution
+- **IContractRunner**: Contract runner for read operations
+- **ITransactionExecutor**: Transaction execution for minting
 - **EthersAdapter/ViemAdapter**: Contract runner implementations
 
 ### With Backend
 
 - **Upload Endpoint**: `/2.0/files/upload`
-- **Encode Endpoint**: `/2.0/files/encode`
+- **WebSocket**: `wfp-socket/ws/{requestId}` - Real-time progress updates
 - **GraphQL API**: Background job management
 - **Google Workflows**: Transcode and encode processing
-- **Firebase**: Real-time progress updates (frontend)
 
 ## Related Documentation
 
 - [Media Upload Service](../services/media-upload-service.md) - API reference
 - [Background Job Service](../../api/services/background-job.md) - Workflow tracking
-- [Media Minting Process](../../../../elacity-web/docs/wiki/Technical/Media-Minting-Process.md) - Frontend implementation details
