@@ -56,4 +56,7 @@
 
 
 ## Common Reference
-* [Overview](common/SUMMARY.md)  
+* [Overview](common/SUMMARY.md)
+
+## Versioning & Release
+* [Versioning Standard](versioning/README.md)
