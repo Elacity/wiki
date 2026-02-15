@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Overview](README.md)
+* [Versioning Standard](versioning/README.md)
 
 ## API Layer
 * [Introduction](api/SUMMARY.md)
@@ -57,6 +58,3 @@
 
 ## Common Reference
 * [Overview](common/SUMMARY.md)
-
-## Versioning & Release
-* [Versioning Standard](versioning/README.md)

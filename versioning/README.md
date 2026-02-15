@@ -65,7 +65,7 @@ Version bumps are determined automatically from **conventional commit messages**
 | `fix:` | `PATCH` |
 | `feat:` | `MINOR` |
 | `feat!:` or `BREAKING CHANGE:` footer | `MAJOR` |
-| `docs:`, `ci:`, `chore:`, `style:`, `test:` | No bump |
+| `docs:`, `ci:`, `chore:`, `test:` | No bump |
 
 ### Internal dependency resolution
 
