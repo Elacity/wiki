@@ -1,5 +1,11 @@
 ## SystemTracker
 
+### UnauthorizedAckError
+
+```solidity
+error UnauthorizedAckError(address caller)
+```
+
 ### acknowledged
 
 ```solidity
@@ -13,7 +19,7 @@ _Contract Addr -> aknownledged_
 ### ack
 
 ```solidity
-function ack(address ca) external
+function ack(address ca) external virtual
 ```
 
 Add new contract to be recognized as apart of the ecosystem
@@ -27,7 +33,7 @@ Add new contract to be recognized as apart of the ecosystem
 ### unAck
 
 ```solidity
-function unAck(address ca) external
+function unAck(address ca) external virtual
 ```
 
 Remove a contract from the ecosystem

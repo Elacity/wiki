@@ -296,6 +296,14 @@ function uri(uint256 tokenId) public view returns (string)
 function _update(address from, address to, uint256[] ids, uint256[] values) internal virtual
 ```
 
+### setPaymentProcessor
+
+```solidity
+function setPaymentProcessor(address _payProc) external
+```
+
+Restrict payment processor changes to admin role
+
 ### supportsInterface
 
 ```solidity

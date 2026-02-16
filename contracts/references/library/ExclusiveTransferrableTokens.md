@@ -61,12 +61,12 @@ function allowTransferOf(address operator, uint256 tkId) public
 ### _checkOwnerLater
 
 ```solidity
-function _checkOwnerLater() internal view
+function _checkOwnerLater() internal view virtual
 ```
 
-Check ownership of the actual contract after .transferOwnership have been operated
-At the stage of execution of this, the owner of the contract should be the appropriate sender
-(EOA for direct calls, smart account for contract calls)
+Check ownership for transfer authorization.
+
+_Virtual to allow overrides with context-aware checks (e.g. acknowledged contracts)._
 
 ## AccessControlExclusiveTransferrableTokens
 

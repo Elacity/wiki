@@ -34,7 +34,7 @@ function _setPaymentProcessor(address _payProc) internal
 ### setPaymentProcessor
 
 ```solidity
-function setPaymentProcessor(address _payProc) external
+function setPaymentProcessor(address _payProc) external virtual
 ```
 
 ### _afterProcessorSet

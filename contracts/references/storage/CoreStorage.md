@@ -18,3 +18,19 @@ function initialize(address initialOwner) public
 function initialize_e2017(address initialOwner) public
 ```
 
+### ack
+
+```solidity
+function ack(address ca) external
+```
+
+Only owner, acknowledged contracts, or self-acknowledgement allowed
+
+### unAck
+
+```solidity
+function unAck(address ca) external
+```
+
+Only owner can remove contracts from ecosystem
+

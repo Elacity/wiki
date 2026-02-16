@@ -17,6 +17,7 @@
 * [Introduction](contracts/README.md)
 * [Architecture & Design Proposal](contracts/getting-started/design-proposal.md)
 * [Ecosystem Overview](contracts/getting-started/ecosystem-overview.md)
+* [Security Analysis](contracts/getting-started/security-analysis.md)
 * Contracts SDK
   * [Installation](contracts/sdk/installation.md)
   * [AuthorityGateway](contracts/sdk/authority.md)

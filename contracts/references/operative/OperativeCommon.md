@@ -143,6 +143,22 @@ function metadataURI() external view returns (string)
 function supportsInterface(bytes4 interfaceId) public view virtual returns (bool)
 ```
 
+### setPaymentProcessor
+
+```solidity
+function setPaymentProcessor(address _payProc) external
+```
+
+Restrict payment processor changes to the contract owner
+
+### _checkOwnerLater
+
+```solidity
+function _checkOwnerLater() internal view
+```
+
+Allow acknowledged ecosystem contracts to authorize transfers on operatives
+
 ### receive
 
 ```solidity
