@@ -1,10 +1,27 @@
 ## OperativeBuyableFactory
 
+Factory that deploys `OperativeBuyable` (type 1) beacon proxies.
+Each call to `createFromBytes` produces a fully-initialised operative with
+minted tokens, distribution rights, a payment processor, and ownership
+transferred to the content creator.
+
+_Inherits `BeaconUpgradeableFactory` so every proxy shares the same
+upgradeable implementation contract._
+
 ### ContractCreated
 
 ```solidity
 event ContractCreated(address creator, address op)
 ```
+
+Emitted when a new `OperativeBuyable` proxy is deployed.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| creator | address | Address that will own the new operative. |
+| op | address | Address of the newly-deployed proxy. |
 
 ### dataStorage
 
@@ -12,26 +29,15 @@ event ContractCreated(address creator, address op)
 contract IStorage dataStorage
 ```
 
+Shared ecosystem storage contract.
+
 ### exists
 
 ```solidity
 mapping(address => bool) exists
 ```
 
-_check whether a contract have being created through the factory_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-
-### constructor
-
-```solidity
-constructor(contract IStorage _dataStorage, contract IPaymentProcessorFactory _ppf, address _implementation) public
-```
-
-Factory constructors
+Tracks every proxy address deployed by this factory.
 
 ### createFromBytes
 
@@ -61,9 +67,36 @@ related to a given Digital Asset. Generally, created contract is a ERC1155_
 function createOperativeContract(address creator, bytes16 contentId, string baseURI, address[] to, uint256[] ids, uint256[] amounts) internal returns (address)
 ```
 
+_Creates a new `OperativeBuyable` proxy._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| creator | address | Address that will own the new operative. |
+| contentId | bytes16 | Content ID of the operative. |
+| baseURI | string | Base URI for the operative. |
+| to | address[] | Array of addresses to mint tokens to. |
+| ids | uint256[] | Array of token IDs to mint. |
+| amounts | uint256[] | Array of amounts to mint. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of the newly-deployed proxy. |
+
 ### updateDataStorage
 
 ```solidity
 function updateDataStorage(address _dataStorage) external
 ```
+
+Replaces the ecosystem storage reference. Owner-only.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _dataStorage | address | New `IStorage` contract address. |
 

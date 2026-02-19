@@ -1,10 +1,31 @@
 ## AuthorityGateway
 
+This is the main front contract that governs the access to medias
+It allows to sell, and buy these access tokens, also this is the main contract
+that allows to acquire a license for a specific media.
+
+_About versionning and the `reinitializer(uint64)` modifier:
+It is a croissant number and contains 8-bytes to comply with
+`reinitializer(uint64)` modifier of the [`Initializable` contract](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/2c1de3d1a6689233a0469375cb51a41f4ad9ec05/contracts/proxy/utils/Initializable.sol#L152C14-L152C27).
+
+*How it is formed?*
+ - version of Authority gateway: eg. 2.0 -> [0x02, 0x00]
+ - deployment version eg: (ecosystem iteration) 0.6.0: [0x00, 0x06, 0x00]
+ - we don't use 3-bytes first bytes and reserve it for future and ensure it keeps increasing_
+
 ### StorageFault
 
 ```solidity
 error StorageFault(address s)
 ```
+
+StorageFault error
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| s | address | Address of the storage contract |
 
 ### UnboundContentId
 
@@ -12,22 +33,26 @@ error StorageFault(address s)
 error UnboundContentId(bytes16 contentId)
 ```
 
+UnboundContentId error
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| contentId | bytes16 | Content ID of the media |
+
 ### dataStorage
 
 ```solidity
 contract IStorage dataStorage
 ```
 
+Data storage contract
+
 ### constructor
 
 ```solidity
 constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize(contract IStorage _dataStorage) public
 ```
 
 ### sellAccess
@@ -36,17 +61,17 @@ function initialize(contract IStorage _dataStorage) public
 function sellAccess(address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
 ```
 
-sellAccess will sell an access token
+Sell access tokens
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| ledger | address | the address of the ledger |
-| tokenId | uint256 | the token id of the token |
-| _quantity | uint256 | the quantity of the token |
-| _pricePerToken | uint256 | the price per token of the token |
-| _payToken | address | the payment token of the token |
+| ledger | address | Address of the ledger contract |
+| tokenId | uint256 | Token ID of the access token |
+| _quantity | uint256 | Quantity of access tokens to sell |
+| _pricePerToken | uint256 | Price per access token |
+| _payToken | address | Address of the token to be paid |
 
 ### sellAccessOnBehalf
 
@@ -54,18 +79,19 @@ sellAccess will sell an access token
 function sellAccessOnBehalf(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
 ```
 
-sellAccessOnBehalf will sell an access token on behalf of a seller
+Sell access tokens, it differs from `.sellAccess` method from its execution context.
+Only an acknowledged contract can call this method.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| seller | address | the address of the seller |
-| ledger | address | the address of the ledger |
-| tokenId | uint256 | the token id of the token |
-| _quantity | uint256 | the quantity of the token |
-| _pricePerToken | uint256 | the price per token of the token |
-| _payToken | address |  |
+| seller | address | Address of the seller |
+| ledger | address | Address of the ledger contract |
+| tokenId | uint256 | Token ID of the access token |
+| _quantity | uint256 | Quantity of access tokens to sell |
+| _pricePerToken | uint256 | Price per access token |
+| _payToken | address | Address of the token to be paid |
 
 ### buyAccess
 
@@ -73,17 +99,17 @@ sellAccessOnBehalf will sell an access token on behalf of a seller
 function buyAccess(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken) external payable
 ```
 
-buyAccess will buy an access token from a seller
+Buy access tokens
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| seller | address | the address of the seller |
-| ledger | address | the address of the ledger |
-| tokenId | uint256 | the token id of the token |
-| _quantity | uint256 | the quantity of the token |
-| _pricePerToken | uint256 | the price per token of the token |
+| seller | address | Address of the seller |
+| ledger | address | Address of the ledger contract |
+| tokenId | uint256 | Token ID of the access token |
+| _quantity | uint256 | Quantity of access tokens to buy |
+| _pricePerToken | uint256 | Price per access token |
 
 ### buyAccess
 
@@ -91,18 +117,18 @@ buyAccess will buy an access token from a seller
 function buyAccess(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
 ```
 
-buyAccess will buy an access token from a seller
+Buy access tokens
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| seller | address | the address of the seller |
-| ledger | address | the address of the ledger |
-| tokenId | uint256 | the token id of the token |
-| _quantity | uint256 | the quantity of the token |
-| _pricePerToken | uint256 | the price per token of the token |
-| _payToken | address | the payment token of the token |
+| seller | address | Address of the seller |
+| ledger | address | Address of the ledger contract |
+| tokenId | uint256 | Token ID of the access token |
+| _quantity | uint256 | Quantity of access tokens to buy |
+| _pricePerToken | uint256 | Price per access token |
+| _payToken | address | Address of the token to be paid |
 
 ### withdrawListing
 
@@ -110,15 +136,15 @@ buyAccess will buy an access token from a seller
 function withdrawListing(address op, uint256 tokenId, uint256 quantity) external
 ```
 
-withdrawListing will withdraw an access token from sale
+Withdraw listing from the marketplace
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| op | address | the address of the operative |
-| tokenId | uint256 | the token id of the token |
-| quantity | uint256 | the quantity of the token |
+| op | address | Address of the operative contract |
+| tokenId | uint256 | Token ID of the access token |
+| quantity | uint256 | Quantity of access tokens to withdraw |
 
 ### acquireLicense
 
@@ -127,6 +153,8 @@ function acquireLicense(bytes req) external view returns (bytes4, bytes)
 ```
 
 Acquire a license for a given Digital Asset
+
+_Since `0.8.0`, this method is put on deprecation phase in profit of usage of Lit Protocol Key Management_
 
 #### Parameters
 
@@ -190,11 +218,42 @@ Check whether an accessor address has access to a media referenced by its KID
 function _getOperative(address ledger, uint256 tokenId) internal view returns (address, contract IOperative)
 ```
 
+Get the operative contract for a given ledger and token ID
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| ledger | address | Address of the ledger contract |
+| tokenId | uint256 | Token ID of the access token |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | _op Address of the operative contract |
+| [1] | contract IOperative | IOperative(_op) Instance of the operative contract |
+
 ### operative
 
 ```solidity
 function operative(address ledger, uint256 tokenId) external view returns (address)
 ```
+
+Get the operative contract for a given ledger and token ID
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| ledger | address | Address of the ledger contract |
+| tokenId | uint256 | Token ID of the access token |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | _op Address of the operative contract |
 
 ### sellersOf
 
@@ -202,20 +261,20 @@ function operative(address ledger, uint256 tokenId) external view returns (addre
 function sellersOf(address op, uint256 tokenId) external view returns (address[])
 ```
 
-Get the sellers of a token
+Get the sellers of a given operative contract and token ID
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| op | address | the address of the operative |
-| tokenId | uint256 | the token id of the token |
+| op | address | Address of the operative contract |
+| tokenId | uint256 | Token ID of the access token |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | address[] | the addresses of the sellers |
+| [0] | address[] | sellers Array of sellers |
 
 ### listings
 
@@ -223,23 +282,23 @@ Get the sellers of a token
 function listings(address op, uint256 tokenId, address seller) external view returns (uint256, uint256, address)
 ```
 
-Get the listing details of a token
+Get the listing for a given operative contract and token ID
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| op | address | the address of the operative |
-| tokenId | uint256 | the token id of the token |
-| seller | address | the address of the seller |
+| op | address | Address of the operative contract |
+| tokenId | uint256 | Token ID of the access token |
+| seller | address | Address of the seller |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | uint256 | the quantity of the token |
-| [1] | uint256 | the price per token of the token |
-| [2] | address | the payment token of the token |
+| [0] | uint256 | quantity Quantity of access tokens |
+| [1] | uint256 | pricePerToken Price per access token |
+| [2] | address | payToken Address of the token to be paid |
 
 ### supportsLitProtocol
 

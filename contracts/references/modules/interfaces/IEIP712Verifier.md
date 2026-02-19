@@ -1,7 +1,6 @@
 ## IEIP712Verifier
 
-`IEIP712Verifier` provides the minimal functionnalities of a EIP-712
-verifier in sense of Elacity ecosystem
+Verifies EIP-712 license request signatures for the protocol.
 
 ### verifyLicenseRequest
 
@@ -9,14 +8,20 @@ verifier in sense of Elacity ecosystem
 function verifyLicenseRequest(struct LicenseRequest lr, bytes sig) external view returns (address)
 ```
 
-Process verification of a license request
+Verifies the signer of a license request payload.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| lr | struct LicenseRequest | License request payload |
-| sig | bytes | Request signature |
+| lr | struct LicenseRequest | License request payload. |
+| sig | bytes | EIP-712 signature bytes. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address recovered from signature verification. |
 
 ### protocolVersion
 
@@ -24,12 +29,11 @@ Process verification of a license request
 function protocolVersion() external view returns (string)
 ```
 
-Display the protocol verison. This method is relevant only since version
-`0.5.0` of the smart contracts.
+Returns the protocol version used for domain separation and compatibility.
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | string | `string` The protocol version |
+| [0] | string | Current protocol version string. |
 

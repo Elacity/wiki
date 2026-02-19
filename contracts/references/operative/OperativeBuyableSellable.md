@@ -1,6 +1,14 @@
 ## OperativeBuyableSellable
 
-Buy once, play always, resell
+"Buy, play, and resell" operative (type 2).
+Extends the buy-play model by allowing access-token holders to resell their tokens
+on the secondary market. When an access token is transferred, distribution rights
+are automatically granted to the new owner and revoked from the previous one
+(if they no longer hold any access tokens).
+
+_Deployed behind a beacon proxy via `OperativeBuyableSellableFactory`.
+The `resellerCut` (basis-point percentage, max 1000 = 100 %) determines how much
+of the resale price the reseller retains._
 
 ### UnauthorizedDistrbutorError
 
@@ -8,7 +16,13 @@ Buy once, play always, resell
 error UnauthorizedDistrbutorError(address from)
 ```
 
-Only holders of `DISTRIBUTION_RIGHT` tokens are authorized
+Thrown when `from` does not hold a `DISTRIBUTION_RIGHT` token.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | Address that attempted the unauthorised action. |
 
 ### ResellerCutOverflow
 
@@ -16,7 +30,13 @@ Only holders of `DISTRIBUTION_RIGHT` tokens are authorized
 error ResellerCutOverflow(uint256 value)
 ```
 
-The reseller cut should not exceed 100%
+Thrown when the requested reseller cut exceeds the 100 % cap (1000 basis points).
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| value | uint256 | The invalid cut value that was supplied. |
 
 ### OP_TYPE
 
@@ -24,7 +44,7 @@ The reseller cut should not exceed 100%
 uint16 OP_TYPE
 ```
 
-Connstant that represents the type of the digital asset.
+Operative-type discriminator (`2` = buy-play-sell).
 
 ### resellerCut
 
@@ -32,23 +52,21 @@ Connstant that represents the type of the digital asset.
 uint16 resellerCut
 ```
 
+Percentage of resale price retained by the reseller, in basis points (max 1000).
+
 ### onlyDistributor
 
 ```solidity
 modifier onlyDistributor(address from)
 ```
 
-### constructor
+Restricts the decorated function to holders of `DISTRIBUTION_RIGHT` tokens.
 
-```solidity
-constructor() public
-```
+#### Parameters
 
-### initialize
-
-```solidity
-function initialize(contract IStorage _dataStorage, bytes16 _contentId, string baseURI) public virtual
-```
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | Address to verify. |
 
 ### setupDistributionRights
 
@@ -56,8 +74,15 @@ function initialize(contract IStorage _dataStorage, bytes16 _contentId, string b
 function setupDistributionRights(address creator) external
 ```
 
-_Public function to setup initial distribution rights
-This must be called after initialization in a separate transaction_
+Mints a single `DISTRIBUTION_RIGHT` token to the content creator.
+
+_Must be called by the factory immediately after proxy initialisation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| creator | address | Address that will receive the distribution-right token. |
 
 ### _isDistributor
 
@@ -71,14 +96,33 @@ function _isDistributor(address from) internal view returns (bool)
 function setResellerCut(uint16 _resellerCut) public
 ```
 
+Updates the reseller cut percentage.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _resellerCut | uint16 | New cut in basis points (0–1000, where 1000 = 100 %). |
+
 ### checkAccess
 
 ```solidity
 function checkAccess(address account) external view returns (struct IOperative.AccessLevel[])
 ```
 
-Determine which kind of access an account have to the digital asset
-We will make this check by level
+Returns the access levels for `account`, checking `ACCESS_TOKEN` and `DISTRIBUTION_RIGHT`.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| account | address | Address to query. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | struct IOperative.AccessLevel[] | Array of `AccessLevel` structs for each checked token. |
 
 ### _update
 

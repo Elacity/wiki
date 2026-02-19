@@ -1,6 +1,10 @@
 ## ChannelFoundationFactory
 
-Defines all the common members of a channel factory
+Abstract base for all channel factories. Provides shared helpers for creating
+a payment processor and authorizing token transfers on newly deployed channel proxies.
+
+_Immutable references to the `IPaymentProcessorFactory` and `TradeGateway` are
+set once at construction time and shared by all concrete factory implementations._
 
 ### paymentProcessorFactory
 

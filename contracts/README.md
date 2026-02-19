@@ -1,6 +1,6 @@
 # Contracts - Smart Contract SDK
 
-The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for the Elacity DRM smart contract ecosystem. Built with an adapter pattern, it supports multiple web3 libraries including Ethers.js, Viem, and Web3.js.
+The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for the Elacity DRM smart contract ecosystem. Built with an adapter pattern, it supports multiple web3 libraries including Ethers.js and Viem.
 
 ## What's Inside
 

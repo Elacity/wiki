@@ -1,7 +1,6 @@
 ## TokenIdGenerator
 
-This library takes in charge of the generating random number that could be used as `tokenId`
-for a defined space of IDs
+Generates pseudo-random token identifiers from user-provided seeds.
 
 **Basic Usage**
 
@@ -67,4 +66,18 @@ Generates a pseudo-random bytes32 ID using a string as a seed
 ```solidity
 function generateTokenId(string _tokenURI) external view returns (uint256)
 ```
+
+Generates a constrained token id from a token URI seed.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _tokenURI | string | Seed string used to derive the token id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint256 | Token id in allowed range, or `0` when result falls in prohibited space. |
 

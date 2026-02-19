@@ -9,13 +9,31 @@ struct Amount {
 
 ## UniversalPaymentTransferer
 
+Provides universal token transfer mechanisms for both ERC20 and native (ETH) tokens.
+
+_Helper library to abstract away token type differences during transfers._
+
 ### transferFrom
 
 ```solidity
 function transferFrom(struct Amount _amount, address from, address to) external
 ```
 
+Transfers the specified amount of tokens from the `from` address to the `to` address.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _amount | struct Amount | The amount of tokens to transfer. |
+| from | address | The address to transfer the tokens from. |
+| to | address | The address to transfer the tokens to. |
+
 ## ConfigurablePaymentTrait
+
+Exposes an extendable interface to configure a customized payment processor.
+
+_Allows inheriting contracts to integrate with different `IPaymentProcessor` implementations._
 
 ### paymentProcessor
 
@@ -31,11 +49,27 @@ Address of the implementation of the payment processor
 function _setPaymentProcessor(address _payProc) internal
 ```
 
+Sets the payment processor.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _payProc | address | The address of the payment processor. |
+
 ### setPaymentProcessor
 
 ```solidity
 function setPaymentProcessor(address _payProc) external virtual
 ```
+
+Sets the payment processor.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _payProc | address | The address of the payment processor. |
 
 ### _afterProcessorSet
 
@@ -43,7 +77,19 @@ function setPaymentProcessor(address _payProc) external virtual
 function _afterProcessorSet(address _payProc) internal virtual
 ```
 
+Called after the payment processor is set.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _payProc | address | The address of the payment processor. |
+
 ## RewardsRecipient
+
+Allows receiving, accumulating, and withdrawing rewards for different addresses.
+
+_Integrates with `ConfigurablePaymentTrait` to ensure only the configured processor can increment rewards._
 
 ### UnauthorizedError
 
@@ -51,11 +97,47 @@ function _afterProcessorSet(address _payProc) internal virtual
 error UnauthorizedError(address _proc)
 ```
 
+Thrown when a non-recognized payment processor tries to mutate rewards.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _proc | address | Caller address that failed processor authorization. |
+
+### RewardsReentrantCall
+
+```solidity
+error RewardsReentrantCall()
+```
+
+Thrown when a reentrant rewards withdrawal is attempted.
+
 ### rewardsOf
 
 ```solidity
 mapping(address => mapping(address => uint256)) rewardsOf
 ```
+
+Returns the rewards balance for a user and payment token.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
+### noReentrantWithdraw
+
+```solidity
+modifier noReentrantWithdraw()
+```
+
+Modifier to prevent reentrancy in withdrawRewards.
 
 ### onlyProcessor
 
@@ -63,11 +145,7 @@ mapping(address => mapping(address => uint256)) rewardsOf
 modifier onlyProcessor()
 ```
 
-### __RewardsRecipient_init
-
-```solidity
-function __RewardsRecipient_init() internal
-```
+Modifier to ensure the caller is a recognized processor.
 
 ### _afterProcessorSet
 
@@ -75,11 +153,29 @@ function __RewardsRecipient_init() internal
 function _afterProcessorSet(address _payProc) internal
 ```
 
+Called after the payment processor is set.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _payProc | address | The address of the payment processor. |
+
 ### incrementRewards
 
 ```solidity
 function incrementRewards(address to, uint256 _amount, address _paymentToken) external
 ```
+
+Increments the rewards for an address.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| to | address | The address to increment the reward for. |
+| _amount | uint256 | The amount of reward to increment. |
+| _paymentToken | address | The payment token. |
 
 ### withdrawRewards
 
@@ -87,7 +183,19 @@ function incrementRewards(address to, uint256 _amount, address _paymentToken) ex
 function withdrawRewards(address _paymentToken) external
 ```
 
+Withdraws the rewards for an address.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _paymentToken | address | The payment token. |
+
 ## WithdrawablePaymentProcessor
+
+Process payments by incrementing rewards for users instead of direct transfers, or deferring them for bulk payouts.
+
+_Works alongside `RewardsRecipient` to securely manage deferrable and atomic payment splits._
 
 ### shouldTransferFund
 
@@ -95,11 +203,15 @@ function withdrawRewards(address _paymentToken) external
 bool shouldTransferFund
 ```
 
+Whether the payment processor should transfer funds directly.
+
 ### recipient
 
 ```solidity
 contract IRewardsRecipient recipient
 ```
+
+Address of the rewards recipient.
 
 ### isDeferred
 
@@ -107,23 +219,24 @@ contract IRewardsRecipient recipient
 mapping(address => bool) isDeferred
 ```
 
+Whether the payment is deferred.
+
 ### AtomicNativeTransfer
 
 ```solidity
 event AtomicNativeTransfer(address from, address to, uint256 amount, address payToken)
 ```
 
-### constructor
+Emitted when a payment is processed atomically.
 
-```solidity
-constructor() public
-```
+#### Parameters
 
-### initialize
-
-```solidity
-function initialize(address _recipient, bool _transferFund) public
-```
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | The address to transfer the payment from. |
+| to | address | The address to transfer the payment to. |
+| amount | uint256 | The amount of payment to transfer. |
+| payToken | address | The payment token. |
 
 ### execute
 
@@ -131,11 +244,31 @@ function initialize(address _recipient, bool _transferFund) public
 function execute(address from, address to, uint256 _amount, address _payToken) external
 ```
 
+Executes a payment.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | The address to transfer the payment from. |
+| to | address | The address to transfer the payment to. |
+| _amount | uint256 | The amount of payment to transfer. |
+| _payToken | address | The payment token. |
+
 ### execute
 
 ```solidity
 function execute(address from, address to) external payable
 ```
+
+Executes a payment with native currency.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | The address to transfer the payment from. |
+| to | address | The address to transfer the payment to. |
 
 ### defer
 
@@ -143,11 +276,28 @@ function execute(address from, address to) external payable
 function defer(address from) public
 ```
 
+Defers the payment for an address.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | The address to defer the payment for. |
+
 ### commit
 
 ```solidity
 function commit(address from, address _payToken) external payable
 ```
+
+Commits the payment for an address.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| from | address | The address to commit the payment for. |
+| _payToken | address | The payment token. |
 
 ### supportsInterface
 
@@ -162,13 +312,11 @@ to learn more about how these ids are created.
 
 This function call must use less than 30 000 gas._
 
-### receive
-
-```solidity
-receive() external payable virtual
-```
-
 ## PaymentProcessorFactory
+
+Factory to deploy new instances of `WithdrawablePaymentProcessor` clones as beacon proxies.
+
+_Uses OpenZeppelin's Beacon proxy pattern for upgradeable clones._
 
 ### constructor
 
@@ -182,7 +330,26 @@ constructor(address _implementation) public
 function createPaymentProcessor(address recipient, bool _shouldTransferFund) external returns (address)
 ```
 
+Deploys a new payment processor.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| recipient | address | Default reward recipient. |
+| _shouldTransferFund | bool | Whether processor should perform direct transfer. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of the deployed processor. |
+
 ## PaymentModule
+
+Abstract module dealing with payment routing, deferment, and platform fee deductions.
+
+_Core payment logic to be inherited by modules requiring value transfers and splits._
 
 ### PaymentLog
 

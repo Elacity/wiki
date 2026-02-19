@@ -1,18 +1,20 @@
 ## IIPMapperProvider
 
+Maps external content identifiers to on-chain `(channel, tokenId)` references.
+
 ### IPAlreadyBound
 
 ```solidity
 error IPAlreadyBound(bytes16 contentId)
 ```
 
-_Thrown when an IP is already bound to a channel and tokenId_
+Thrown when attempting to bind an already-mapped content id.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| contentId | bytes16 | The content ID that is already bound |
+| contentId | bytes16 | Content id that already has a mapping. |
 
 ### IPBound
 
@@ -20,19 +22,19 @@ _Thrown when an IP is already bound to a channel and tokenId_
 event IPBound(bytes16 contentId, address channel, uint256 tokenId)
 ```
 
-_Emitted when an IP is bound to a channel and tokenId_
+Emitted when a content id is mapped to a token reference.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| contentId | bytes16 | The content ID that is bound |
-| channel | address | The channel that the IP is bound to |
-| tokenId | uint256 | The token ID that the IP is bound to |
+| contentId | bytes16 | Bound content id. |
+| channel | address | Channel contract address. |
+| tokenId | uint256 | Token id inside the channel. |
 
 ### IPTracking
 
-_Struct to track the IP tracking_
+Mapping value describing where a content id is represented on-chain.
 
 #### Parameters
 
@@ -46,40 +48,24 @@ struct IPTracking {
 }
 ```
 
-### bindIP
-
-```solidity
-function bindIP(bytes16 _contentId, address channel, uint256 tokenId) external
-```
-
-_Bind an IP to a channel and tokenId_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _contentId | bytes16 | The content ID to bind |
-| channel | address | The channel to bind the IP to |
-| tokenId | uint256 | The token ID to bind the IP to |
-
 ### ipReference
 
 ```solidity
 function ipReference(bytes16 _contentId) external view returns (address channel, uint256 tokenId)
 ```
 
-_Get the IP tracking for a content ID_
+Returns the token reference mapped to a content id.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _contentId | bytes16 | The content ID to get the IP tracking for |
+| _contentId | bytes16 | Content id to resolve. |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| channel | address | The channel that the IP is bound to |
-| tokenId | uint256 | The token ID that the IP is bound to |
+| channel | address | Channel contract address. |
+| tokenId | uint256 | Token id inside the channel. |
 

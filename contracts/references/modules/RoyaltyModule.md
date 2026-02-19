@@ -1,10 +1,8 @@
 ## RoyaltyPayoutModule
 
-### __RoyaltyPayoutModule_init
+Handles payout routing for royalty receivers using the configured payment processor.
 
-```solidity
-function __RoyaltyPayoutModule_init() internal
-```
+_Integrates with `PaymentModule` and applies Reentrancy protection on payouts._
 
 ### _payRoyalties
 
@@ -12,7 +10,24 @@ function __RoyaltyPayoutModule_init() internal
 function _payRoyalties(contract IPaymentProcessor payer, address from, struct IERC2981Enhanced.RoyaltyInfo[] rs, address _payToken) internal
 ```
 
+Executes the payout of royalties to an array of recipients.
+
+_Pays each receiver listed in the `rs` array via `_payAmount`. It can optionally defer payments via `deferPaymentIfQualified`._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| payer | contract IPaymentProcessor | The `IPaymentProcessor` implementation to use for routing funds. |
+| from | address | The address source of funds. |
+| rs | struct IERC2981Enhanced.RoyaltyInfo[] | An array of `IERC2981Enhanced.RoyaltyInfo` detailing receiver splits. |
+| _payToken | address | Valid ERC20 address or zero-address for native (ETH) token. |
+
 ## RoyaltyShareModule
+
+Defines common structs and state variables to manage fractional royalty shares.
+
+_Intended to be inherited by contracts requiring royalty distribution shares to be mapped by tokens._
 
 ### ROYALTY_TOKEN
 
@@ -32,18 +47,4 @@ struct ShareInput {
   uint256 share;
 }
 ```
-
-### __RoyaltyShareModule_init
-
-```solidity
-function __RoyaltyShareModule_init(uint256 tokenId) internal
-```
-
-_Initializes the RoyaltyShareModule_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| tokenId | uint256 | The token ID to use for royalty shares |
 

@@ -1,10 +1,14 @@
 ## ContractRegistry
 
+Stores and exposes ecosystem contract addresses by deterministic slot keys.
+
 ### contractAt
 
 ```solidity
 mapping(bytes32 => address) contractAt
 ```
+
+Mapping from slot identifier to contract address.
 
 ### _registerAt
 
@@ -12,15 +16,12 @@ mapping(bytes32 => address) contractAt
 function _registerAt(bytes32 slot, address value) internal
 ```
 
-### registerAt
+Registers a contract address at a slot.
 
-```solidity
-function registerAt(bytes32 slot, address value) external
-```
+#### Parameters
 
-### registerAt
-
-```solidity
-function registerAt(string slotStr, address value) external
-```
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| slot | bytes32 | Slot key used to store the contract address. |
+| value | address | Contract address to register. |
 

@@ -1,5 +1,8 @@
 ## MarketplaceTracker
 
+This abstract contract is used to track the marketplace listings and offers. It should be mounted on
+`CoreStorage` contract.
+
 ### TaxOverflowError
 
 ```solidity
@@ -7,6 +10,13 @@ error TaxOverflowError(uint256)
 ```
 
 ### Listing
+
+Structure to hold listing details
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
 
 ```solidity
 struct Listing {
@@ -27,6 +37,13 @@ op address -> tokenId (ACCESS_TOKEN | ROYALTY | ...) -> owner -> Listing Details
 
 ### Offer
 
+Structure to hold offer details
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
 ```solidity
 struct Offer {
   uint256 quantity;
@@ -41,23 +58,7 @@ struct Offer {
 mapping(address => mapping(uint256 => mapping(address => struct MarketplaceTracker.Offer))) offers
 ```
 
-### _get32BytesKey
-
-```solidity
-function _get32BytesKey(address op, uint256 tokenId) internal pure returns (bytes32)
-```
-
-### setListing
-
-```solidity
-function setListing(address op, uint256 tokenId, address _owner, uint256 qt, uint256 pricePerToken, address payToken) external
-```
-
-### getListing
-
-```solidity
-function getListing(address op, uint256 tokenId, address _owner) external view returns (uint256, uint256, address)
-```
+Map of offers for a given token (op -> tokenId -> offerer -> Offer)
 
 ### sellersOf
 
@@ -65,13 +66,7 @@ function getListing(address op, uint256 tokenId, address _owner) external view r
 function sellersOf(address op, uint256 tokenId) external view returns (address[])
 ```
 
-get list of sellers for a given token
-
-### setOffer
-
-```solidity
-function setOffer(address op, uint256 tokenId, address _from, uint256 qt, uint256 pricePerToken, address payToken) external
-```
+Get list of sellers for a given token
 
 ### getOffer
 
@@ -79,30 +74,43 @@ function setOffer(address op, uint256 tokenId, address _from, uint256 qt, uint25
 function getOffer(address op, uint256 tokenId, address _from) external view returns (uint256, uint256, address)
 ```
 
+Get offer for a given token
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | address - Address of the Operative contract |
+| tokenId | uint256 | uint256 - Token ID of the asset |
+| _from | address | address - Address of the offerer |
+
 ### offerersOf
 
 ```solidity
 function offerersOf(address op, uint256 tokenId) external view returns (address[])
 ```
 
-### setTaxInformation
-
-```solidity
-function setTaxInformation(uint16 _platformFee, address _feeRecipient) external
-```
-
-Update Tax settings
+Get list of offerers for a given token
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _platformFee | uint16 | Units of tax to receive |
-| _feeRecipient | address | Address of the tax recipient |
+| op | address | address - Address of the Operative contract |
+| tokenId | uint256 | uint256 - Token ID of the asset |
 
 ### taxInformation
 
 ```solidity
 function taxInformation() external view returns (uint16, address)
 ```
+
+Returns marketplace fee settings.
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint16 | Platform fee in basis points and fee recipient address. |
+| [1] | address |  |
 

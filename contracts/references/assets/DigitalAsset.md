@@ -1,12 +1,39 @@
 ## IDigitalAssetCreator
 
+Creates operative/listing state for a newly minted asset.
+
 ### registerNewAsset
 
 ```solidity
 function registerNewAsset(address authority, address owner, address ledger, uint256 tokenId, uint16 opType, bytes opRawData, bytes sellRawData) external returns (address)
 ```
 
+Registers a newly minted asset in the protection/trading system.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| authority | address | Authority contract orchestrating downstream modules. |
+| owner | address | Asset owner. |
+| ledger | address | Asset collection/ledger contract. |
+| tokenId | uint256 | Minted token id. |
+| opType | uint16 | Operative type id. |
+| opRawData | bytes | Encoded operative deployment/config data. |
+| sellRawData | bytes | Encoded listing data. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of the created operative contract, or zero if none. |
+
 ## DigitalAssetCreator
+
+Creates operative/listing state for a newly minted asset.
+
+_Upgradeable via `reinitializer(VERSION)`. Delegates state to the shared `IStorage` contract
+This contract implements `IDigitalAssetCreator` interface_
 
 ### ZeroQuantityError
 
@@ -14,29 +41,41 @@ function registerNewAsset(address authority, address owner, address ledger, uint
 error ZeroQuantityError()
 ```
 
+Thrown when listing quantity is zero.
+
 ### ZeroPriceError
 
 ```solidity
 error ZeroPriceError()
 ```
 
-### constructor
-
-```solidity
-constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize(address s) public
-```
+Thrown when listing price is zero.
 
 ### registerNewAsset
 
 ```solidity
 function registerNewAsset(address authority, address owner, address ledger, uint256 tokenId, uint16 opType, bytes opRawData, bytes sellRawData) external returns (address)
 ```
+
+Creates operative/listing state for a newly minted asset.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| authority | address | Authority contract orchestrating trading/protection. |
+| owner | address | Owner of the minted asset. |
+| ledger | address | Ledger contract where the asset was minted. |
+| tokenId | uint256 | Minted asset id. |
+| opType | uint16 | Operative type id. |
+| opRawData | bytes | Encoded operative creation data. |
+| sellRawData | bytes | Encoded listing data. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of the created operative contract, or zero if skipped. |
 
 ### _sellAccessTokens
 
@@ -51,10 +90,10 @@ Sell access token, just extract inputs from raw data and call sellAccessOnBehalf
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | authority | address | address - Authority contract address |
-| seller | address |  |
-| ledger | address |  |
+| seller | address | Address listing access tokens. |
+| ledger | address | Asset ledger address. |
 | tokenId | uint256 | uint256 - Token id to sell |
-| sellRawData | bytes | bytes - Raw data to parse, supposed to contains quantity, price and pay token |
+| sellRawData | bytes | bytes - Encoded listing tuple `(quantity, price, paymentToken)`. |
 
 ### _issueOperativeTokens
 
@@ -62,7 +101,7 @@ Sell access token, just extract inputs from raw data and call sellAccessOnBehalf
 function _issueOperativeTokens(address creator, uint16 opType, bytes data) internal returns (address)
 ```
 
-Create operative contract and mint all tokens supposed to hendled inside of it,
+Creates an operative contract and mints its initial control/access tokens.
 token dispatch are all handled in the contract design
 
 #### Parameters
@@ -71,13 +110,13 @@ token dispatch are all handled in the contract design
 | ---- | ---- | ----------- |
 | creator | address | address - creator address (needed for contract ownership) |
 | opType | uint16 | uint16 - Operative type, define what is the flow to adopt |
-| data | bytes | bytes - Raw data to parse, supposed to contains all tokens dispatch |
+| data | bytes | bytes - Encoded operative bootstrap payload. |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | address | Address of the new Operative contract, will be Zero-Address if not operative created (case of free content) |
+| [0] | address | Address of the new Operative contract, will be zero-address if no operative created (case of free content) |
 
 ### _getOperativeFactory
 
@@ -85,21 +124,26 @@ token dispatch are all handled in the contract design
 function _getOperativeFactory(uint16 _opType) internal view virtual returns (address)
 ```
 
-Intrnal method to retrieve the factory contract related to the operative type
+Internal helper returning the factory address for an operative type.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _opType | uint16 | Type of the target operative |
+| _opType | uint16 | Operative type id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Factory address mapped to `_opType`. |
 
 ## DigitalAsset
 
-### __DigitalAsset_init
+Abstract base contract for digital asset management, mostly implemented by standard
+channel-type contracts
 
-```solidity
-function __DigitalAsset_init() internal
-```
+_Implements `IDigitalAsset` interface._
 
 ### _registerProtectiveFlow
 
@@ -120,15 +164,31 @@ tokens to manage access to the individual media asset.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | authority | address | Address of the contract in charge of all protective flows |
-| registry | address |  |
+| registry | address | Address of the contract registry. |
 | tokenId | uint256 | ID of the asset |
 | opType | uint16 | Operative type, define what is the flow to adopt |
 | opRawData | bytes | Operative raw data, "0x" to omit operative contract creation |
 | sellRawData | bytes | Sell raw data, "0x" to omit listing step |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Address of created operative contract, or zero if none. |
 
 ### _registerTransferAuthorization
 
 ```solidity
 function _registerTransferAuthorization(address op, address authority, address tradeGateway) internal
 ```
+
+Grants transfer permissions on operative tokens to trusted protocol contracts.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| authority | address | Authority contract to authorize. |
+| tradeGateway | address | Trade gateway address (reserved for optional authorization). |
 

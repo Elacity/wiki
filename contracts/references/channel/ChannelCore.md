@@ -1,16 +1,32 @@
 ## ChannelCore
 
+Orchestrates the creation of content channels by delegating to registered factory contracts.
+Each combination of channel type and scope maps to a dedicated factory that deploys the appropriate
+channel implementation behind a beacon proxy.
+
+_Upgradeable; owner-only factory registration._
+
 ### CreateFailed
 
 ```solidity
 error CreateFailed()
 ```
 
+The factory returned `address(0)` for the newly created channel.
+
 ### FactoryUnknownError
 
 ```solidity
-error FactoryUnknownError(bytes)
+error FactoryUnknownError(bytes rawError)
 ```
+
+The factory call reverted with an unexpected error.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| rawError | bytes | The raw revert bytes forwarded from the factory |
 
 ### FactoryNotFound
 
@@ -18,25 +34,32 @@ error FactoryUnknownError(bytes)
 error FactoryNotFound(uint8 _channelType, uint8 _scope)
 ```
 
+No factory is registered for the requested channel type and scope combination.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _channelType | uint8 | The requested channel type |
+| _scope | uint8 | The requested scope |
+
 ### ChannelCreated
 
 ```solidity
 event ChannelCreated(address channelAddr, uint8 channelType, address owner, uint8 scope, string name)
 ```
 
-This event is triggered when a new channel contract have been created
+Emitted when a new channel contract is successfully deployed.
 
-### constructor
+#### Parameters
 
-```solidity
-constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize() public
-```
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| channelAddr | address | Address of the newly created channel proxy |
+| channelType | uint8 | Type identifier (`1` = Standard, `2` = Multi-Channel) |
+| owner | address | Address of the channel creator |
+| scope | uint8 | Visibility scope (`1` = Public, `2` = Private) |
+| name | string | Human-readable name assigned to the channel |
 
 ### registerFactory
 
@@ -44,18 +67,17 @@ function initialize() public
 function registerFactory(uint8 _channelType, uint8 _scope, address factoryAddr) external
 ```
 
-Register a new factory to the system.
+Registers (or replaces) the factory contract for a given channel type and scope.
 
-Each channel kind of its own factory address, each of these factory will
-create the dedicated channel
+_Only the contract owner may call this function._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _channelType | uint8 | Type of channel the factory is referring to `(standard=1 | multi=2)` |
-| _scope | uint8 | Scope of the channel the factory is referring to `(public=1 | private=2)` |
-| factoryAddr | address | Address of the factory contract |
+| _channelType | uint8 | Channel type the factory handles (`1` = Standard, `2` = Multi-Channel) |
+| _scope | uint8 | Scope the factory handles (`1` = Public, `2` = Private) |
+| factoryAddr | address | Address of the `IChannelFactory` implementation |
 
 ### createChannel
 
@@ -63,19 +85,19 @@ create the dedicated channel
 function createChannel(uint8 _channelType, uint8 _scope, string _name, string _tokenURI, bytes data) external payable
 ```
 
-Create a new channel and process the initial configuration
+Deploys a new channel contract and applies its initial configuration.
 
-`channelType` and `_scope` will define which kind of contract
-we are targeting to create and `data` will just contains extra information needed for further
-configuration of the channel
+The `_channelType` and `_scope` pair selects the factory, while `data` carries
+ABI-encoded parameters for royalty shares, subscription plans, and other settings
+specific to the chosen channel kind.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _channelType | uint8 | Type of the channel Possible values: - `1`: Standard channel - `2`: Multi-Channel |
-| _scope | uint8 | Scope of the channel Possible values: - `1`: Public channel, anyone can mint onto the channel - `2`: Private channel, only owner of the channel can mint |
-| _name | string | Name of the channel, will be set as name of the contract |
-| _tokenURI | string |  |
-| data | bytes | Extra data for configuration |
+| _channelType | uint8 | Type of channel to create:   - `1` — Standard channel (hosts digital assets directly)   - `2` — Multi-Channel (wraps other channels for bundled subscriptions) |
+| _scope | uint8 | Visibility scope of the channel:   - `1` — Public (any user can mint content)   - `2` — Private (only the channel owner can mint) |
+| _name | string | Human-readable name for the channel (stored as the contract `name`) |
+| _tokenURI | string | Base metadata URI for the channel's tokens |
+| data | bytes | ABI-encoded initialization payload forwarded to the factory |
 

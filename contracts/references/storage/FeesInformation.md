@@ -40,15 +40,6 @@ struct IFeesInformationStorage {
 }
 ```
 
-### __FeesInformation_init
-
-```solidity
-function __FeesInformation_init(address initialOwner) internal
-```
-
-_Internal function to initialize the contract
-This is called by the root contract (CoreStorage) during its initialization_
-
 ### channelCreationFee
 
 ```solidity

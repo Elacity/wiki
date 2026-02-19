@@ -1,34 +1,20 @@
 ## ChannelRegistry
 
-This contract is aimed to hold how channels are interacting with each other
-        especially in regards of Multi-Channels.
+Maintains the parent-child relationship graph between channels, enabling
+Multi-Channel subscription propagation.
 
-A channel is a ERC-1155 compliant contract and contains all medias, royalty distribution
-and all subscription plans attached to the channel.
+A **standard channel** is an ERC-1155 contract that hosts digital assets, royalty
+distribution, and subscription plans. A **multi-channel** does not host assets itself;
+instead it wraps one or more standard channels so that a single subscription grants
+access to every wrapped channel.
 
-For the case of multi-channels, it doesn't contains any media, it rather hold a list of
-all channels that it wraps. A user that is subscribed to a multi-channels should have
-access into all channels wrapped in it.
+This registry stores a directed mapping from each wrapped (child) channel to its
+wrapping (parent) multi-channels. When a standard channel checks whether an account
+has an active subscription (via `ISubscribable.hasActiveSubscription`), it queries
+this registry to also consider subscriptions held on any parent multi-channel.
 
-This contract will hold such a structure and ensure we can give the access abstraction
-to all subscribers from individual channel interface.
-
-**How it is organized?**
-- Each channel contract, regardless of its type, should have this registry embed on it
-- We input channels configuration from all MultiChannel contract and configure the
-  registry so that each wrapped contracts can point into the wrapping channel during a
-  lookup method execution
-- on lookup execution from individual channel (in compliance with `ISubscribable` interface)
-  we should be able to get all mulit-channel contract that are wrapping the target channel
-
-### __ChannelRegistry_init
-
-```solidity
-function __ChannelRegistry_init() internal
-```
-
-_Internal function to initialize the contract
-This is called by the root contract (CoreStorage) during its initialization_
+_Inherited by `CoreStorage`. The tree is stored as
+`mapping(child => EnumerableSet<parent>)` and is append-only in the current design._
 
 ### addWrapper
 
@@ -52,4 +38,18 @@ that contains the medias
 ```solidity
 function topLevelOf(address chan) public view returns (address[])
 ```
+
+Retrieve the list of all wrapper on top-level f the given channel
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| chan | address |  |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address[] | List of addresse of all the channels that wrap the given one |
 

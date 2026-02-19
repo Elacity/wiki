@@ -1,10 +1,19 @@
 ## DigitalAssetCommon
 
+Shared base for public and private standard channels. Combines subscriptions,
+royalty distribution, asset minting, and fee collection into a single upgradeable
+ERC-1155 channel contract.
+
+_Subscription lookups propagate upward through the `ChannelRegistry` to resolve
+multi-channel parent subscriptions._
+
 ### TokenIdUnderflow
 
 ```solidity
 error TokenIdUnderflow()
 ```
+
+The generated token ID fell in the reserved lower range.
 
 ### TokenIdAlreadyUsed
 
@@ -12,11 +21,21 @@ error TokenIdUnderflow()
 error TokenIdAlreadyUsed(uint256 value)
 ```
 
+A token with this ID has already been minted on this channel.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| value | uint256 | The duplicate token ID |
+
 ### authority
 
 ```solidity
 address authority
 ```
+
+Address of the AuthorityGateway that manages access-token trades and licensing.
 
 ### tradeGateway
 
@@ -24,7 +43,11 @@ address authority
 address tradeGateway
 ```
 
+Address of the TradeGateway that manages token-level marketplace trades.
+
 ### AssetId
+
+_Helper struct used during `mint` to avoid stack-too-deep errors._
 
 ```solidity
 struct AssetId {
@@ -33,31 +56,28 @@ struct AssetId {
 }
 ```
 
-### constructor
-
-```solidity
-constructor() internal
-```
-
-### initialize
-
-```solidity
-function initialize(address _authority, address _tradeGateway, address _registry, address creator, string _tokenURI, bytes _data) public
-```
-
 ### _createAsset
 
 ```solidity
 function _createAsset(string _tokenURI) internal returns (uint256)
 ```
 
-Mint a new channel content as an unique asset
+Mints a new unique digital asset on this channel.
+
+_The token ID is deterministically derived from `_tokenURI`. Reverts if the
+generated ID is in the reserved range or has already been used._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _tokenURI | string | URI of the metadata json-formatted |
+| _tokenURI | string | IPFS-based URI pointing to the asset's JSON metadata |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint256 | The newly minted token ID |
 
 ### configureChannel
 
@@ -65,42 +85,30 @@ Mint a new channel content as an unique asset
 function configureChannel(bytes data) internal
 ```
 
-configure the channel by parsing and applying setup
+Applies the initial channel configuration during deployment.
 
-The input for `DigitalAsset` type is formatted as following `(ShareInput[], SubscriptionPlan[])`
+Decodes `data` as `(ShareInput[], SubscriptionPlan[], TokenAccessThreshold[])` and:
+  1. Mints royalty-share tokens to each beneficiary.
+  2. Creates subscription plans on this channel.
+  3. Registers token-ownership-based access thresholds.
 
-The flow is designed as following:
- - setup initial distribution of the royalty tokens
- - setup subscription plans
-
-Here is an example of data formatting in javascript using ethersjs
-
+_Example encoding with ethers.js:
 ```javascript
 ethers.utils.defaultAbiCoder.encode(
+  ['tuple(address,uint256)[]', 'tuple(uint8,address,uint256,uint256,bool)[]', 'tuple(address,uint256)[]'],
   [
-    'tuple(address,uint256)[]',
-    'tuple(uint8,address,uint256,uint256,bool)[]',
-    'tuple(address,uint256)[]',
-  ],
-  [
-    [
-       // Royalties distribution
-       ['0x02...12e5', 800],
-       ['0x52...D17B', 200]
-    ], [
-       // 1 plan to create
-       [0, ethers.constants.AddressZero, BigNumber.from(1).pow(18), 2592000, true]
-    ],
-    []
+    [['0x02...12e5', 800], ['0x52...D17B', 200]],   // royalty shares (beneficiary, share)
+    [[0, ethers.constants.AddressZero, 1e18, 2592000, true]], // subscription plans
+    []  // token-ownership thresholds
   ]
 );
-```
+```_
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| data | bytes | raw input to configure the channel |
+| data | bytes | ABI-encoded configuration payload |
 
 ### hasActiveSubscription
 
@@ -116,23 +124,16 @@ function supportsInterface(bytes4 interfaceId) public view returns (bool)
 
 ## DigitalAssetPublic
 
+Public standard channel — any address can mint new digital assets.
+Deployed behind a beacon proxy by `StandardChannelPublicFactory`.
+
 ### name
 
 ```solidity
 string name
 ```
 
-### constructor
-
-```solidity
-constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize(address _authority, address _tradeGateway, address _registry, address creator, string _name, string _tokenURI, bytes _data) public
-```
+Human-readable name of this channel.
 
 ### mint
 
@@ -140,17 +141,16 @@ function initialize(address _authority, address _tradeGateway, address _registry
 function mint(string _uri, uint16 opType, bytes opRawData, bytes sellRawData) external payable
 ```
 
-Create a new digital asset, generates the operative contract
-with initial tokens distribution and put it on sale
+Mints a digital asset and optionally initializes its protection/trading flow.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _uri | string | string memory - Token URI |
-| opType | uint16 | uint16 - Operative type, can be 0: free, 1: Buy-Play, 2: Buy-Play-Sell. refers to OP_TYPE_* constants for complete set of the type |
-| opRawData | bytes | bytes calldata - Operative raw data, "0x" to omit operative contract creation |
-| sellRawData | bytes | bytes calldata - Sell raw data, "0x" to omit listing step |
+| _uri | string | Token metadata URI. |
+| opType | uint16 | Operative type id. |
+| opRawData | bytes | Encoded operative initialization data (`0x` to skip). |
+| sellRawData | bytes | Encoded listing data (`0x` to skip). |
 
 ### tokenURI
 
@@ -158,13 +158,32 @@ with initial tokens distribution and put it on sale
 function tokenURI(uint256 tokenId) public view returns (string)
 ```
 
+Returns metadata URI for a token.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| tokenId | uint256 | Asset id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | string | URI string for the token metadata. |
+
 ## DigitalAssetPrivate
+
+Private standard channel — only accounts with `MINTER_ROLE` can mint digital assets.
+Deployed behind a beacon proxy by `StandardChannelPrivateFactory`.
 
 ### name
 
 ```solidity
 string name
 ```
+
+Human-readable name of this channel.
 
 ### MINTER_ROLE
 
@@ -172,17 +191,7 @@ string name
 bytes32 MINTER_ROLE
 ```
 
-### constructor
-
-```solidity
-constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize(address _authority, address _tradeGateway, address _registry, address creator, string _name, string _tokenURI, bytes _data) public
-```
+Role hash that gates the `mint` function.
 
 ### mint
 
@@ -190,21 +199,34 @@ function initialize(address _authority, address _tradeGateway, address _registry
 function mint(string _uri, uint16 opType, bytes opRawData, bytes sellRawData) external payable
 ```
 
-Create a new digital asset, generates the operative contract
-with initial tokens distribution and put it on sale
+Mints a digital asset and optionally initializes its protection/trading flow.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _uri | string | string memory - Token URI |
-| opType | uint16 | uint16 - Operative type, can be 0: free, 1: Buy-Play, 2: Buy-Play-Sell. refers to OP_TYPE_* constants for complete set of the type |
-| opRawData | bytes | bytes calldata - Operative raw data, "0x" to omit operative contract creation |
-| sellRawData | bytes | bytes calldata - Sell raw data, "0x" to omit listing step |
+| _uri | string | Token metadata URI. |
+| opType | uint16 | Operative type id. |
+| opRawData | bytes | Encoded operative initialization data (`0x` to skip). |
+| sellRawData | bytes | Encoded listing data (`0x` to skip). |
 
 ### tokenURI
 
 ```solidity
 function tokenURI(uint256 tokenId) public view returns (string)
 ```
+
+Returns metadata URI for a token.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| tokenId | uint256 | Asset id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | string | URI string for the token metadata. |
 

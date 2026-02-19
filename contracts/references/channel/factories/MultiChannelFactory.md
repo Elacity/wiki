@@ -1,10 +1,8 @@
 ## MultiChannelFactory
 
-### constructor
-
-```solidity
-constructor(address _authority, address _tradeGateway, address __store, contract IPaymentProcessorFactory _ppf, address _implementation) public
-```
+Factory that deploys `MultiChannel` contracts behind a beacon proxy.
+Each deployed multi-channel receives its own payment processor and is
+initialized with the provided configuration data (royalties, plans, child channels).
 
 ### createChannel
 

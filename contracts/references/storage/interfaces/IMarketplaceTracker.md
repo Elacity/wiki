@@ -1,19 +1,30 @@
 ## IMarketplaceTracker
 
+Tracks listings, offers, participants, and marketplace fee settings.
+
 ### listings
 
 ```solidity
-function listings(address, uint256, address) external returns (uint256, uint256, address)
+function listings(address op, uint256 tokenId, address owner) external returns (uint256, uint256, address)
 ```
 
-### setListing
+Returns raw listing fields from storage.
 
-```solidity
-function setListing(address op, uint256 tokenId, address owner, uint256 qt, uint256 pricePerToken, address payToken) external
-```
+#### Parameters
 
-_keep on track of this issue https://github.com/ethereum/solidity/issues/6337
-we need to define Listing here, not in the implementation_
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| tokenId | uint256 | Asset token id. |
+| owner | address | Listing owner/seller. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint256 | Quantity, unit price, and payment token address. |
+| [1] | uint256 |  |
+| [2] | address |  |
 
 ### sellersOf
 
@@ -21,23 +32,68 @@ we need to define Listing here, not in the implementation_
 function sellersOf(address op, uint256 tokenId) external view returns (address[])
 ```
 
+Returns all sellers with listing state for an asset.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| tokenId | uint256 | Asset token id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address[] | Seller address array. |
+
 ### getListing
 
 ```solidity
 function getListing(address op, uint256 tokenId, address owner) external view returns (uint256, uint256, address)
 ```
 
+Returns listing details for a specific seller.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| tokenId | uint256 | Asset token id. |
+| owner | address | Listing owner/seller. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint256 | Quantity, unit price, and payment token address. |
+| [1] | uint256 |  |
+| [2] | address |  |
+
 ### offers
 
 ```solidity
-function offers(address, uint256, address) external returns (uint256, uint256, address)
+function offers(address op, uint256 tokenId, address owner) external returns (uint256, uint256, address)
 ```
 
-### setOffer
+Returns raw offer fields from storage.
 
-```solidity
-function setOffer(address op, uint256 tokenId, address _from, uint256 qt, uint256 pricePerToken, address payToken) external
-```
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| tokenId | uint256 | Asset token id. |
+| owner | address | Offerer address. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint256 | Quantity, unit price, and payment token address. |
+| [1] | uint256 |  |
+| [2] | address |  |
 
 ### offerersOf
 
@@ -45,11 +101,44 @@ function setOffer(address op, uint256 tokenId, address _from, uint256 qt, uint25
 function offerersOf(address op, uint256 tokenId) external view returns (address[])
 ```
 
+Returns all offerers with offer state for an asset.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| tokenId | uint256 | Asset token id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address[] | Offerer address array. |
+
 ### getOffer
 
 ```solidity
 function getOffer(address op, uint256 tokenId, address owner) external view returns (uint256, uint256, address)
 ```
+
+Returns offer details for a specific offerer.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| op | address | Operative contract address. |
+| tokenId | uint256 | Asset token id. |
+| owner | address | Offerer address. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint256 | Quantity, unit price, and payment token address. |
+| [1] | uint256 |  |
+| [2] | address |  |
 
 ### taxInformation
 
@@ -57,9 +146,12 @@ function getOffer(address op, uint256 tokenId, address owner) external view retu
 function taxInformation() external view returns (uint16, address)
 ```
 
-### setTaxInformation
+Returns marketplace fee settings.
 
-```solidity
-function setTaxInformation(uint16 _platformFee, address _feeRecipent) external
-```
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | uint16 | Platform fee in basis points and fee recipient address. |
+| [1] | address |  |
 

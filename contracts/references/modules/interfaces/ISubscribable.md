@@ -1,6 +1,6 @@
 ## ISubscribable
 
-Provides the minimal requriments for a subscribeable NFT contract
+Minimal subscription primitives for contracts that sell access plans.
 
 ### NotSubscribed
 
@@ -8,7 +8,7 @@ Provides the minimal requriments for a subscribeable NFT contract
 error NotSubscribed(uint8 planId, address subscriber)
 ```
 
-Error thrown when the user have no active subscription
+Thrown when a subscription-dependent action is requested without an active plan.
 
 #### Parameters
 
@@ -23,7 +23,7 @@ Error thrown when the user have no active subscription
 error ActiveSubscriptionNotExpired(address subscriber)
 ```
 
-Error thrown when a user still have an active subscription
+Thrown when trying to resubscribe before the active subscription expires.
 
 #### Parameters
 
@@ -33,8 +33,7 @@ Error thrown when a user still have an active subscription
 
 ### Subscription
 
-We hold subscription data on top of this format to keep on track of expiration
-date and check whether a user has active subscription
+Canonical subscription record stored for each subscriber.
 
 #### Parameters
 
@@ -57,16 +56,16 @@ struct Subscription {
 event AccountSubscibed(address subscriber, uint8 planId, uint256 expiry, bool recurring)
 ```
 
-This event signals a user have been subscribed to a specific plan
+Emitted when an account subscribes to a plan.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| subscriber | address | The subscriber address |
-| planId | uint8 | The identification of the subscription plan |
-| expiry | uint256 | The date the subscription will end |
-| recurring | bool | Flag of recurring state of the subscription |
+| subscriber | address | Subscriber address. |
+| planId | uint8 | Plan identifier. |
+| expiry | uint256 | Subscription expiration timestamp. |
+| recurring | bool | Recurring flag for the subscription. |
 
 ### AccountUnsubscribed
 
@@ -74,20 +73,22 @@ This event signals a user have been subscribed to a specific plan
 event AccountUnsubscribed(address subscriber, uint8 planId)
 ```
 
+Emitted when an account unsubscribes from a plan.
+
 ### subscribePlan
 
 ```solidity
 function subscribePlan(uint8 planId, bool recurring) external payable
 ```
 
-Subscribe a user to a specific subscription plan
+Subscribes `msg.sender` to a plan.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| planId | uint8 | The identification of the subscription plan |
-| recurring | bool | Flag of recurring state of the subscription |
+| planId | uint8 | Plan identifier. |
+| recurring | bool | Whether the subscription should be recurring. |
 
 ### hasActiveSubscription
 
@@ -95,17 +96,17 @@ Subscribe a user to a specific subscription plan
 function hasActiveSubscription(address subscriber) external view returns (bool)
 ```
 
-Check whether an account has an active subscrition
+Returns whether an account currently has an active subscription.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| subscriber | address | Address of the subscriber to check |
+| subscriber | address | Account to evaluate. |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | bool | bool |
+| [0] | bool | `true` if the account has a non-expired subscription. |
 

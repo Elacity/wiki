@@ -1,6 +1,10 @@
 ## TradeGateway
 
-It is the entry point for all trade operations
+Entry point for all ERC-1155 token trade operations (listing, buying, offers).
+`AccessToken(0x01)` trades are handled separately by the `AuthorityGateway` contract.
+
+_Upgradeable via `reinitializer(VERSION)`. Delegates state to the shared `IStorage` contract
+and enforces trade-access restrictions through `TradeRestrictionExtension`._
 
 ### store
 
@@ -8,17 +12,7 @@ It is the entry point for all trade operations
 contract IStorage store
 ```
 
-### constructor
-
-```solidity
-constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize(contract IStorage _dataStorage) public
-```
+Reference to the central storage contract shared across the ecosystem.
 
 ### sellersOf
 
@@ -26,20 +20,20 @@ function initialize(contract IStorage _dataStorage) public
 function sellersOf(address op, uint256 tkId) external view returns (address[])
 ```
 
-Get the sellers of a token
+Returns the list of addresses currently selling a given token.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| op | address | the address of the operative |
-| tkId | uint256 | the token id of the token |
+| op | address | Address of the ERC-1155 contract (operative or channel) that holds the token |
+| tkId | uint256 | Token ID to query sellers for |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | address[] | the addresses of the sellers |
+| [0] | address[] | Array of seller addresses |
 
 ### listings
 
@@ -47,23 +41,23 @@ Get the sellers of a token
 function listings(address op, uint256 tkId, address seller) external view returns (uint256, uint256, address)
 ```
 
-Get the listing details of a token
+Returns the listing details for a specific seller's token.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| op | address | the address of the operative |
-| tkId | uint256 | the token id of the token |
-| seller | address | the address of the seller |
+| op | address | Address of the ERC-1155 contract that holds the token |
+| tkId | uint256 | Token ID of the listed item |
+| seller | address | Address of the seller |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | uint256 | the quantity of the token |
-| [1] | uint256 | the price per token of the token |
-| [2] | address | the payment token of the token |
+| [0] | uint256 | quantity Number of tokens listed |
+| [1] | uint256 | pricePerToken Price per single token in the smallest denomination |
+| [2] | address | payToken Address of the ERC-20 payment token (`address(0)` for native currency) |
 
 ### withdrawListing
 
@@ -71,15 +65,15 @@ Get the listing details of a token
 function withdrawListing(address op, uint256 tkId, uint256 quantity) external
 ```
 
-withdrawListing withdraws a token from sale
+Removes a specified quantity of tokens from the caller's active listing.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| op | address | the address of the operative |
-| tkId | uint256 | the token id of the token |
-| quantity | uint256 | the quantity of the token |
+| op | address | Address of the ERC-1155 contract that holds the token |
+| tkId | uint256 | Token ID to delist |
+| quantity | uint256 | Number of tokens to remove from the listing |
 
 ### sellToken
 
@@ -87,17 +81,20 @@ withdrawListing withdraws a token from sale
 function sellToken(address _contract, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
 ```
 
-sellToken will sell a token and place it on sale
+Lists tokens for sale on the marketplace.
+
+_The caller must have granted ERC-1155 approval to this contract prior to calling.
+The target contract must implement `ITradeAccessRestriction` and `IERC1155`._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _contract | address | the contract address of the token |
-| tokenId | uint256 | the token id of the token |
-| _quantity | uint256 | the quantity of the token |
-| _pricePerToken | uint256 | the price per token of the token |
-| _payToken | address | the payment token of the token |
+| _contract | address | Address of the ERC-1155 contract holding the tokens |
+| tokenId | uint256 | Token ID to list for sale |
+| _quantity | uint256 | Number of tokens to list |
+| _pricePerToken | uint256 | Price per token in the smallest denomination of `_payToken` |
+| _payToken | address | Address of the ERC-20 payment token (`address(0)` for native currency) |
 
 ### buyToken
 
@@ -105,16 +102,19 @@ sellToken will sell a token and place it on sale
 function buyToken(address seller, address _contract, uint256 tokenId, uint256 _quantity) external payable
 ```
 
-buyToken will buy a token from a seller
+Purchases listed tokens from a seller.
+
+_For native-currency listings, `msg.value` must cover `pricePerToken * _quantity`.
+For `ERC-20` listings, the buyer must have approved this contract to spend the required amount._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| seller | address | the address of the seller |
-| _contract | address | the contract address of the token |
-| tokenId | uint256 | the token id of the token |
-| _quantity | uint256 | the quantity of the token |
+| seller | address | Address of the seller who listed the tokens |
+| _contract | address | Address of the ERC-1155 contract holding the tokens |
+| tokenId | uint256 | Token ID to purchase |
+| _quantity | uint256 | Number of tokens to buy |
 
 ### createOffer
 
@@ -122,17 +122,20 @@ buyToken will buy a token from a seller
 function createOffer(address _contract, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address payToken) external
 ```
 
-createOffer creates an offer with ERC-20 token
+Creates a buy-offer for tokens using an `ERC-20` payment token.
+
+_The caller must have pre-approved this contract for the total ERC-20 amount.
+Only one active offer per caller per token is allowed; cancel the existing offer first._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _contract | address | the contract address of the offer |
-| tokenId | uint256 | the token id of the offer |
-| _quantity | uint256 | the quantity of the offer |
-| _pricePerToken | uint256 | the price per token of the offer |
-| payToken | address | the payment token of the offer |
+| _contract | address | Address of the `ERC-1155` contract holding the tokens |
+| tokenId | uint256 | Token ID to make an offer on |
+| _quantity | uint256 | Number of tokens requested |
+| _pricePerToken | uint256 | Offered price per token in `payToken` smallest denomination |
+| payToken | address | Address of the `ERC-20` token used for payment |
 
 ### createOffer
 
@@ -140,16 +143,19 @@ createOffer creates an offer with ERC-20 token
 function createOffer(address _contract, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken) external payable
 ```
 
-createOffer creates an offer with native token (ETH)
+Creates a buy-offer for tokens using native currency (`ETH`/`ELA`).
+
+_`msg.value` must be at least `_pricePerToken * _quantity`. Excess value is not refunded.
+The native currency is held in escrow by this contract until the offer is accepted or canceled._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _contract | address | the contract address of the offer |
-| tokenId | uint256 | the token id of the offer |
-| _quantity | uint256 | the quantity of the offer |
-| _pricePerToken | uint256 | the price per token of the offer |
+| _contract | address | Address of the `ERC-1155` contract holding the tokens |
+| tokenId | uint256 | Token ID to make an offer on |
+| _quantity | uint256 | Number of tokens requested |
+| _pricePerToken | uint256 | Offered price per token in wei |
 
 ### acceptOffer
 
@@ -157,16 +163,19 @@ createOffer creates an offer with native token (ETH)
 function acceptOffer(address from, address _contract, uint256 tokenId, uint256 _quantity) external
 ```
 
-acceptOffer will accept an offer made by a buyer
+Accepts a pending buy-offer, transferring tokens to the offerer and payment to the seller.
+
+_The caller (seller) must own and have approved the requested tokens.
+Platform fees are deducted before the seller receives payment._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| from | address | the address of the offer creator |
-| _contract | address | the contract address of the offer |
-| tokenId | uint256 | the token id of the offer |
-| _quantity | uint256 | the quantity of the offer |
+| from | address | Address of the account that created the offer |
+| _contract | address | Address of the `ERC-1155` contract holding the tokens |
+| tokenId | uint256 | Token ID the offer was made on |
+| _quantity | uint256 | Number of tokens to sell into the offer (must be <= offered quantity) |
 
 ### cancelOffer
 
@@ -174,12 +183,14 @@ acceptOffer will accept an offer made by a buyer
 function cancelOffer(address _contract, uint256 tokenId) external
 ```
 
-cancelOffer will withdraw an offer made by its creator
+Cancels the caller's pending offer and refunds escrowed native currency (if any).
+
+_`ERC-20` offers do not require a refund since funds remain in the offerer's wallet._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _contract | address | the contract address of the offer |
-| tokenId | uint256 | the token id of the offer |
+| _contract | address | Address of the `ERC-1155` contract the offer was made on |
+| tokenId | uint256 | Token ID the offer was made on |
 

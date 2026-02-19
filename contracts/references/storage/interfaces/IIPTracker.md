@@ -1,18 +1,25 @@
 ## IIPTracker
 
+Tracks which operative contract controls a given `(channel, tokenId)` pair.
+
 ### operator
 
 ```solidity
 function operator(address channel, uint256 tokenId) external view returns (address)
 ```
 
-Get the operator of a specific token by the ledger address and the token id
+Returns the operative address controlling an asset.
 
-### registerDigitalAsset
+#### Parameters
 
-```solidity
-function registerDigitalAsset(address, uint256, address) external
-```
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| channel | address | Channel/ledger contract address. |
+| tokenId | uint256 | Asset token id. |
 
-Register a new digital asset
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | Operative contract address. |
 

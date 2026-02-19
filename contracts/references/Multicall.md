@@ -1,14 +1,14 @@
 ## OptimizedMulticall
 
-_A gas-efficient and secure implementation of multicall functionality
-that allows batching multiple calls in a single transaction.
+Gas-efficient batching contract that executes multiple external calls in a single transaction.
 
-Key Features:
-- Optimized gas usage with minimal overhead
-- Support for both regular and static calls
-- Built-in reentrancy protection
-- Detailed error reporting
-- Value forwarding support_
+Supports both state-changing calls (via `aggregate`) and read-only calls (via `aggregateStatic`).
+Each call can carry its own ETH value and independently require success or allow graceful failure.
+
+_Key properties:
+- Built-in reentrancy guard on `aggregate` to prevent re-entrant batching.
+- Per-call `requireSuccess` flag controls whether a single failure reverts the batch.
+- The contract can hold ETH to fulfill value-bearing calls._
 
 ### CallFailed
 
@@ -16,11 +16,22 @@ Key Features:
 error CallFailed(uint256 index, string reason)
 ```
 
+A call in the batch failed and its `requireSuccess` flag was `true`.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| index | uint256 | Zero-based index of the failed call within the batch |
+| reason | string | Decoded revert reason (empty if the target reverted silently) |
+
 ### InvalidTarget
 
 ```solidity
 error InvalidTarget()
 ```
+
+The target address for a call is the zero address.
 
 ### InsufficientValue
 
@@ -28,15 +39,30 @@ error InvalidTarget()
 error InsufficientValue(uint256 value)
 ```
 
+`msg.value` is less than the sum of all `Call.value` fields in the batch.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| value | uint256 | The `msg.value` that was provided |
+
 ### ReentrancyGuard
 
 ```solidity
 error ReentrancyGuard()
 ```
 
+A re-entrant call to `aggregate` was detected.
+
 ### Call
 
-_Call data structure with value support_
+Describes a single call within a batch.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
 
 ```solidity
 struct Call {
@@ -49,7 +75,12 @@ struct Call {
 
 ### Result
 
-_Result structure for detailed call outcomes_
+Outcome of a single call within a batch.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
 
 ```solidity
 struct Result {
@@ -76,19 +107,22 @@ constructor() public
 function aggregate(struct OptimizedMulticall.Call[] calls) external payable returns (struct OptimizedMulticall.Result[] results)
 ```
 
-_Executes multiple calls in a single transaction_
+Executes an array of calls in a single transaction, forwarding ETH as specified.
+
+_Protected against reentrancy. Validates that `msg.value` covers the total value
+required across all calls before execution begins._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| calls | struct OptimizedMulticall.Call[] | Array of calls to execute |
+| calls | struct OptimizedMulticall.Call[] | Ordered array of calls to execute |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| results | struct OptimizedMulticall.Result[] | Array of results from each call |
+| results | struct OptimizedMulticall.Result[] | Array of per-call results in the same order as `calls` |
 
 ### aggregateStatic
 
@@ -96,19 +130,22 @@ _Executes multiple calls in a single transaction_
 function aggregateStatic(struct OptimizedMulticall.Call[] calls) external view returns (struct OptimizedMulticall.Result[] results)
 ```
 
-_Executes multiple static (view/pure) calls in a single transaction_
+Executes an array of read-only (`staticcall`) calls in a single transaction.
+
+_No reentrancy guard is needed because `staticcall` cannot modify state.
+The `value` field in each `Call` is ignored._
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| calls | struct OptimizedMulticall.Call[] | Array of static calls to execute |
+| calls | struct OptimizedMulticall.Call[] | Ordered array of calls to execute |
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| results | struct OptimizedMulticall.Result[] | Array of results from each call |
+| results | struct OptimizedMulticall.Result[] | Array of per-call results in the same order as `calls` |
 
 ### _getRevertMsg
 

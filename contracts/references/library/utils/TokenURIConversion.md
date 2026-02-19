@@ -1,8 +1,8 @@
 ## TokenURIConversion
 
-This library take in charge of converting ECR-1155 tokenURI in format as defined at
-[https://eips.ethereum.org/EIPS/eip-1155#metadata](https://eips.ethereum.org/EIPS/eip-1155#metadata) to a human
-readable URI
+Converts [ERC-1155 metadata URIs](https://eips.ethereum.org/EIPS/eip-1155#metadata) containing `{id}` into concrete token URIs.
+
+_Replaces `{id}` with a 64-char lowercase hex token id (without `0x`) per ERC-1155._
 
 ### convert
 
@@ -10,13 +10,18 @@ readable URI
 function convert(string uri_, uint256 tokenId) public pure returns (string tokenURI)
 ```
 
-Convert the ERC1155 metadata URI to ERC721 metata URI by subsituting the `{id}`
-with the hex encoded tokenId.
+Substitutes `{id}` in a metadata URI with the token id representation.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| uri_ | string | The mask of the tokenURI |
-| tokenId | uint256 | The ID of the token |
+| uri_ | string | URI template, potentially containing `{id}`. |
+| tokenId | uint256 | Token identifier to inject. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| tokenURI | string | Converted URI string. |
 

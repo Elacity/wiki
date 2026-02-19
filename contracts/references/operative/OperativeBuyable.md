@@ -1,9 +1,11 @@
 ## OperativeBuyable
 
-Buy once, play always.
+"Buy once, play always" operative (type 1).
+Purchasers receive an `ACCESS_TOKEN` that grants permanent playback rights.
+Only the original creator (or a designated address) holds a `DISTRIBUTION_RIGHT`
+token, making them the sole party authorised to sell new access tokens.
 
-For this contract type, `DISTRIBUTION_RIGHT` (3) token is issued only during mintings,
-only creator have this right unless a new one is issued by contract owner
+_Deployed behind a beacon proxy via `OperativeBuyableFactory`._
 
 ### OP_TYPE
 
@@ -11,19 +13,7 @@ only creator have this right unless a new one is issued by contract owner
 uint16 OP_TYPE
 ```
 
-Connstant that represents the type of the digital asset.
-
-### constructor
-
-```solidity
-constructor() public
-```
-
-### initialize
-
-```solidity
-function initialize(contract IStorage _dataStorage, bytes16 _contentId, string baseURI) public virtual
-```
+Operative-type discriminator (`1` = buy-play).
 
 ### setupDistributionRights
 
@@ -31,9 +21,15 @@ function initialize(contract IStorage _dataStorage, bytes16 _contentId, string b
 function setupDistributionRights(address creator) external
 ```
 
-Mint distribution right token to creator
+Mints a single `DISTRIBUTION_RIGHT` token to the content creator.
 
-_Called after initialization is complete_
+_Must be called by the factory immediately after proxy initialisation._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| creator | address | Address that will receive the distribution-right token. |
 
 ### checkAccess
 
@@ -41,8 +37,19 @@ _Called after initialization is complete_
 function checkAccess(address account) external view returns (struct IOperative.AccessLevel[])
 ```
 
-Determine which kind of access an account have to the digital asset
-We will make this check by level
+Returns the access levels for `account`, checking `ACCESS_TOKEN` and `DISTRIBUTION_RIGHT`.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| account | address | Address to query. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | struct IOperative.AccessLevel[] | Array of `AccessLevel` structs for each checked token. |
 
 ### _update
 

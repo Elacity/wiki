@@ -224,14 +224,14 @@ Count number of subscriptions to a plan regardless of their validity state
 function subscribePlan(uint8 planId, bool recurring) external payable
 ```
 
-Subscribe a user to a specific subscription plan
+Subscribes `msg.sender` to a plan.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| planId | uint8 | The identification of the subscription plan |
-| recurring | bool | Flag of recurring state of the subscription |
+| planId | uint8 | Plan identifier. |
+| recurring | bool | Whether the subscription should be recurring. |
 
 ### unsubscribePlan
 

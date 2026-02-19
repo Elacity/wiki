@@ -1,17 +1,24 @@
 ## BytesMask
 
+Produces fixed-width masks used to partition token-id ranges by plan id.
+
 ### maskU16
 
 ```solidity
 function maskU16(uint8 id) internal pure returns (bytes16 r)
 ```
 
-Calculate the mask to enforce we are keeping moving on a
-specific range of tokenIds for each plan
+Builds a `bytes16` mask containing a sentinel byte and the provided id.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| id | uint8 | uint8 Id of entity to mask |
+| id | uint8 | Identifier inserted into the mask. Must be in `[1, 255]`. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| r | bytes16 | Generated mask value. |
 

@@ -1,8 +1,8 @@
 ## StorageModule
 
-Abstract contract that provide ability to hold a `IStorage` contract type in
-`_store` as a public property. It also provides a `setStorage` internal method to allow
-to set a value to that property.
+Shared module that stores the protocol `IStorage` reference for inheriting contracts.
+
+_`setStorage` also acknowledges the caller contract in storage._
 
 ### _store
 
@@ -10,7 +10,7 @@ to set a value to that property.
 contract IStorage _store
 ```
 
-Address of the `IStorage` implementation
+Address of the active `IStorage` implementation.
 
 ### setStorage
 
@@ -18,11 +18,13 @@ Address of the `IStorage` implementation
 function setStorage(address s) internal
 ```
 
-Set value of the storage contract
+Sets the storage contract reference and acknowledges `address(this)`.
+
+_We need to be very careful here, this method is under security monitoring, it could change/deprecate anytime_
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| s | address | Address of the storage contract, it should be under `IStorage` interface. No checking will happen during this statement so it's important the address passed as argument is well under that wanted interface. |
+| s | address | Address expected to implement `IStorage`. |
 

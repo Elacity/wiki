@@ -1,21 +1,22 @@
 ## IDigitalAsset
 
+Interface for the digital asset contract.
+
 ### DigitalAssetRegistered
 
 ```solidity
 event DigitalAssetRegistered(address ledger, uint256 tokenId, address operator)
 ```
 
-This event is triggered when a new protected asset is created, this event doesn't concern
-unencrypted content at all. This event is basically used for mapping an asset to its Operative contract
+Emitted when a protected asset is linked to an operative contract.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| ledger | address | Address of the container - basically it's the channel where the asset if hosted on |
-| tokenId | uint256 | The id of the new asset |
-| operator | address | Address of the operative contract that handle the asset |
+| ledger | address | Channel contract address hosting the asset. |
+| tokenId | uint256 | Newly created asset id. |
+| operator | address | Operative contract handling protected access. |
 
 ### AssetCreated
 
@@ -23,18 +24,17 @@ unencrypted content at all. This event is basically used for mapping an asset to
 event AssetCreated(address _to, uint256 _tokenId, string _tokenURI, uint16 _opType, address opContract)
 ```
 
-This event is triggered when a new asset is created rgardless of whether it's encrypted or not.
-This event is mostly for mapping ownership and other details as an asset
+Emitted when a new asset is minted, encrypted or unencrypted.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _to | address | Address of the beneficiary |
-| _tokenId | uint256 | ID of the new asset |
-| _tokenURI | string | URI of the json-formatted metadata of the asset |
-| _opType | uint16 | Type of the operative contract in charge, `0` for unencrypted asset |
-| opContract | address | Address of the Operative contract in charge of the asset |
+| _to | address | Asset beneficiary. |
+| _tokenId | uint256 | Asset identifier. |
+| _tokenURI | string | Metadata URI of the json-formatted metadata of the asset. |
+| _opType | uint16 | Operative type id (`0` for unencrypted assets). |
+| opContract | address | Operative contract address, or zero when none is created. |
 
 ### mint
 
@@ -42,17 +42,16 @@ This event is mostly for mapping ownership and other details as an asset
 function mint(string _uri, uint16 opType, bytes opRawData, bytes sellRawData) external payable
 ```
 
-Create a new digital asset, generates the operative contract
-with initial tokens distribution and put it on sale
+Mints a digital asset and optionally initializes its protection/trading flow.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| _uri | string | string memory - Token URI |
-| opType | uint16 | uint16 - Operative type, can be 0: free, 1: Buy-Play, 2: Buy-Play-Sell. refers to OP_TYPE_* constants for complete set of the type |
-| opRawData | bytes | bytes calldata - Operative raw data, "0x" to omit operative contract creation |
-| sellRawData | bytes | bytes calldata - Sell raw data, "0x" to omit listing step |
+| _uri | string | Token metadata URI. |
+| opType | uint16 | Operative type id. |
+| opRawData | bytes | Encoded operative initialization data (`0x` to skip). |
+| sellRawData | bytes | Encoded listing data (`0x` to skip). |
 
 ### tokenURI
 
@@ -60,11 +59,17 @@ with initial tokens distribution and put it on sale
 function tokenURI(uint256 tokenId) external view returns (string)
 ```
 
-Retrieve the URI of the json-formatted metadata of the asset
+Returns metadata URI for a token.
 
 #### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| tokenId | uint256 | ID of the asset |
+| tokenId | uint256 | Asset id. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | string | URI string for the token metadata. |
 
