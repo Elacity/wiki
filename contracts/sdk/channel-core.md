@@ -1,6 +1,8 @@
 # ChannelCore
 
-The `ChannelCore` class provides a typed wrapper for interacting with the Elacity ChannelCore smart contract. This is the factory contract responsible for creating and managing Elacity channels.
+The `ChannelCore` class provides a typed wrapper for interacting with the Elacity ChannelCore smart contract. This is the factory contract responsible for creating Elacity channels.
+
+This is a **system-centric contract** — factory registration and ownership management are handled by the contract admin. Only channel creation is publicly available.
 
 ## Import
 
@@ -50,27 +52,9 @@ const tx = await channelCore.createChannel(
 
 **Returns:** `Promise<TransactionResponse>`
 
-**Note:** The factory for the specified `channelType` and `scope` must be registered before creating a channel.
+**Note:** The factory for the specified `channelType` and `scope` must be registered by the admin before creating a channel.
 
-## Factory Management
-
-### Register Factory
-
-Registers a factory contract for a specific channel type and scope combination.
-
-```typescript
-const tx = await channelCore.registerFactory(
-  channelType,  // Channel type (uint8)
-  scope,        // Channel scope (uint8)
-  factoryAddr   // Address of the factory contract
-);
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
-**Note:** Only the contract owner can register factories.
-
-## Ownership Management
+## Ownership
 
 ### Get Owner
 
@@ -82,48 +66,10 @@ const owner = await channelCore.owner();
 
 **Returns:** `Promise<string>`
 
-### Transfer Ownership
-
-Transfers ownership of the contract to a new owner.
-
-```typescript
-const tx = await channelCore.transferOwnership(newOwnerAddress);
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
-**Note:** Only the current owner can transfer ownership.
-
-### Renounce Ownership
-
-Renounces ownership of the contract, making it ownerless.
-
-```typescript
-const tx = await channelCore.renounceOwnership();
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
-**Note:** This action is irreversible.
-
-## Initialization
-
-### Initialize
-
-Initializes the contract (typically called during deployment).
-
-```typescript
-const tx = await channelCore.initialize();
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
 ## Use Cases
 
 ChannelCore is used for:
 - **Channel Creation**: Creating new StandardChannel or MultiChannel instances
-- **Factory Registration**: Registering channel factories for different types and scopes
-- **Ecosystem Management**: Centralized control over channel creation permissions
 
 ## Example: Creating a Channel
 

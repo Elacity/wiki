@@ -150,19 +150,6 @@ const royalties = await operative.royaltyInfo(salePrice);
 // Array<{ receiver: string, amount: bigint }>
 ```
 
-## Minting
-
-Batch-mint tokens to multiple recipients in one call (factory / ecosystem use).
-
-```typescript
-await operative.mintBatchEveryone(
-  [addr1, addr2],           // recipients
-  [ROYALTY_SHARE_ID, ...],  // token IDs
-  [500n, 500n],             // amounts
-  '0x'
-).then(tx => tx.commit());
-```
-
 ## Transfer authorisation
 
 Acknowledged ecosystem contracts (e.g. `AuthorityGateway`) need explicit permission
@@ -197,8 +184,6 @@ await operative.setPaymentProcessor(newProcessorAddress).then(tx => tx.commit())
 
 ```typescript
 const ownerAddr = await operative.owner();
-await operative.transferOwnership(newOwner).then(tx => tx.commit());
-await operative.renounceOwnership().then(tx => tx.commit()); // irreversible
 ```
 
 ---
