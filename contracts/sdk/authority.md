@@ -102,22 +102,6 @@ const tx = await gateway.sellAccess(
 
 **Returns:** `Promise<TransactionResponse>`
 
-### Sell Access On Behalf
-
-List access tokens for sale on behalf of another seller.
-
-```typescript
-const tx = await gateway.sellAccessOnBehalf(
-  sellerAddress,    // Address of the seller
-  channelAddress,   // Address of the channel
-  tokenId,          // Token ID
-  quantity,         // Number of tokens to sell
-  pricePerToken,    // Price per token (in wei)
-  payToken          // Address of the payment token
-);
-```
-
-**Returns:** `Promise<TransactionResponse>`
 
 ### Withdraw Listing
 
