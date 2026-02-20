@@ -1,8 +1,8 @@
 # MultiChannel
 
-The `MultiChannel` class provides a typed wrapper for interacting with Elacity MultiChannel contracts. MultiChannel is a specialized channel type that supports linking to other existing channels, allowing aggregation of content from multiple sources.
+The `MultiChannel` class provides a typed wrapper for interacting with Elacity MultiChannel contracts. A multi-channel bundles one or more standard channels under a single subscription umbrella — subscribers automatically gain access to every wrapped child channel.
 
-**Key Difference from StandardChannel:** MultiChannel does **not** support minting new tokens. Instead, it wraps existing channels to create a unified subscription experience.
+**Key difference from StandardChannel:** MultiChannel does **not** mint new digital assets. It wraps existing standard channels and manages its own subscription plans and royalty distribution.
 
 ## Import
 
@@ -13,159 +13,202 @@ import { MultiChannel } from '@elacity-js/contracts';
 ## Initialization
 
 ```typescript
-const multiChannel = new MultiChannel(contractAddress, adapter);
+const multi = new MultiChannel(contractAddress, runner);
 ```
 
-### Parameters
+**Parameters:**
 
-- `contractAddress` (`string`): The deployed address of the MultiChannel contract.
-- `adapter` (`IContractRunner`): An instance of an adapter (e.g., `EthersAdapter`, `ViemAdapter`).
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `contractAddress` | `string` | Deployed address of the MultiChannel contract. |
+| `runner` | `IContractRunner` | An adapter instance (e.g. `EthersAdapter`, `ViemAdapter`). |
 
-## Channel Wrapping
+---
 
-### Wrap Channel
-
-Link an existing channel into this MultiChannel.
+## Identity
 
 ```typescript
-const tx = await multiChannel.wrapChannel(existingChannelAddress);
+const channelName = await multi.name();
+const storageAddr = await multi.store(); // CoreStorage address
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+---
 
-**Note:** This allows the MultiChannel to aggregate content from multiple StandardChannels, providing subscribers access to all wrapped channels through a single subscription.
-
-## Subscription Management
-
-### Subscribe to Plan
-
-Subscribe to a subscription plan.
+## Channel wrapping
 
 ```typescript
-const tx = await multiChannel.subscribePlan(
-  planId,      // Plan ID (uint8)
-  recurring,   // Whether subscription is recurring (boolean)
-  value        // Optional: native value to send (for native payment)
-);
+// Wrap an existing standard channel into this bundle
+await multi.wrapChannel(standardChannelAddress).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+After wrapping, any active subscriber to this multi-channel also gains access to the wrapped channel's assets.
 
-### Check Active Subscription
+---
 
-Check if an account has an active subscription.
+## ERC-1155 methods
+
+MultiChannel is itself an ERC-1155 contract (holding royalty shares and subscription tokens).
 
 ```typescript
-const hasActive = await multiChannel.hasActiveSubscription(subscriberAddress);
+const balance  = await multi.balanceOf(account, tokenId);
+const balances = await multi.balanceOfBatch([addr1, addr2], [id1, id2]);
+const exists   = await multi.exists(tokenId);
+const supply   = await multi.totalSupply(tokenId);
+
+await multi.safeTransferFrom(from, to, tokenId, 1n, '0x').then(tx => tx.commit());
+await multi.safeBatchTransferFrom(from, to, ids, amounts, '0x').then(tx => tx.commit());
+
+const approved = await multi.isApprovedForAll(owner, operator);
+await multi.setApprovalForAll(operator, true).then(tx => tx.commit());
+
+const uri = await multi.uri(tokenId);
+const tokenUri = await multi.tokenURI(tokenId);
 ```
 
-**Returns:** `Promise<boolean>`
+---
 
-### Unsubscribe from Plan
-
-Unsubscribe from a subscription plan.
+## Payment processor
 
 ```typescript
-const tx = await multiChannel.unsubscribePlan(planId);
+const processor = await multi.paymentProcessor();
+await multi.setPaymentProcessor(newProcessorAddress).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+---
 
-### Get All Plans
-
-Retrieve all subscription plans.
+## Trade access
 
 ```typescript
-const plans = await multiChannel.getPlans();
-// Returns: Array<{ planId, payToken, price, duration, active }>
+const canTrade = await multi.hasTradeAccess(account, tokenId);
 ```
 
-**Returns:** `Promise<Array<{ planId: number; payToken: string; price: bigint; duration: bigint; active: boolean }>>`
+---
 
-### Get Plan by ID
-
-Retrieve a specific plan by its ID.
+## Transfer authorisation
 
 ```typescript
-const plan = await multiChannel.plans(planId);
-// Returns: { planId, payToken, price, duration, active }
+await multi.allowTransferOf(operatorAddress, tokenId).then(tx => tx.commit());
+const allowed = await multi.allowedTransfer(operatorAddress, tokenId);
 ```
 
-**Returns:** `Promise<{ planId: number; payToken: string; price: bigint; duration: bigint; active: boolean }>`
+---
 
-### Get Next Plan ID
-
-Get the next available plan ID.
+## Royalty information
 
 ```typescript
-const nextId = await multiChannel.nextPlanId();
+const royalties = await multi.royaltyInfo(salePrice);
+// Array<{ receiver: string, amount: bigint }>
 ```
 
-**Returns:** `Promise<number>`
+---
 
-## Rewards Management
+## Subscription management
 
-### Withdraw Rewards
-
-Withdraw accrued rewards for a specific payment token.
+### Subscribe / unsubscribe
 
 ```typescript
-const tx = await multiChannel.withdrawRewards(paymentTokenAddress);
+// ERC-20 plan
+await multi.subscribePlan(planId, false).then(tx => tx.commit());
+
+// Native currency plan
+await multi.subscribePlan(planId, false, totalValue).then(tx => tx.commit());
+
+await multi.unsubscribePlan(planId).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
-
-### Get Rewards Balance
-
-Get the rewards balance for a specific user and token.
+### Check subscription
 
 ```typescript
-const rewards = await multiChannel.rewardsOf(userAddress, tokenAddress);
+const active = await multi.hasActiveSubscription(subscriberAddress);
+// Returns true if active on this multi-channel OR any wrapped child channel
 ```
 
-**Returns:** `Promise<bigint>`
-
-### Get Rewards (Alternative)
-
-Alternative method to get rewards balance (legacy method name).
+### Read plans
 
 ```typescript
-const rewards = await multiChannel.rewards(userAddress, tokenAddress);
+const plans  = await multi.getPlans();
+const plan   = await multi.plans(planId);
+const nextId = await multi.nextPlanId();
+// { planId: number, payToken: string, price: bigint, duration: bigint, active: boolean }
 ```
 
-**Returns:** `Promise<bigint>`
+### Bulk plan management
 
-## Differences from StandardChannel
+```typescript
+await multi.bulkUpdatePlans([
+  { actionType: 'create', args: '0x...' },
+]).then(tx => tx.commit());
+```
+
+---
+
+## Rewards
+
+```typescript
+const accrued = await multi.rewardsOf(user, paymentToken);
+await multi.withdrawRewards(paymentToken).then(tx => tx.commit());
+await multi.incrementRewards(user, amount, paymentToken).then(tx => tx.commit());
+```
+
+---
+
+## Token-ownership-based access
+
+```typescript
+const qualifies = await multi.checkTokenOwnershipAccess(accountAddress);
+const threshold = await multi.ownershipThreshold(erc20TokenAddress);
+
+await multi.configureTokenOwnershipAccess([
+  { tokenAddress: erc20Address, threshold: 100n * 10n ** 18n },
+]).then(tx => tx.commit());
+```
+
+---
+
+## Access control (roles)
+
+```typescript
+const adminRole   = await multi.DEFAULT_ADMIN_ROLE();
+const planManager = await multi.PLAN_MANAGER();
+const royaltyTk   = await multi.ROYALTY_TOKEN();
+
+const isAdmin = await multi.hasRole(adminRole, account);
+
+await multi.grantRole(planManager, account).then(tx => tx.commit());
+await multi.revokeRole(planManager, account).then(tx => tx.commit());
+await multi.renounceRole(planManager, callerAddress).then(tx => tx.commit());
+```
+
+---
+
+## Comparison: StandardChannel vs MultiChannel
 
 | Feature | StandardChannel | MultiChannel |
 | :--- | :--- | :--- |
-| **Minting** | ✅ Supported | ❌ Not supported |
-| **Channel Wrapping** | ❌ Not supported | ✅ Supported |
-| **Subscription Management** | ✅ Supported | ✅ Supported |
-| **Rewards Management** | ✅ Supported | ✅ Supported |
-| **ERC-1155 Methods** | ✅ Full support | ✅ Full support |
+| Minting new assets | ✅ | ❌ |
+| Wrap other channels | ❌ | ✅ |
+| Subscription management | ✅ | ✅ |
+| Royalty distribution | ✅ | ✅ |
+| ERC-1155 | ✅ | ✅ |
+| Trade access gating | ✅ | ✅ |
+| Token-ownership access | ✅ | ✅ |
 
-## Use Cases
+---
 
-MultiChannel is ideal for:
-- **Content Aggregators**: Combine multiple creator channels into a single subscription
-- **Curated Collections**: Create subscription bundles from existing channels
-- **Cross-Channel Access**: Provide subscribers access to multiple channels through one subscription
-
-## Example: Creating a MultiChannel Bundle
+## Example: Creating a bundle
 
 ```typescript
 import { MultiChannel } from '@elacity-js/contracts';
-import { ViemAdapter } from '@elacity-js/contracts-viem-adapter';
 
-// Initialize MultiChannel
-const multiChannel = new MultiChannel(multiChannelAddress, adapter);
+const multi = new MultiChannel(multiChannelAddress, runner);
 
-// Wrap existing channels
-await multiChannel.wrapChannel(channel1Address);
-await multiChannel.wrapChannel(channel2Address);
-await multiChannel.wrapChannel(channel3Address);
+// Wrap three existing channels
+for (const addr of [channel1, channel2, channel3]) {
+  await multi.wrapChannel(addr).then(tx => tx.commit());
+}
 
-// Subscribers can now access all wrapped channels
-await multiChannel.subscribePlan(planId, true);
+// A single subscription now covers all three channels
+await multi.subscribePlan(0, false, price).then(tx => tx.commit());
+
+const active = await multi.hasActiveSubscription(userAddress); // true
 ```

@@ -1,15 +1,16 @@
 # TradeGateway
 
-The `TradeGateway` class provides a typed wrapper for interacting with the Elacity Trade Gateway smart contract. **This contract is dedicated to trading royalty tokens** (specifically `ROYALTY_SHARE` tokens from Operative contracts).
+The `TradeGateway` class provides a typed wrapper for interacting with the Elacity Trade Gateway smart contract. **This contract is dedicated to trading ERC-1155 tokens** — specifically royalty shares (`ROYALTY_SHARE` tokens from Operative contracts) and other non-access-token ERC-1155 tokens.
 
 ## Purpose
 
-TradeGateway facilitates the marketplace for royalty share trading, allowing users to:
-- Buy and sell royalty shares from Operative contracts
-- Create and manage offers for royalty tokens
-- Trade future revenue rights associated with digital assets
+TradeGateway facilitates the marketplace for ERC-1155 token trading, allowing users to:
+- List tokens for sale (`sellToken`)
+- Buy listed tokens (`buyToken`)
+- Remove listings (`withdrawListing`)
+- Create and manage buy-offers (`createOffer`, `acceptOffer`, `cancelOffer`)
 
-**Important:** This gateway is specifically for **royalty token trading**, not access tokens. For access token trading, see [AuthorityGateway](./authority.md).
+**Important:** `AccessToken(0x01)` trades are handled separately by the [`AuthorityGateway`](./authority.md). TradeGateway handles all other ERC-1155 token trades.
 
 ## Import
 
@@ -22,7 +23,7 @@ import { TradeGateway } from '@elacity-js/contracts';
 ### With an explicit address
 
 ```typescript
-const gateway = new TradeGateway(contractAddress, adapter);
+const gateway = new TradeGateway(contractAddress, runner);
 ```
 
 ### With a network (recommended for ecosystem contracts)
@@ -32,183 +33,160 @@ TradeGateway has **one fixed deployment per supported network**. Use `fromChainI
 ```typescript
 import { ChainId } from '@elacity-js/common';
 
-const chainId = ChainId.Base;
-const gateway = TradeGateway.fromChainId(chainId, adapter);
+const gateway = TradeGateway.fromChainId(ChainId.Elastos, runner);
 ```
 
-### Parameters
+**Parameters:**
 
 - `contractAddress` (`string`): The deployed address of the TradeGateway contract.
-- `adapter` (`IContractRunner`): An instance of an adapter (e.g., `EthersAdapter`, `ViemAdapter`).
+- `runner` (`IContractRunner`): An adapter instance (e.g. `EthersAdapter`, `ViemAdapter`).
 
-## Listing Royalty Tokens
+---
 
-### Sell Token
+## Listing tokens
 
-List royalty tokens (ROYALTY_SHARE) for sale in the marketplace.
+### `sellToken(contractAddress, tokenId, quantity, pricePerToken, payToken)`
 
-```typescript
-const tx = await gateway.sellToken(
-  contractAddress,  // Address of the token contract
-  tokenId,          // Token ID
-  quantity,         // Quantity to sell
-  pricePerToken,    // Price per token (in wei)
-  payToken          // Address of the payment token
-);
-```
-
-**Returns:** `Promise<TransactionResponse>`
-
-### Withdraw Listing
-
-Remove royalty tokens from the marketplace.
+Lists tokens for sale on the marketplace. The caller must have granted ERC-1155 approval to this contract prior to calling.
 
 ```typescript
-const tx = await gateway.withdrawListing(
-  operativeAddress, // Address of the operative contract
-  tokenId,          // Token ID
-  quantity          // Quantity to withdraw
-);
+await gateway.sellToken(
+  contractAddress,  // ERC-1155 contract address holding the tokens
+  tokenId,          // Token ID to list
+  quantity,         // Number of tokens to list
+  pricePerToken,    // Price per token (smallest denomination of payToken)
+  payToken          // ERC-20 payment token address (address(0) for native)
+).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+### `withdrawListing(contractAddress, tokenId, quantity)`
 
-## Buying Royalty Tokens
-
-### Buy Token
-
-Purchase royalty tokens from a seller in the marketplace.
+Removes a specified quantity of tokens from the caller's active listing.
 
 ```typescript
-const tx = await gateway.buyToken(
-  sellerAddress,    // Address of the seller
-  contractAddress,  // Address of the token contract
-  tokenId,          // Token ID
-  quantity,         // Quantity to buy
-  value             // Optional: native value to send (for native payment)
-);
+await gateway.withdrawListing(
+  contractAddress,  // ERC-1155 contract address
+  tokenId,          // Token ID to delist
+  quantity          // Number of tokens to remove from the listing
+).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+---
 
-## Offer Management
+## Buying tokens
 
-### Create Offer (ERC-20)
+### `buyToken(seller, contractAddress, tokenId, quantity, value?)`
 
-Create an offer for royalty tokens using an ERC-20 payment token.
+Purchases listed tokens from a seller.
+
+- For **native-currency** listings: `value` must cover `pricePerToken * quantity`.
+- For **ERC-20** listings: the buyer must have approved this contract for the required amount.
 
 ```typescript
-const tx = await gateway.createOfferERC20(
-  contractAddress,  // Address of the token contract
-  tokenId,          // Token ID
-  quantity,         // Quantity desired
-  pricePerToken,    // Price per token (in wei)
-  payToken          // Address of the ERC-20 payment token
-);
+// ERC-20 payment
+await gateway.buyToken(sellerAddress, contractAddress, tokenId, quantity).then(tx => tx.commit());
+
+// Native currency payment
+await gateway.buyToken(sellerAddress, contractAddress, tokenId, quantity, totalValue).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+---
 
-### Create Offer (Native)
+## Offer management
 
-Create an offer for royalty tokens using native currency.
+### `createOfferERC20(contractAddress, tokenId, quantity, pricePerToken, payToken)`
+
+Creates a buy-offer using an ERC-20 payment token. The caller must have pre-approved this contract for the total amount.
+Only one active offer per caller per token is allowed; cancel the existing offer first.
 
 ```typescript
-const tx = await gateway.createOfferNative(
-  contractAddress,  // Address of the token contract
-  tokenId,          // Token ID
-  quantity,         // Quantity desired
-  pricePerToken,    // Price per token (in wei)
-  value             // Total native value to send (must match quantity * price)
-);
+await gateway.createOfferERC20(
+  contractAddress,
+  tokenId,
+  quantity,
+  pricePerToken,
+  payTokenAddress
+).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+### `createOfferNative(contractAddress, tokenId, quantity, pricePerToken, value)`
 
-### Cancel Offer
-
-Cancel an existing offer.
+Creates a buy-offer using native currency. `value` must be at least `pricePerToken * quantity`.
+The native currency is held in escrow until the offer is accepted or cancelled.
 
 ```typescript
-const tx = await gateway.cancelOffer(
-  contractAddress,  // Address of the token contract
-  tokenId           // Token ID
-);
+await gateway.createOfferNative(
+  contractAddress,
+  tokenId,
+  quantity,
+  pricePerToken,
+  totalValue
+).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+### `acceptOffer(from, contractAddress, tokenId, quantity)`
 
-### Accept Offer
-
-Accept an offer as a seller.
+Accepts a pending buy-offer. The caller (seller) must own and have approved the tokens.
+Platform fees are deducted before the seller receives payment.
 
 ```typescript
-const tx = await gateway.acceptOffer(
-  fromAddress,      // Address of the offer creator
-  contractAddress,  // Address of the token contract
-  tokenId,          // Token ID
-  quantity          // Quantity to accept
-);
+await gateway.acceptOffer(
+  offererAddress,   // Address that created the offer
+  contractAddress,
+  tokenId,
+  quantity          // Must be ≤ offered quantity
+).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+### `cancelOffer(contractAddress, tokenId)`
 
-## Marketplace Queries
-
-### Get Listing Information
-
-Get detailed listing information for a specific seller.
+Cancels the caller's pending offer. Refunds any escrowed native currency.
 
 ```typescript
-const listing = await gateway.listings(
-  operativeAddress, // Address of the operative contract
-  tokenId,          // Token ID
-  sellerAddress     // Address of the seller
-);
-// Returns: [quantity, pricePerToken, payToken]
+await gateway.cancelOffer(contractAddress, tokenId).then(tx => tx.commit());
 ```
 
-**Returns:** `Promise<[bigint, bigint, string]>` - `[quantity, pricePerToken, payToken]`
+---
 
-### Get Sellers
+## Marketplace queries
 
-Get the list of sellers offering royalty tokens for a specific operative and token ID.
+### `listings(contractAddress, tokenId, seller)`
+
+Returns the listing details for a specific seller.
 
 ```typescript
-const sellers = await gateway.sellersOf(
-  operativeAddress, // Address of the operative contract
-  tokenId           // Token ID
+const [quantity, pricePerToken, payToken] = await gateway.listings(
+  contractAddress,
+  tokenId,
+  sellerAddress
 );
+// Promise<[bigint, bigint, string]>
 ```
 
-**Returns:** `Promise<string[]>` - Array of seller addresses
+### `sellersOf(contractAddress, tokenId)`
 
-### Get Storage Contract
+Returns the list of addresses currently selling a given token.
 
-Get the storage contract address used by the TradeGateway.
+```typescript
+const sellers = await gateway.sellersOf(contractAddress, tokenId);
+// Promise<string[]>
+```
+
+### `store()`
+
+Returns the address of the central storage contract.
 
 ```typescript
 const storageAddress = await gateway.store();
 ```
 
-**Returns:** `Promise<string>`
-
-## Understanding Royalty Tokens
-
-Royalty tokens (`ROYALTY_SHARE`) represent fractional ownership of future revenue from digital assets. When you purchase royalty tokens through TradeGateway:
-
-- You acquire a percentage of future revenue (typically measured in 1/1000th units)
-- Revenue is distributed proportionally to all royalty token holders
-- Royalty tokens can be traded freely on the marketplace
-- Each Operative contract manages royalty distribution for its associated digital asset
-
-**Example:** If an Operative has 1000 total royalty shares and you own 100 shares, you own 10% of future revenue from that asset.
+---
 
 ## Comparison with AuthorityGateway
 
 | Feature | TradeGateway | AuthorityGateway |
 | :--- | :--- | :--- |
-| **Token Type** | ROYALTY_SHARE tokens | ACCESS_TOKEN tokens |
-| **Purpose** | Trade future revenue rights | Trade content access rights |
-| **Token Source** | Operative contracts | Operative contracts |
-| **Use Case** | Investment in creator revenue | Purchase content access |
+| **Token type** | Any ERC-1155 (ROYALTY_SHARE, etc.) | ACCESS_TOKEN only |
+| **Purpose** | Trade revenue rights & other ERC-1155s | Trade content access rights |
+| **Offer system** | ✅ Yes | ❌ No |
+| **Native + ERC-20** | ✅ Both | ✅ Both |
