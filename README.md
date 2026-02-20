@@ -12,7 +12,7 @@ The Elacity SDK suite is designed to be modular, type-safe, and easy to integrat
 REST and GraphQL API client for interacting with Elacity's backend services:
 - Multi-network support (Elastos, Base, Arbitrum Sepolia)
 - SIWE (Sign-In with Ethereum) authentication
-- Services for NFTs, Collections, Channels, and Identity management
+- Services for NFTs, Channels, and Identity management
 
 [→ View API documentation](api/SUMMARY.md)
 

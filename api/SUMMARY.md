@@ -35,6 +35,7 @@ The API SDK automatically routes requests to the appropriate environment based o
 ## Getting Started
 * [Installation](getting-started/installation.md)
 * [Authentication](getting-started/authentication.md)
+* [Dataset and Pagination](getting-started/dataset-and-pagination.md)
 
 ## Services
 * [Account & Identity](services/identity.md)

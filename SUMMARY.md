@@ -7,11 +7,11 @@
 * [Introduction](api/SUMMARY.md)
 * [Installation](api/getting-started/installation.md)
 * [Authentication](api/getting-started/authentication.md)
+* [Dataset and Pagination](api/getting-started/dataset-and-pagination.md)
 * Services
   * [Account & Identity](api/services/identity.md)
   * [Channels](api/services/channel.md)
   * [NFTs](api/services/nfts.md)
-  * [Collections](api/services/collection.md)
 
 ## Contracts (EVM-compatible)
 * [Introduction](contracts/README.md)
