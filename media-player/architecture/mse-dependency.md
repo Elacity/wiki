@@ -19,7 +19,7 @@ The Elacity Media Player's architecture fundamentally depends on MSE:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  C Core (WASM) - Media Processing                      │
+│  C Core (WASM) - Media Processing                       │
 │  - DASH parsing                                         │
 │  - Segment decryption                                   │
 │  - Media decoding (via FFmpeg)                          │

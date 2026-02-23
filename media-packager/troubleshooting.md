@@ -76,8 +76,8 @@ await apiClient.auth.login(address, signature);
 
 **Possible Causes:**
 1. Backend workflow not processing
-2. Strategy not available (Firebase not initialized, polling service unavailable)
-3. Polling timeout (backend)
+2. Wrong listener strategy for the runtime environment
+3. Polling interval too large or backend delays
 
 **Solution:**
 ```typescript
@@ -86,13 +86,15 @@ const job = await apiClient.backgroundJobs.retrieveBackgroundJob(requestId);
 console.log('Job status:', job.status);
 console.log('Steps:', job.steps);
 
-// Check available strategies
-import { WorkflowListenerFactory } from '@elacity-js/media-packager';
-const strategies = WorkflowListenerFactory.getAvailableStrategies(apiClient.backgroundJobs);
+// Check available workflow listener strategies
+import { WorkflowProgressListenerFactory } from '@elacity-js/media-packager';
+const strategies = WorkflowProgressListenerFactory.getAvailableStrategies();
 console.log('Available strategies:', strategies.map(s => s.constructor.name));
 
-// For frontend, ensure Firebase is initialized if you want real-time updates
-// Otherwise, polling strategy will be used automatically
+// If running in Node.js without global WebSocket, force polling mode:
+const mediaService = new MediaUploadService(apiClient, contractRunner, contractExecutor, {
+  listenerMode: 'polling',
+});
 ```
 
 ### Encoding Fails
@@ -201,12 +203,12 @@ await apiClient.backgroundJobs.updateBackgroundJob(requestId, {
 
 ### Polling Too Frequent
 
-**Symptom:** Too many API calls when polling
+**Symptom:** Too many API calls when using polling strategy
 
 **Solution:**
-- Adjust polling interval (currently 2 seconds)
-- Use Firebase listeners in frontend instead of polling
-- Consider exponential backoff for failed requests
+- Increase `pollInterval` in `MediaUploadService` options
+- Use `listenerMode: 'websocket'` when available
+- Consider environment-based strategy selection (browser: websocket, server: polling)
 
 ## Best Practices
 

@@ -32,7 +32,7 @@ The Elacity Media Player is a production-ready media playback solution that comb
 
 ### ⚡ Performance
 - **WebAssembly**: Near-native performance for media processing
-- **Multi-threading**: Pthread support for parallel processing
+- **Multi-threading**: Pthread support for parallel processing backed with []`SharedArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)
 - **Memory Management**: Efficient buffer management and cleanup
 - **Low Latency**: Optimized for streaming scenarios
 
@@ -61,13 +61,13 @@ The player consists of two main layers:
 
 ### C Core (WASM)
 - **Location**: `src/` directory
-- **Purpose**: Media parsing, decoding, and DRM protocol handling
-- **Libraries**: FFmpeg (libavcodec, libavformat, libavutil), OpenSSL, libxml2
-- **Output**: WebAssembly module (`player.wasm`)
+- **Purpose**: Media parsing, decoding/remuxing, and DRM protocol handling
+- **Libraries**: FFmpeg (libavcodec, libavformat, libavutil), OpenSSL for all security purposes, libxml2 for DASH-MPEG format handling
+- **Output**: WebAssembly module (`player.wasm`) with all the glue codes that come with it to serve as runtime `player.js` and `player.worker.js`
 
 ### JavaScript Wrapper
 - **Location**: `packages/player/` directory
-- **Purpose**: Browser API, MSE integration, DRM license acquisition
+- **Purpose**: Browser API, MSE integration, DRM license acquisition adapter
 - **Dependencies**: Lit Protocol SDK, Media Chrome (UI)
 - **Output**: NPM package (`@elacity-js/media-player`)
 
@@ -106,7 +106,7 @@ The player consists of two main layers:
 ### Known Limitations
 - ⚠️ **Browser-Only**: Cannot be used outside browser environments
 - ⚠️ **iOS Memory**: Maximum 1GB WASM memory limit
-- ⚠️ **WebView Support**: Limited due to SharedArrayBuffer requirements (especially iOS WebView)
+- ⚠️ **WebView Support**: Limited due to SharedArrayBuffer requirements (especially WebView)
 - ⚠️ **Single Instance**: One player instance per page (MSE implementation limitation)
 - ⚠️ **Server-Side**: Not suitable for Node.js or server-side media processing
 

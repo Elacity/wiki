@@ -1,6 +1,6 @@
 # Media Upload Quick Start
 
-> **Last Updated**: 2026-02-12
+> **Last Updated**: 2026-02-23
 
 This guide shows you how to quickly get started with uploading and minting media content.
 
@@ -37,6 +37,23 @@ const mediaService = new MediaUploadService(
   contractExecutor,
   {
     abiEncoder,
+  }
+);
+```
+
+### Optional: Choose Workflow Listener Strategy
+
+By default, the workflow uses the `websocket` listener strategy. You can force long polling or provide a custom strategy:
+
+```typescript
+const mediaService = new MediaUploadService(
+  apiClient,
+  contractRunner,
+  contractExecutor,
+  {
+    abiEncoder,
+    listenerMode: 'polling', // or 'websocket' (default)
+    pollInterval: 3000,      // only relevant for polling strategy
   }
 );
 ```
@@ -78,7 +95,7 @@ handle.onProgress((progress) => {
   console.log(`Upload progress: ${progress.progress}% - ${progress.step} - ${progress.caption}`);
 });
 
-// 4. Start WebSocket + polling listeners
+// 4. Start the configured listener strategy
 handle.startListening();
 
 // 5. Wait for encoding to complete
@@ -132,23 +149,18 @@ await handle.waitCompletionOf('generate_metadata');
 
 ## Progress Tracking
 
-The `MediaUploadHandle` uses a dual-strategy approach for real-time progress:
+`MediaUploadHandle` runs one workflow listener strategy for the full handle lifecycle:
 
-- **WebSocket** (`wfp-socket`): Push-based updates from the backend. Connects automatically when `startListening()` is called.
-- **Polling** (fallback): Fetches background job state every 2 seconds. Always available.
+- **WebSocket** (`listenerMode: 'websocket'`, default): push-based updates from `wfp-socket/ws/{requestId}`.
+- **Long polling** (`listenerMode: 'polling'`): periodic background-job sync via API.
+- **Custom** (`listenerStrategy`): your own `WorkflowProgressListenerStrategy` implementation.
 
-Both channels feed into the same `onProgress()` callback, so consumers get a unified stream of updates regardless of which channel delivered the event.
-
-**In Browser:**
-- WebSocket connects to `wfp-socket/ws/{requestId}` for real-time updates
-- Polling runs in parallel as a fallback
-
-**In Node.js:**
-- Polling is the primary channel (WebSocket requires a polyfill like `ws`)
+All strategies emit the same normalized `UploadProgress` payload through `handle.onProgress()`.
 
 ## Next Steps
 
 - See [Media Upload Service](../services/media-upload-service.md) for detailed API reference
 - See [Workflow Architecture](../architecture/workflow.md) for the complete flow diagram
+- See [Listener Strategies](../architecture/listener-strategies.md) for strategy interface details
 - See [Background Job Service](../../api/services/background-job.md) for tracking workflows
 - See [Channel Service](../../api/services/channel.md) for channel management

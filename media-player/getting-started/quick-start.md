@@ -30,11 +30,11 @@ await setup({
 ```javascript
 const videoElement = document.querySelector('video');
 const manifestUrl = 'https://example.com/manifest.mpd';
-const tokenAddress = '0x...'; // NFT contract address
+const channelAddr = '0x...'; // NFT contract address (channel)
 const tokenId = '123'; // NFT token ID
 
 const player = await create(
-  tokenAddress,
+  channelAddr,
   tokenId,
   videoElement,
   manifestUrl

@@ -1,6 +1,6 @@
 # Media Upload Workflow Architecture
 
-> **Last Updated**: 2026-02-12
+> **Last Updated**: 2026-02-23
 
 ## Overview
 
@@ -16,7 +16,7 @@ flowchart TD
     D --> E[Upload Media File to Backend]
     E --> F[Return MediaUploadHandle]
     F --> G[Backend Triggers Transcode + Encode]
-    G --> H[Track Progress via WebSocket + Polling]
+    G --> H[Track Progress via Selected Listener Strategy]
     H --> I{generate_metadata completed?}
     I -->|Yes| J{mint?}
     J -->|Yes| K[Mint to Blockchain]
@@ -30,13 +30,13 @@ flowchart TD
     style K fill:#e8f5e9
 ```
 
-## WebSocket Progress Flow
+## Listener Progress Flow
 
 ```mermaid
 sequenceDiagram
     participant Client as Client (SDK)
     participant Handle as MediaUploadHandle
-    participant WS as wfp-socket (WebSocket)
+    participant Listener as Workflow Listener Strategy
     participant API as Background Job API
     participant Backend as Backend Workflows
 
@@ -44,28 +44,22 @@ sequenceDiagram
     Client->>Handle: handle.onProgress(callback)
     Client->>Handle: handle.startListening()
 
-    Handle->>WS: Connect to /wfp-socket/ws/{requestId}
-    Handle->>API: Start polling loop (every 2s)
+    Handle->>Listener: Start selected strategy
+    Note over Listener: websocket (default) or polling/custom
 
-    Backend->>WS: WorkflowProgressPayload (transcode update)
-    WS->>Handle: onmessage → reportProgress()
+    Backend->>Listener: progress update
+    Listener->>Handle: sync step + emit progress
     Handle->>Client: callback({ step, progress, caption })
 
     Backend->>API: Update background job status
-    API->>Handle: Poll response → syncFromJob()
-    Handle->>Client: callback({ step, progress, caption })
-
-    Backend->>WS: WorkflowProgressPayload (encode complete)
-    WS->>Handle: onmessage → reportProgress()
-    Handle->>Client: callback({ step: 'dash_encode', progress: 90 })
-
-    Note over Handle: completion >= 95% → stop polling
+    API->>Listener: retrieveBackgroundJob() (polling mode)
+    Listener->>Handle: syncFromJob() + emit progress
 
     Client->>Handle: waitCompletionOf('generate_metadata')
     Handle-->>Client: resolves with StepProgress
 
     Client->>Handle: handle.stopListening()
-    Handle->>WS: close()
+    Handle->>Listener: stop strategy
 ```
 
 ## Component Architecture
@@ -78,12 +72,14 @@ MediaUploadService
 │   ├── uploadMediaFile() → Backend
 │   └── uploadMetadataFolder() → IPFS
 ├── MediaUploadHandle (from transport.ts)
-│   ├── WebSocket connection → wfp-socket/ws/{requestId}
-│   ├── Polling loop → Background Job API (every 2s)
+│   ├── WorkflowProgressListenerStrategy (selected once)
+│   │   ├── WebSocket strategy → wfp-socket/ws/{requestId}
+│   │   ├── Polling strategy → Background Job API (interval-based)
+│   │   └── Custom strategy → user implementation
 │   ├── onProgress(callback) → subscribe to progress events
 │   ├── reportProgress(payload) → emit progress to listeners
-│   ├── startListening() → activate WebSocket + polling
-│   ├── stopListening() → close WebSocket + stop polling
+│   ├── startListening() → activate selected strategy
+│   ├── stopListening() → stop selected strategy
 │   └── waitCompletionOf(step) → await step completion
 ├── UploadRequest (from transport.ts)
 │   ├── acquire() → create BackgroundJob + return MediaUploadHandle
@@ -176,17 +172,17 @@ const result = await uploader.uploadMediaFile(file, {
 
 ### Step 4: Transcode + Encode (40-90%)
 
-After the media file is uploaded, the backend runs transcode and DASH encoding workflows. Progress is tracked via two channels:
+After the media file is uploaded, the backend runs transcode and DASH encoding workflows. Progress is tracked by the selected workflow listener strategy:
 
-**WebSocket (`wfp-socket`):**
-- Handle connects to `wfp-socket/ws/{requestId}`
+**WebSocket strategy (default):**
+- Connects to `wfp-socket/ws/{requestId}`
 - Receives `WorkflowProgressPayload` messages in real time
-- Each message contains `completion`, `currentStep.step`, `currentStep.caption`, `currentStep.progress`
+- Syncs per-step and overall completion into the handle
 
-**Polling (fallback):**
-- Polls `backgroundJobs.retrieveBackgroundJob(requestId)` every 2 seconds
-- Syncs internal step state from the job entity
-- Stops automatically when completion reaches 95%
+**Polling strategy:**
+- Polls `backgroundJobs.retrieveBackgroundJob(requestId)` on an interval (default: 2 seconds)
+- Syncs full background-job state into the handle
+- Stops automatically when completion reaches terminal state
 
 **Backend Processing:**
 - Transcodes media to h264/av1 (max 1080p)
@@ -272,9 +268,9 @@ mint(
 | Create Job | 0% | ~1s | Service |
 | Upload Thumbnail | 5% | ~5s | Service |
 | Upload Media | 10-40% | ~30s-2min | FileUploader (XMLHttpRequest) |
-| Transcode | 40-50% | ~2-4 min | WebSocket / Polling |
-| Encode DASH | 50-90% | ~4-8 min | WebSocket / Polling |
-| Generate Metadata | 90-95% | ~10s | Backend (via polling) |
+| Transcode | 40-50% | ~2-4 min | Listener strategy |
+| Encode DASH | 50-90% | ~4-8 min | Listener strategy |
+| Generate Metadata | 90-95% | ~10s | Listener strategy |
 | Mint | 95-100% | ~15-30s | Service |
 
 ## Error Handling
@@ -320,8 +316,8 @@ await handle.waitCompletionOf('generate_metadata');
 ### Frontend (Browser)
 
 **Progress Channels:**
-- WebSocket connects to `wfp-socket/ws/{requestId}` for push-based updates
-- Polling runs as fallback every 2 seconds
+- Default `websocket` strategy connects to `wfp-socket/ws/{requestId}`
+- Optional `polling` strategy can be selected in `MediaUploadService` options
 - XMLHttpRequest progress tracking for file uploads
 
 **Requirements:**
@@ -331,15 +327,15 @@ await handle.waitCompletionOf('generate_metadata');
 ### Backend (Node.js)
 
 **Progress Channels:**
-- Polling only (WebSocket may not be available without a polyfill)
-- Polls background job API every 2 seconds
+- Recommended: `listenerMode: 'polling'` for deterministic server behavior
+- Polls background job API at configured interval
 - No file upload progress tracking (uses fetch)
 
 **Requirements:**
 - `form-data` package for FormData support
 - File-like objects instead of browser File objects
 - Background job service available via `apiClient.backgroundJobs`
-- Optional: WebSocket polyfill (e.g. `ws`) for push-based progress
+- Optional: WebSocket polyfill (e.g. `ws`) if using `listenerMode: 'websocket'`
 
 ## Integration Points
 

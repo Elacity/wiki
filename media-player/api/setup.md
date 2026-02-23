@@ -1,10 +1,10 @@
 # Setup & Configuration
 
-Configure the Elacity Media Player before creating player instances.
+Configure the Elacity Media Player before creating player instances. The `setup()` function initializes the WebAssembly runtime, loads the crypto protocol module, and configures DRM system defaults. It must be called **once** before any call to `create()`.
 
 ## `setup()`
 
-One-time initialization function. Must be called before creating any player instances.
+One-time initialisation function that bootstraps the WebAssembly runtime, loads the crypto protocol module, and registers default DRM system priorities. It **must** be called before any call to `create()`. Subsequent player instances share the runtime initialised here, so you only need to call it once at application startup.
 
 ### Signature
 
@@ -12,294 +12,142 @@ One-time initialization function. Must be called before creating any player inst
 function setup<T>(options: PlayerInitOptions<T>): Promise<void>
 ```
 
-### Parameters
+### `PlayerInitOptions<T>`
 
 ```typescript
-interface PlayerInitOptions<T> {
-  cryptoVersion?: string;
+interface PlayerInitOptions<T> extends Record<string, any> {
   provider?: T;
+  drmSystem?: Partial<Record<DrmSystemType, DrmSystemParameters>>;
+  cryptoVersion?: string;
   remote?: boolean;
-  ENABLE_FS_LOGGING?: boolean;
-  "go.glueCode"?: boolean;
-  drmSystem?: Partial<DrmSystemType, DrmSystemParameters>;
 }
 ```
 
 ### Options
 
-#### `provider` (required)
-Web3 provider for blockchain interactions.
+#### `provider` (required in practice)
 
-**Supported Providers:**
+An EIP-1193 compatible Web3 provider. The player does not construct providers itself; it only uses the injected provider to resolve blockchain operations when needed (e.g. license acquisition, EIP-712 signing).
+
+Supported providers:
 - Ethers.js `BrowserProvider`
 - Viem `WalletClient`
-- Any EIP-1193 compatible provider
-
-**Example:**
+- Any object implementing the EIP-1193 `request()` interface
 
 ```javascript
-import { ethers } from 'ethers';
+import { BrowserProvider } from 'ethers';
+import { setup } from '@elacity-js/media-player';
 
 await setup({
-  provider: new ethers.BrowserProvider(window.ethereum)
+  provider: new BrowserProvider(window.ethereum),
 });
 ```
 
-#### `drmSystem` (optional)
-DRM system configuration with priorities.
+The provider must support at least:
+- `eth_requestAccounts` – wallet connection
+- `eth_signTypedData_v4` – EIP-712 message signing (used for DRM license acquisition)
+- `eth_call` – read calls to smart contracts
 
-**Default:**
+#### `drmSystem` (optional)
+
+Configures which DRM systems are available and in what order they are attempted. Lower `priority` value means the system is tried first. A system can be disabled entirely with `disabled: true`.
+
+```typescript
+type DrmSystemType =
+  | 'cenc:web3-drm-v1'
+  | 'cenc:lit-drm-v1'
+  | 'cenc:lit-drm-sa-v1';
+
+type DrmSystemParameters = {
+  /** Lower value = higher priority. Default is 0. */
+  priority?: number;
+  /** When true the system is skipped entirely. Default is false. */
+  disabled?: boolean;
+};
+```
+
+**Default configuration:**
 
 ```javascript
 {
-  'cenc:web3-drm-v1': { priority: 5 },
-  'cenc:lit-drm-v1': { priority: 1 },
-  'cenc:lit-drm-sa-v1': { priority: 0 }
+  'cenc:lit-drm-sa-v1': { priority: 0 },  // Tried first
+  'cenc:lit-drm-v1':    { priority: 1 },   // Tried second
+  'cenc:web3-drm-v1':   { priority: 5 },   // Tried last
 }
 ```
 
-**Example:**
+**Override example:**
 
 ```javascript
 await setup({
   provider: window.ethereum,
   drmSystem: {
-    'cenc:lit-drm-v1': { priority: 0 },
-    'cenc:web3-drm-v1': { priority: 1 }
-  }
+    'cenc:web3-drm-v1': { priority: 0 },
+    'cenc:lit-drm-v1':  { disabled: true },
+  },
 });
 ```
 
+This configuration makes the Web3-based DRM the primary system and disables Lit Protocol entirely.
+
 #### `cryptoVersion` (optional)
-Version of crypto protocol module to load.
+
+Version of the crypto protocol WASM module to load. Only relevant when `cenc:web3-drm-v1` is enabled.
 
 **Default:** `"1.0.11"`
-
-**Example:**
 
 ```javascript
 await setup({
   provider: window.ethereum,
-  cryptoVersion: '1.0.12'
+  cryptoVersion: '1.0.12',
 });
 ```
 
 #### `remote` (optional)
-Load WASM modules from CDN instead of local files.
+
+When `true`, WASM modules are fetched from a CDN (jsDelivr) instead of being resolved locally. Useful for applications that do not bundle the WASM files.
 
 **Default:** `false`
-
-**Example:**
 
 ```javascript
 await setup({
   provider: window.ethereum,
-  remote: true  // Load from jsdelivr CDN
+  remote: true,
 });
 ```
 
-#### `ENABLE_FS_LOGGING` (optional)
-Enable file system logging for debugging.
-
-**Default:** `false`
-
-**Example:**
-
-```javascript
-await setup({
-  provider: window.ethereum,
-  ENABLE_FS_LOGGING: true
-});
-```
-
-#### `"go.glueCode"` (optional)
-Load Go WASM glue code (for crypto protocol).
-
-**Default:** `false`
-
-**Example:**
-
-```javascript
-await setup({
-  provider: window.ethereum,
-  "go.glueCode": true
-});
-```
+---
 
 ## `setProvider()`
 
-Update the Web3 provider after setup.
+The player itself does not manage wallet connections — it only consumes an externally supplied Web3 provider for blockchain operations such as license acquisition and EIP-712 signing. `setProvider()` lets you swap or update that provider at any point after `setup()` has been called, which is particularly useful when the user switches wallets or accounts.
 
 ### Signature
 
 ```typescript
-function setProvider<T>(
-  provider: T,
-  accountOverride?: string | null
-): void
+function setProvider<T>(provider: T, accountOverride?: string | null): void
 ```
 
 ### Parameters
 
-- **`provider`**: New Web3 provider
-- **`accountOverride`**: Optional smart account address override
+| Parameter | Type | Description |
+|---|---|---|
+| `provider` | `T` | New EIP-1193 provider instance |
+| `accountOverride` | `string \| null` | Optional address to use instead of requesting accounts from the provider (e.g. a smart-account address) |
 
 ### Example
 
 ```javascript
 import { setProvider } from '@elacity-js/media-player';
 
-// Update provider
+// After wallet switch
 setProvider(newProvider);
 
-// Update provider with smart account override
+// With a smart-account address
 setProvider(newProvider, '0x<smart-account-address>');
 ```
 
-## Complete Setup Example
-
-```javascript
-import { setup, create, setProvider } from '@elacity-js/media-player';
-import { ethers } from 'ethers';
-
-async function initializePlayer() {
-  // 1. Setup player (one-time)
-  await setup({
-    provider: new ethers.BrowserProvider(window.ethereum),
-    drmSystem: {
-      'cenc:lit-drm-v1': { priority: 0 },
-      'cenc:web3-drm-v1': { priority: 1 }
-    },
-    remote: false,
-    ENABLE_FS_LOGGING: false
-  });
-  
-  // 2. (Optional) Update provider later
-  const newProvider = new ethers.BrowserProvider(anotherWallet);
-  setProvider(newProvider);
-  
-  // 3. Create player instances
-  const player = await create(
-    tokenAddress,
-    tokenId,
-    videoElement,
-    manifestUrl
-  );
-}
-```
-
-## DRM System Configuration
-
-### Priority System
-
-Lower priority number = higher priority. Systems are tried in order:
-
-```javascript
-{
-  'cenc:lit-drm-sa-v1': { priority: 0 },  // Tried first
-  'cenc:lit-drm-v1': { priority: 1 },     // Tried second
-  'cenc:web3-drm-v1': { priority: 5 }     // Tried last
-}
-```
-
-### Per-Playback Override
-
-You can override DRM system per playback:
-
-```javascript
-await player.play({
-  drmSystem: {
-    'cenc:web3-drm-v1': { priority: 0 }  // Override for this playback
-  }
-});
-```
-
-## Provider Requirements
-
-### EIP-1193 Interface
-
-The provider must implement:
-
-```typescript
-interface EIP1193Provider {
-  request(args: { method: string; params?: any[] }): Promise<any>;
-  on(event: string, handler: Function): void;
-  removeListener(event: string, handler: Function): void;
-}
-```
-
-### Required Methods
-
-- `eth_requestAccounts`: Request wallet connection
-- `eth_signTypedData_v4`: Sign EIP-712 messages
-- `eth_call`: Read from smart contracts
-
-### WalletConnect Support
-
-WalletConnect providers are supported:
-
-```javascript
-import { WalletConnectProvider } from '@walletconnect/ethereum-provider';
-
-const provider = await WalletConnectProvider.init({
-  projectId: 'your-project-id',
-  chains: [1],
-  showQrModal: true
-});
-
-await setup({ provider });
-```
-
-## Error Handling
-
-### Setup Errors
-
-```javascript
-try {
-  await setup({
-    provider: window.ethereum
-  });
-} catch (error) {
-  if (error.message.includes('SharedArrayBuffer')) {
-    console.error('COOP/COEP headers missing');
-  } else if (error.message.includes('provider')) {
-    console.error('Invalid provider');
-  }
-}
-```
-
-### Provider Errors
-
-```javascript
-player.addEventListener('sign_error', (e) => {
-  if (e.detail.error.code === 4001) {
-    console.error('User rejected signature');
-  }
-});
-```
-
-## Best Practices
-
-### 1. Single Setup Call
-
-Call `setup()` once at application startup:
-
-```javascript
-// ✅ Good
-await setup({ provider: window.ethereum });
-
-// Create multiple players
-const player1 = await create(...);
-const player2 = await create(...);
-
-// ❌ Bad - Don't call setup multiple times
-await setup({ provider: window.ethereum });
-await setup({ provider: window.ethereum }); // Redundant
-```
-
-### 2. Provider Management
-
-Update provider when wallet changes:
+### Reacting to wallet changes
 
 ```javascript
 window.ethereum.on('accountsChanged', (accounts) => {
@@ -309,26 +157,71 @@ window.ethereum.on('accountsChanged', (accounts) => {
 });
 ```
 
-### 3. DRM Priority
+---
 
-Configure DRM systems based on your use case:
+## Complete Setup Example
 
 ```javascript
-// NFT marketplace - prioritize Lit Protocol
-{
-  'cenc:lit-drm-v1': { priority: 0 },
-  'cenc:web3-drm-v1': { priority: 1 }
-}
+import { setup, create, setProvider } from '@elacity-js/media-player';
+import { BrowserProvider } from 'ethers';
 
-// Custom DRM - prioritize Web3
-{
-  'cenc:web3-drm-v1': { priority: 0 },
-  'cenc:lit-drm-v1': { priority: 1 }
+async function initializePlayer(videoElement, tokenAddress, tokenId, manifestUrl) {
+  // 1. One-time setup
+  await setup({
+    provider: new BrowserProvider(window.ethereum),
+    drmSystem: {
+      'cenc:web3-drm-v1': { priority: 0 },
+      'cenc:lit-drm-v1':  { priority: 1 },
+    },
+  });
+
+  // 2. Create as many player instances as needed
+  const player = await create(tokenAddress, tokenId, videoElement, manifestUrl);
+
+  // 3. Update provider later if the wallet changes
+  window.ethereum.on('accountsChanged', () => {
+    setProvider(window.ethereum);
+  });
+
+  return player;
 }
 ```
 
-## Related Documentation
+---
 
-- [Player API](player.md) - Player instance API
-- [DRM Systems](../architecture/drm-systems.md) - DRM configuration
-- [Troubleshooting](../development/troubleshooting.md) - Common setup issues
+## Error Handling
+
+### Setup errors
+
+`setup()` may throw if the runtime fails to initialise:
+
+```javascript
+try {
+  await setup({ provider: window.ethereum });
+} catch (error) {
+  if (error.message.includes('SharedArrayBuffer')) {
+    // COOP/COEP headers are missing – required for multi-threaded WASM
+    console.error('Cross-Origin-Opener-Policy / Cross-Origin-Embedder-Policy headers not set');
+  } else {
+    console.error('Player setup failed:', error);
+  }
+}
+```
+
+### Provider errors
+
+Provider-related errors surface as player events after setup. See the [Events](events.md) page for `sign_request`, `sign_error`, and `error` handling.
+
+---
+
+## Best Practices
+
+1. **Call `setup()` once** at application startup. Creating multiple player instances afterwards is fine, but calling `setup()` again is redundant.
+2. **Update the provider via `setProvider()`**, not by calling `setup()` a second time.
+3. **Configure DRM priorities** based on your deployment: if all your content uses Web3-based DRM, set its priority to `0` and disable others to avoid unnecessary fallback attempts.
+
+## Related
+
+- [Player API](player.md) – creating and controlling player instances
+- [Events](events.md) – event handling and error recovery
+- [DRM Systems](../architecture/drm-systems.md) – how each DRM system works

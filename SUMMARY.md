@@ -41,7 +41,7 @@
   * [Media Upload Service](media-packager/services/media-upload-service.md)
 
 ## Media Player
-* [Introduction](media-player/SUMMARY.md)
+* [Overview](media-player/SUMMARY.md)
 * Getting Started
   * [Introduction](media-player/getting-started/introduction.md)
   * [Installation](media-player/getting-started/installation.md)

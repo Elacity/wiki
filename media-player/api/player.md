@@ -1,206 +1,206 @@
-# Player API Reference
+# Player API
 
-Complete API reference for the Elacity Media Player.
+This page covers the `create()` factory function, the `ElacityMediaPlayer` instance it returns, and the supporting types used during playback.
 
 ## `create()`
 
-Creates a new player instance.
+Factory function that creates a new player instance bound to a specific NFT and a DOM media element. Each call spins up its own WASM remuxer context, fetches the DASH manifest at the given URL, and prepares `MediaSource` buffers for adaptive streaming. You can create multiple independent player instances after a single `setup()` call.
 
 ### Signature
 
 ```typescript
 function create(
-  tokenAddress: string,
+  tokenAddr: string,
   tokenId: string,
-  videoElement: HTMLVideoElement | HTMLMediaElement,
+  videoElement: HTMLMediaElement | HTMLVideoElement,
   src: string,
-  options?: PlaybackOptions
+  options?: PlaybackOptions,
 ): Promise<ElacityMediaPlayer>
 ```
 
 ### Parameters
 
-- **`tokenAddress`** (string): NFT contract address
-- **`tokenId`** (string): NFT token ID
-- **`videoElement`** (HTMLVideoElement): Video element for playback
-- **`src`** (string): DASH manifest URL (`.mpd` file)
-- **`options`** (PlaybackOptions, optional): Playback configuration
+| Parameter | Type | Description |
+|---|---|---|
+| `tokenAddr` | `string` | NFT contract address that owns the media |
+| `tokenId` | `string` | Token ID within the contract |
+| `videoElement` | `HTMLMediaElement` | The `<video>` or `<audio>` DOM element used for rendering |
+| `src` | `string` | URL of the MPEG-DASH manifest (`.mpd` file) |
+| `options` | `PlaybackOptions` | Optional playback configuration (see below) |
 
 ### Returns
 
-Promise resolving to `ElacityMediaPlayer` instance.
+A `Promise<ElacityMediaPlayer>` that resolves once the WASM runtime is ready and the manifest has been parsed.
 
 ### Example
 
 ```javascript
+import { create } from '@elacity-js/media-player';
+
+const video = document.querySelector('video');
+
 const player = await create(
-  '0x1234...',
-  '1',
-  document.querySelector('video'),
-  'https://example.com/manifest.mpd'
+  '0xAbC123...', // NFT contract address
+  '42',          // token ID
+  video,
+  'https://cdn.example.com/content/manifest.mpd',
 );
+
+await player.play();
 ```
+
+---
 
 ## `ElacityMediaPlayer`
 
-Main player class extending `EventTarget`.
+The main player interface returned by `create()`. It provides methods to control playback, manage DRM certificates, and inspect media metadata. It extends the standard [`EventTarget`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget) interface, so you attach listeners with `addEventListener` / `removeEventListener` as you would with any DOM element. See the [Events](events.md) page for the full list of emitted events.
+
+```typescript
+interface ElacityMediaPlayer extends EventTarget {
+  metadata: PlayerMetadata;
+  certificate?: PlayerCertificate;
+  currentTime: number;
+
+  play(options?: PlaybackOptions): Promise<PlayerSignal>;
+  pause(): void;
+  setCertificate(certificate: PlayerCertificate): void;
+}
+```
 
 ### Properties
 
-#### `currentTime: number`
-Current playback time in seconds. Can be set to seek.
+#### `metadata`
 
-```javascript
-player.currentTime = 120; // Seek to 2 minutes
-const time = player.currentTime;
+Read-only media information populated after the WASM remuxer has parsed the manifest.
+
+```typescript
+interface PlayerMetadata {
+  /** MIME type + codec strings for each stream (e.g. `['video/mp4; codecs="avc1.64001f"']`) */
+  mime_codec: string[];
+  /** Total duration in seconds */
+  duration: number;
+}
 ```
 
-#### `metadata: PlayerMetadata`
-Media metadata object containing:
-- `mime_codec: string[]`: MIME types and codecs
-- `duration: number`: Media duration in seconds
-
 ```javascript
-console.log(player.metadata.duration);
-console.log(player.metadata.mime_codec);
+console.log(player.metadata.duration);    // 183.5
+console.log(player.metadata.mime_codec);  // ['video/mp4; codecs="avc1.64001f"', 'audio/mp4; codecs="mp4a.40.2"']
 ```
 
-#### `certificate?: PlayerCertificate`
-Optional certificate for pre-authentication:
-- `signer: string`: Signer address
-- `signature: string`: EIP-712 signature
+#### `certificate`
+
+An optional pre-authentication certificate. When set before calling `play()`, the player skips the wallet-signature step and uses this certificate for license acquisition instead.
+
+```typescript
+interface PlayerCertificate {
+  /** Ethereum address of the signer */
+  signer: string;
+  /** EIP-712 signature */
+  signature: string;
+}
+```
+
+#### `currentTime`
+
+Current playback position in seconds. Readable and writable – assigning a value triggers a seek.
 
 ```javascript
-player.setCertificate({
-  signer: '0x...',
-  signature: '0x...'
-});
+// Read
+console.log(player.currentTime); // 42.3
+
+// Seek
+player.currentTime = 120; // jump to 2 minutes
 ```
 
 ### Methods
 
-#### `play(options?: PlaybackOptions): Promise<PlayerSignal>`
+#### `play(options?)`
 
-Starts or resumes playback.
+Starts or resumes playback. If a DRM license is required and no `certificate` is available, the player will request a wallet signature (emitting `sign_request` and then `certificate` events).
 
-**Parameters:**
-- `options` (PlaybackOptions, optional): Playback options
+```typescript
+play(options?: PlaybackOptions): Promise<PlayerSignal>
+```
 
-**Returns:** Promise resolving to `PlayerSignal`
+The returned `PlayerSignal` indicates the outcome of the play request:
 
-**Example:**
+```typescript
+type PlayerSignal<T = unknown> = {
+  code: number;
+  value: number;
+  data: T;
+};
+```
+
+**Signal codes** (exported as `PLAYER_SIGNAL`):
+
+| Constant | Code | Meaning |
+|---|---|---|
+| `SIG_STREAM_FETCH_START` | `11` | Stream fetch has begun |
+| `SIG_STREAM_END` | `10` | Stream reached the end |
+| `SIG_LICENSE_OK` | `20` | License acquired successfully |
+| `SIG_LICENSE_REQUIRED` | `21` | License is required before playback can start |
+
+**Example – basic playback:**
+
+```javascript
+const signal = await player.play();
+console.log('play resolved with signal code:', signal.code);
+```
+
+**Example – with certificate (skip wallet signature):**
 
 ```javascript
 await player.play({
   certificate: {
     signer: '0x...',
-    signature: '0x...'
+    signature: '0x...',
   },
-  onBeforePlay: async (instance) => {
-    // Custom logic before playback
-  }
 });
 ```
 
-#### `pause(): void`
+**Example – with pre-play hook:**
 
-Pauses playback.
+```javascript
+await player.play({
+  onBeforePlay: async (instance) => {
+    // e.g. log analytics, request certificate from a backend, etc.
+    const cert = await fetchCertificateFromServer(instance);
+    instance.setCertificate(cert);
+  },
+});
+```
+
+#### `pause()`
+
+Pauses playback. Emits a `paused` event (via the `statechanged` pipeline).
 
 ```javascript
 player.pause();
 ```
 
-#### `setCertificate(certificate: PlayerCertificate): void`
+#### `setCertificate(certificate)`
 
-Sets certificate for pre-authentication.
+Sets the certificate on the player instance for pre-authentication. Calling this before `play()` prevents the player from requesting a wallet signature.
+
+```typescript
+setCertificate(certificate: PlayerCertificate): void
+```
 
 ```javascript
 player.setCertificate({
-  signer: '0x...',
-  signature: '0x...'
+  signer: '0xAbC...',
+  signature: '0x1234...',
 });
+
+await player.play(); // no wallet popup
 ```
 
-### Events
-
-The player extends `EventTarget` and emits the following events:
-
-#### `ready`
-Emitted when player is ready for playback.
-
-```javascript
-player.addEventListener('ready', () => {
-  console.log('Player ready');
-});
-```
-
-#### `playing`
-Emitted when playback starts.
-
-```javascript
-player.addEventListener('playing', () => {
-  console.log('Playing');
-});
-```
-
-#### `paused`
-Emitted when playback is paused.
-
-```javascript
-player.addEventListener('paused', () => {
-  console.log('Paused');
-});
-```
-
-#### `ended`
-Emitted when playback ends.
-
-```javascript
-player.addEventListener('ended', () => {
-  console.log('Playback ended');
-});
-```
-
-#### `error`
-Emitted when an error occurs.
-
-```javascript
-player.addEventListener('error', (e) => {
-  console.error('Error:', e.detail);
-});
-```
-
-#### `certificate`
-Emitted when a certificate is generated (for caching).
-
-```javascript
-player.addEventListener('certificate', (e) => {
-  const { signature, signer, entity } = e.detail;
-  // Cache certificate
-});
-```
-
-#### `sign_request`
-Emitted when signature is requested from wallet.
-
-```javascript
-player.addEventListener('sign_request', () => {
-  console.log('Please sign the message');
-});
-```
-
-#### `sign_error`
-Emitted when signature request fails.
-
-```javascript
-player.addEventListener('sign_error', (e) => {
-  console.error('Signature error:', e.detail.error);
-});
-```
+---
 
 ## `PlaybackOptions`
 
-Configuration options for playback.
+Configuration object accepted by both `create()` and `player.play()`. When passed to `create()`, the options act as defaults for every subsequent `play()` call on that instance. When passed directly to `play()`, they apply only to that playback session and can override both the create-time defaults and the global DRM setup.
 
 ```typescript
 interface PlaybackOptions {
@@ -219,108 +219,124 @@ interface PlaybackOptions {
   };
   skinVideoHTML?: string;
   skinAudioHTML?: string;
-  drmSystem?: Partial<DrmSystemType, DrmSystemParameters>;
+  drmSystem?: Partial<Record<DrmSystemType, DrmSystemParameters>>;
 }
 ```
 
-### Options
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `appendMode` | `string` | `'segments'` | SourceBuffer append mode |
+| `segleng` | `number` | `2` | Segment length (in seconds) |
+| `fromts` | `number` | `0` | Start playback at this timestamp (seconds) |
+| `logLevel` | `number` | `24` | WASM-side log verbosity (0 = silent, higher = more verbose) |
+| `certificate` | `PlayerCertificate` | – | Pre-authentication certificate |
+| `aspectRatio` | `string` | `'16/9'` | CSS aspect-ratio for the video element |
+| `thumbnail` | `string` | – | Poster / thumbnail URL |
+| `onBeforePlay` | `(instance) => Promise<void>` | – | Async callback invoked just before playback begins |
+| `handlebars` | `object` | – | Template variables injected into the player skin |
+| `skinVideoHTML` | `string` | – | Custom HTML template for the video player skin |
+| `skinAudioHTML` | `string` | – | Custom HTML template for the audio player skin |
+| `drmSystem` | `Partial<Record<DrmSystemType, DrmSystemParameters>>` | – | Per-playback DRM override (see [Setup](setup.md#drmsystem-optional)) |
 
-- **`appendMode`**: SourceBuffer append mode
-- **`segleng`**: Segment length
-- **`fromts`**: Start timestamp
-- **`logLevel`**: Logging level (0-4)
-- **`certificate`**: Pre-authentication certificate
-- **`aspectRatio`**: Video aspect ratio
-- **`thumbnail`**: Thumbnail URL
-- **`onBeforePlay`**: Callback before playback starts
-- **`handlebars`**: Template variables for UI
-- **`skinVideoHTML`**: Custom video skin HTML
-- **`skinAudioHTML`**: Custom audio skin HTML
-- **`drmSystem`**: DRM system override
+### Per-playback DRM override
 
-## `PlayerSignal`
-
-Signal object emitted by player.
-
-```typescript
-interface PlayerSignal<T = any> {
-  code: number;
-  value: number;
-  data: T;
-}
-```
-
-### Signal Codes
-
-- `10`: Stream ended (`SIG_STREAM_END`)
-- `11`: Stream fetch started (`SIG_STREAM_FETCH_START`)
-- `20`: License acquired (`SIG_LICENSE_OK`)
-- `21`: License required (`SIG_LICENSE_REQUIRED`)
-
-## `PLAYER_STATE`
-
-Player state constants.
-
-```javascript
-PLAYER_STATE.LOADING   // Initializing
-PLAYER_STATE.LOADED    // Media loaded
-PLAYER_STATE.INITED    // Initialized
-PLAYER_STATE.READY     // Ready for playback
-PLAYER_STATE.PLAYING   // Currently playing
-PLAYER_STATE.STREAMING // Streaming content
-PLAYER_STATE.PAUSED    // Paused
-PLAYER_STATE.STOPPED   // Stopped
-PLAYER_STATE.ENDED     // Playback ended
-```
-
-## Usage Examples
-
-### Basic Playback
-
-```javascript
-const player = await create(
-  tokenAddress,
-  tokenId,
-  videoElement,
-  manifestUrl
-);
-
-await player.play();
-```
-
-### With Certificate
+The `drmSystem` option lets you override the default DRM configuration for a single `play()` call without affecting the global setup:
 
 ```javascript
 await player.play({
-  certificate: {
-    signer: '0x...',
-    signature: '0x...'
-  }
+  drmSystem: {
+    'cenc:web3-drm-v1': { priority: 0 }, // force Web3 DRM for this playback
+  },
 });
 ```
 
-### Event Handling
+---
+
+## `PLAYER_STATE`
+
+Enumeration of all states a player instance can be in throughout its lifecycle. The current state is communicated via the [`statechanged`](events.md#statechanged) event, which fires on every transition and carries both the previous and the new state. The JS layer also re-emits high-level convenience events (`ready`, `playing`, `paused`, `ended`) derived from these transitions.
 
 ```javascript
-player.addEventListener('ready', () => {
-  console.log('Ready');
+import { PLAYER_STATE } from '@elacity-js/media-player';
+```
+
+| Constant | Value | Description |
+|---|---|---|
+| `LOADING` | `'loading'` | Runtime is initialising and loading resources |
+| `LOADED` | `'loaded'` | Media and buffers are fully loaded |
+| `INITED` | `'inited'` | Playback initiated, awaiting metadata |
+| `READY` | `'ready'` | Metadata loaded, ready to play |
+| `PLAYING` | `'playing'` | Media is actively playing |
+| `STREAMING` | `'streaming'` | Actively streaming from the network source |
+| `PAUSED` | `'paused'` | Playback paused |
+| `STOPPED` | `'stopped'` | Playback stopped (may require re-initialisation) |
+| `ENDED` | `'ended'` | Reached the end of the media |
+
+---
+
+## `ffmpegUtils()`
+
+Utility function that exposes MIME-type detection backed by the WASM runtime's internal ffprobe logic. It operates on the Emscripten virtual filesystem, so you can write a file into it and then probe its MIME type without any network round-trip.
+
+```typescript
+function ffmpegUtils(): Promise<{
+  ffmime: (filePath?: string) => string;
+  ffmimeFS: any;
+}>
+```
+
+| Return field | Description |
+|---|---|
+| `ffmime(filePath?)` | Returns the MIME type string for a given file path in the virtual filesystem |
+| `ffmimeFS` | Reference to the Emscripten virtual filesystem – allows writing files before probing |
+
+```javascript
+import { ffmpegUtils } from '@elacity-js/media-player';
+
+const { ffmime, ffmimeFS } = await ffmpegUtils();
+const mime = ffmime('/input.mp4'); // 'video/mp4'
+```
+
+---
+
+## Full Integration Example
+
+```javascript
+import { setup, create, PLAYER_STATE } from '@elacity-js/media-player';
+import { BrowserProvider } from 'ethers';
+
+const provider = new BrowserProvider(window.ethereum);
+await setup({ provider });
+
+const video = document.getElementById('player');
+const player = await create(
+  '0xAbC123...',
+  '42',
+  video,
+  'https://cdn.example.com/manifest.mpd',
+);
+
+// Listen for state transitions
+player.addEventListener('statechanged', (e) => {
+  const { prevState, state } = e.detail;
+  console.log(`${prevState} → ${state}`);
 });
 
+// Handle errors
 player.addEventListener('error', (e) => {
-  console.error('Error:', e.detail);
+  console.error('Playback error:', e.detail.error);
 });
 
+// Cache certificates for reuse
+player.addEventListener('certificate', (e) => {
+  sessionStorage.setItem('drm-cert', JSON.stringify(e.detail));
+});
+
+// Start playback
 await player.play();
 ```
 
-### Seeking
+## Related
 
-```javascript
-player.currentTime = 120; // Seek to 2 minutes
-```
-
-## Related Documentation
-
-- [Setup API](setup.md) - Player setup and configuration
-- [Events](events.md) - Event handling guide
-- [Types](types.md) - TypeScript type definitions
+- [Setup & Configuration](setup.md) – `setup()`, `setProvider()`, DRM configuration
+- [Events](events.md) – event reference and handling patterns

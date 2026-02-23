@@ -8,10 +8,10 @@ The player is built on a two-layer architecture with a **critical dependency on 
 
 ```
 ┌─────────────────────────────────────────┐
-│   JavaScript Wrapper (Browser API)     │
+│   JavaScript Wrapper (Browser API)      │
 │   - Player Controller                   │
 │   - MSE Integration (CRITICAL)          │
-│   - License Acquisition                 │
+│   - License Acquisition (Adapter)       │
 │   - Event Management                    │
 └─────────────────┬───────────────────────┘
                   │
@@ -22,7 +22,7 @@ The player is built on a two-layer architecture with a **critical dependency on 
 │   - FFmpeg Integration                  │
 │   - DASH Parser                         │
 │   - Media Decoding                      │
-│   - DRM Protocol                        │
+│   - DRM Protocol - `CEK` provider       │
 │   - Remuxing to browser format          │
 └─────────────────┬───────────────────────┘
                   │
@@ -278,7 +278,7 @@ WASM Error → JavaScript Callback → Player Event → User Handler
 - Ephemeral memory for sensitive data
 - Secure key exchange via ECDH
 
-### Certificate Validation
+### Certificate Validation (only for [`cenc:web3-drm-v1`](./drm-systems#cenc:web3-drm-v1))
 
 - EIP-712 signature verification
 - Certificate caching for performance

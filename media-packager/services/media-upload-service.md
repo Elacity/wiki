@@ -2,19 +2,19 @@
 
 > **Package**: `@elacity-js/media-packager`
 > **Service**: `MediaUploadService`
-> **Last Updated**: 2026-02-12
+> **Last Updated**: 2026-02-23
 
 ## Overview
 
 The `MediaUploadService` orchestrates the complete media upload and minting workflow on the Elacity platform. It handles file uploads, transcoding, encoding, metadata generation, and optional blockchain minting.
 
-Progress is tracked in real time through a `MediaUploadHandle` that combines **WebSocket** push updates (`wfp-socket`) with a **polling** fallback.
+Progress is tracked in real time through a `MediaUploadHandle` using a single workflow listener strategy selected at service construction time (default: WebSocket).
 
 ## Key Features
 
 - **Complete Workflow Orchestration**: Handles all steps from upload to minting
 - **Handle-Based Progress**: `execute()` returns an `IMediaUploadHandle` for real-time tracking
-- **WebSocket + Polling**: Dual-strategy progress via `wfp-socket` WebSocket with automatic polling fallback
+- **Workflow Listener Strategy**: WebSocket (default), long-polling, or custom strategy
 - **Background Job Integration**: Automatic background job creation and tracking
 - **Cross-Platform**: Works in both browser and Node.js environments
 - **Flexible Minting**: Optional automatic minting or manual `mint()` call on the handle
@@ -47,6 +47,9 @@ const mediaService = new MediaUploadService(
   {
     abiEncoder,
     baseUrl: 'https://api.ela.city/api', // optional override
+    // listenerMode: 'polling', // optional, default is 'websocket'
+    // pollInterval: 3000,      // optional
+    // listenerStrategy: customStrategy, // optional custom implementation
   }
 );
 ```
@@ -70,7 +73,7 @@ handle.onProgress((progress) => {
   console.log(`${progress.progress}% - ${progress.step} - ${progress.caption}`);
 });
 
-// 4. Start WebSocket + polling listeners
+// 4. Start the configured listener strategy
 handle.startListening();
 
 // 5. Wait for encoding to finish
@@ -93,6 +96,9 @@ new MediaUploadService(
   options?: {
     abiEncoder?: IAbiEncoder;
     baseUrl?: string;
+    pollInterval?: number;
+    listenerMode?: 'websocket' | 'polling';
+    listenerStrategy?: WorkflowProgressListenerStrategy<MediaUploadInput>;
   }
 )
 ```
@@ -104,6 +110,9 @@ new MediaUploadService(
 - `options`: Optional configuration
   - `abiEncoder`: ABI encoder implementation (`EthersAbiEncoder`, `ViemAbiEncoder`, or custom `IAbiEncoder`)
   - `baseUrl`: Override base URL for uploads
+  - `pollInterval`: Poll interval in ms for polling strategy (default: `2000`)
+  - `listenerMode`: Built-in strategy mode (`'websocket'` default, `'polling'` optional)
+  - `listenerStrategy`: Custom strategy implementing `WorkflowProgressListenerStrategy`
 
 ### Methods
 
@@ -185,7 +194,7 @@ The handle returned by `execute()` exposes the following interface:
 
 #### `onProgress(callback): void`
 
-Registers a callback to receive real-time progress updates from both WebSocket and polling sources.
+Registers a callback to receive real-time progress updates from the active listener strategy.
 
 ```typescript
 handle.onProgress((progress: UploadProgress) => {
@@ -199,11 +208,11 @@ Manually injects a progress event (used internally by `MediaUploadService` durin
 
 #### `startListening(): void`
 
-Starts both the WebSocket connection and the polling loop. Safe to call multiple times.
+Starts the selected listener strategy. Safe to call multiple times.
 
 #### `stopListening(): void`
 
-Stops polling and closes the WebSocket connection. The handle can be re-activated later by calling `startListening()` again.
+Stops the selected listener strategy. The handle can be re-activated later by calling `startListening()` again.
 
 #### `waitCompletionOf(step): Promise<StepProgress>`
 
@@ -343,6 +352,8 @@ interface IMediaUploadHandle {
   requestId: string;
   mintable: boolean;
   completion: number;
+  startListening(): void;
+  stopListening(): void;
   waitCompletionOf(step: string): Promise<StepProgress>;
   reportProgress(payload: UploadProgress): void;
   onProgress(callback: UploadProgressCallback): void;
@@ -365,8 +376,8 @@ The service handles these steps automatically:
 
 4. **Transcode & Encode** (Contribution: 10% + 40% weights)
    - Backend automatically processes transcode and encoding
-   - Progress pushed via WebSocket (`wfp-socket`) in real time
-   - Polling fallback fetches background job state every 2 seconds
+   - Progress tracked through the selected workflow listener strategy
+   - WebSocket mode uses `wfp-socket`; polling mode queries background jobs periodically
    - Encoding result is extracted from the job payload
 
 5. **Generate Metadata** (Contribution: 5% weight)
@@ -377,7 +388,7 @@ The service handles these steps automatically:
 
 ## Progress Tracking
 
-Progress is tracked through the `MediaUploadHandle` using a dual-strategy approach:
+Progress is tracked through `MediaUploadHandle` using a single selected strategy:
 
 ```typescript
 const handle = await mediaService.execute(request);
@@ -389,7 +400,7 @@ handle.onProgress((progress: UploadProgress) => {
   console.log(`Caption: ${progress.caption}`);
 });
 
-// Start WebSocket + polling
+// Start selected strategy
 handle.startListening();
 
 // Wait for a specific step
@@ -399,7 +410,7 @@ await handle.waitCompletionOf('generate_metadata');
 **Progress Ranges:**
 - 0-5%: Creating background job + uploading thumbnail
 - 5-40%: Uploading media file
-- 40-90%: Transcoding + encoding (tracked via WebSocket / polling)
+- 40-90%: Transcoding + encoding (tracked by configured strategy)
 - 90-95%: Generating metadata
 - 95-100%: Minting to blockchain (if autoMint enabled)
 
@@ -435,12 +446,12 @@ const request = await mediaService.createRequest(input);
 const handle = await mediaService.execute(request);
 
 handle.onProgress((p) => updateUI(p));
-handle.startListening(); // WebSocket connects + polling starts
+handle.startListening(); // WebSocket strategy by default
 ```
 
 **Automatic Behavior:**
+- Default strategy is WebSocket (`listenerMode: 'websocket'`)
 - WebSocket connects to `wfp-socket/ws/{requestId}` for push-based progress
-- Polling runs as a fallback every 2 seconds
 - XMLHttpRequest progress tracking for file uploads
 
 ### Backend (Node.js)
@@ -450,21 +461,23 @@ const mediaService = new MediaUploadService(
   apiClient,
   contractRunner,
   contractExecutor,
-  { abiEncoder }
+  {
+    abiEncoder,
+    listenerMode: 'polling',
+  }
 );
 
 const request = await mediaService.createRequest(input);
 const handle = await mediaService.execute(request);
 
 handle.onProgress((p) => console.log(p));
-handle.startListening(); // Polling only (WebSocket may not be available)
+handle.startListening(); // Polling strategy
 
 await handle.waitCompletionOf('generate_metadata');
 ```
 
 **Automatic Behavior:**
-- If `WebSocket` global is unavailable, only polling is used
-- Polls background job API every 2 seconds
+- Polls background job API at `pollInterval` (default: 2 seconds)
 - Suitable for server-side processing
 
 **Requirements:**

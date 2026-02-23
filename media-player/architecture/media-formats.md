@@ -17,20 +17,20 @@ The player exclusively supports **MPEG-DASH** (Dynamic Adaptive Streaming over H
 ### H.264/AVC ✅
 - **MediaSource Support**: ✅ Full support
 - **Encoding Support**: ✅ Full support
-- **Encoders**: libx264, h264_vaapi, h264_v4l2m2m
+- **Encoders**: `libx264`, `h264_vaapi`, `h264_v4l2m2m`
 - **Profiles**: Baseline, Main, High
 - **Best For**: Maximum compatibility
 
-### AV1 ⚠️
-- **MediaSource Support**: ⚠️ Not supported on iOS
+### AV1 ✅
+- **MediaSource Support**: ✅ Full support
 - **Encoding Support**: ✅ Full support
-- **Encoders**: libaom-av1, libdav1d
+- **Encoders**: `libaom-av1`, `libdav1d`
 - **Best For**: Modern browsers, better compression
 
-### VP9 ❌
-- **MediaSource Support**: ❌ Not supported
+### VP9 ✅
+- **MediaSource Support**: ✅ supported
 - **Encoding Support**: ✅ Supported
-- **Encoders**: vp9_vaapi
+- **Encoders**: `vp9_vaapi`
 - **Note**: Can be decoded but not played via MSE
 
 ### H.265/HEVC ❌
@@ -45,8 +45,8 @@ The player exclusively supports **MPEG-DASH** (Dynamic Adaptive Streaming over H
 - **Encoding Support**: ✅ Full support
 - **Best For**: Maximum compatibility
 
-### Opus ⚠️
-- **MediaSource Support**: ⚠️ Limited browser support
+### Opus ✅
+- **MediaSource Support**: ✅ Full support
 - **Encoding Support**: ✅ Full support
 - **Best For**: High quality audio
 

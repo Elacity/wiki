@@ -20,7 +20,6 @@ The Elacity Media Player is a WebAssembly-based media player designed for DRM-pr
 - [Setup & Configuration](api/setup.md)
 - [Player API](api/player.md)
 - [Events](api/events.md)
-- [Types](api/types.md)
 
 ## Development
 
