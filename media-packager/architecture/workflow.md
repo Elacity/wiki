@@ -316,8 +316,8 @@ await handle.waitCompletionOf('generate_metadata');
 ### Frontend (Browser)
 
 **Progress Channels:**
-- Default `websocket` strategy connects to `wfp-socket/ws/{requestId}`
-- Optional `polling` strategy can be selected in `MediaUploadService` options
+- Default WebSocket strategy connects to `wfp-socket/ws/{requestId}`
+- Optional polling strategy can be selected by providing `PollingProgressListenerStrategy`
 - XMLHttpRequest progress tracking for file uploads
 
 **Requirements:**
@@ -327,15 +327,15 @@ await handle.waitCompletionOf('generate_metadata');
 ### Backend (Node.js)
 
 **Progress Channels:**
-- Recommended: `listenerMode: 'polling'` for deterministic server behavior
-- Polls background job API at configured interval
+- Recommended: `PollingProgressListenerStrategy` for deterministic server behavior
+- Polls background job API at strategy-configured interval
 - No file upload progress tracking (uses fetch)
 
 **Requirements:**
 - `form-data` package for FormData support
 - File-like objects instead of browser File objects
 - Background job service available via `apiClient.backgroundJobs`
-- Optional: WebSocket polyfill (e.g. `ws`) if using `listenerMode: 'websocket'`
+- Optional: WebSocket polyfill (e.g. `ws`) if using the default WebSocket strategy in Node.js
 
 ## Integration Points
 

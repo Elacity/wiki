@@ -92,8 +92,10 @@ const strategies = WorkflowProgressListenerFactory.getAvailableStrategies();
 console.log('Available strategies:', strategies.map(s => s.constructor.name));
 
 // If running in Node.js without global WebSocket, force polling mode:
+import { PollingProgressListenerStrategy } from '@elacity-js/media-packager/listeners';
+
 const mediaService = new MediaUploadService(apiClient, contractRunner, contractExecutor, {
-  listenerMode: 'polling',
+  listenerStrategy: new PollingProgressListenerStrategy({ pollInterval: 3000 }),
 });
 ```
 
@@ -206,8 +208,8 @@ await apiClient.backgroundJobs.updateBackgroundJob(requestId, {
 **Symptom:** Too many API calls when using polling strategy
 
 **Solution:**
-- Increase `pollInterval` in `MediaUploadService` options
-- Use `listenerMode: 'websocket'` when available
+- Increase poll interval in `PollingProgressListenerStrategy` options
+- Use default WebSocket strategy when available
 - Consider environment-based strategy selection (browser: websocket, server: polling)
 
 ## Best Practices

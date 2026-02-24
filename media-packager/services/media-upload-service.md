@@ -32,6 +32,7 @@ See [Installation Guide](../getting-started/installation.md) for setup instructi
 import { ElacityClient } from '@elacity-js/api';
 import { EthersAdapter, EthersAbiEncoder } from '@elacity-js/contracts-ethers-adapter';
 import { MediaUploadService } from '@elacity-js/media-packager';
+import { PollingProgressListenerStrategy } from '@elacity-js/media-packager/listeners';
 
 const apiClient = new ElacityClient({ chainId: ChainId.BASE_MAINNET });
 await apiClient.auth.login(address, signature);
@@ -47,9 +48,7 @@ const mediaService = new MediaUploadService(
   {
     abiEncoder,
     baseUrl: 'https://api.ela.city/api', // optional override
-    // listenerMode: 'polling', // optional, default is 'websocket'
-    // pollInterval: 3000,      // optional
-    // listenerStrategy: customStrategy, // optional custom implementation
+    // listenerStrategy: new PollingProgressListenerStrategy({ pollInterval: 3000 }),
   }
 );
 ```
@@ -96,8 +95,6 @@ new MediaUploadService(
   options?: {
     abiEncoder?: IAbiEncoder;
     baseUrl?: string;
-    pollInterval?: number;
-    listenerMode?: 'websocket' | 'polling';
     listenerStrategy?: WorkflowProgressListenerStrategy<MediaUploadInput>;
   }
 )
@@ -110,8 +107,6 @@ new MediaUploadService(
 - `options`: Optional configuration
   - `abiEncoder`: ABI encoder implementation (`EthersAbiEncoder`, `ViemAbiEncoder`, or custom `IAbiEncoder`)
   - `baseUrl`: Override base URL for uploads
-  - `pollInterval`: Poll interval in ms for polling strategy (default: `2000`)
-  - `listenerMode`: Built-in strategy mode (`'websocket'` default, `'polling'` optional)
   - `listenerStrategy`: Custom strategy implementing `WorkflowProgressListenerStrategy`
 
 ### Methods
@@ -450,7 +445,7 @@ handle.startListening(); // WebSocket strategy by default
 ```
 
 **Automatic Behavior:**
-- Default strategy is WebSocket (`listenerMode: 'websocket'`)
+- Default strategy is WebSocket
 - WebSocket connects to `wfp-socket/ws/{requestId}` for push-based progress
 - XMLHttpRequest progress tracking for file uploads
 
@@ -463,7 +458,7 @@ const mediaService = new MediaUploadService(
   contractExecutor,
   {
     abiEncoder,
-    listenerMode: 'polling',
+    listenerStrategy: new PollingProgressListenerStrategy({ pollInterval: 3000 }),
   }
 );
 
@@ -477,7 +472,7 @@ await handle.waitCompletionOf('generate_metadata');
 ```
 
 **Automatic Behavior:**
-- Polls background job API at `pollInterval` (default: 2 seconds)
+- Poll interval is configured by the polling strategy instance
 - Suitable for server-side processing
 
 **Requirements:**

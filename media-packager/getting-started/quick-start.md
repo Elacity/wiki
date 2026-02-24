@@ -10,6 +10,7 @@ This guide shows you how to quickly get started with uploading and minting media
 import { ElacityClient } from '@elacity-js/api';
 import { EthersAdapter, EthersAbiEncoder, EthersTransactionExecutor } from '@elacity-js/contracts-ethers-adapter';
 import { MediaUploadService } from '@elacity-js/media-packager';
+import { PollingProgressListenerStrategy } from '@elacity-js/media-packager/listeners';
 import { ChainId } from '@elacity-js/common';
 import { ethers } from 'ethers';
 
@@ -52,8 +53,7 @@ const mediaService = new MediaUploadService(
   contractExecutor,
   {
     abiEncoder,
-    listenerMode: 'polling', // or 'websocket' (default)
-    pollInterval: 3000,      // only relevant for polling strategy
+    listenerStrategy: new PollingProgressListenerStrategy({ pollInterval: 3000 }),
   }
 );
 ```
@@ -151,8 +151,8 @@ await handle.waitCompletionOf('generate_metadata');
 
 `MediaUploadHandle` runs one workflow listener strategy for the full handle lifecycle:
 
-- **WebSocket** (`listenerMode: 'websocket'`, default): push-based updates from `wfp-socket/ws/{requestId}`.
-- **Long polling** (`listenerMode: 'polling'`): periodic background-job sync via API.
+- **WebSocket** (default): push-based updates from `wfp-socket/ws/{requestId}`.
+- **Long polling** (`new PollingProgressListenerStrategy({ pollInterval })`): periodic background-job sync via API.
 - **Custom** (`listenerStrategy`): your own `WorkflowProgressListenerStrategy` implementation.
 
 All strategies emit the same normalized `UploadProgress` payload through `handle.onProgress()`.

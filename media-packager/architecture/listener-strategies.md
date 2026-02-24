@@ -34,21 +34,17 @@ const mediaService = new MediaUploadService(apiClient, contractRunner, contractE
 ### Force Long Polling
 
 ```typescript
+import { PollingProgressListenerStrategy } from '@elacity-js/media-packager/listeners';
+
 const mediaService = new MediaUploadService(apiClient, contractRunner, contractExecutor, {
   abiEncoder,
-  listenerMode: 'polling',
-  pollInterval: 3000,
+  listenerStrategy: new PollingProgressListenerStrategy({ pollInterval: 3000 }),
 });
 ```
 
 ### Force WebSocket
 
-```typescript
-const mediaService = new MediaUploadService(apiClient, contractRunner, contractExecutor, {
-  abiEncoder,
-  listenerMode: 'websocket',
-});
-```
+Do not pass `listenerStrategy`. WebSocket is the default built-in strategy.
 
 ### Provide Custom Strategy
 
