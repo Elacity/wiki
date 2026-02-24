@@ -1,6 +1,6 @@
 # Listener Strategies
 
-> **Last Updated**: 2026-02-23
+> **Last Updated**: 2026-02-24
 
 ## Overview
 
@@ -110,13 +110,16 @@ const mediaService = new MediaUploadService(apiClient, contractRunner, contractE
 const request = await mediaService.createRequest(input);
 const handle = await mediaService.execute(request);
 
-handle.onProgress((progress) => {
+const unsubscribe = handle.onProgress((progress) => {
   console.log(progress.progress, progress.step, progress.caption);
 });
 
 handle.startListening();
-await handle.waitCompletionOf('generate_metadata');
+await handle.waitCompletionOf('generate_metadata', {
+  timeoutMs: 600_000, // 10 minutes (default)
+});
 handle.stopListening();
+unsubscribe();
 ```
 
 ## Notes

@@ -1,6 +1,6 @@
 # Media Upload Workflow Architecture
 
-> **Last Updated**: 2026-02-23
+> **Last Updated**: 2026-02-24
 
 ## Overview
 
@@ -76,11 +76,11 @@ MediaUploadService
 │   │   ├── WebSocket strategy → wfp-socket/ws/{requestId}
 │   │   ├── Polling strategy → Background Job API (interval-based)
 │   │   └── Custom strategy → user implementation
-│   ├── onProgress(callback) → subscribe to progress events
+│   ├── onProgress(callback) → subscribe to progress events (returns unsubscribe)
 │   ├── reportProgress(payload) → emit progress to listeners
 │   ├── startListening() → activate selected strategy
 │   ├── stopListening() → stop selected strategy
-│   └── waitCompletionOf(step) → await step completion
+│   └── waitCompletionOf(step, options?) → await step completion (with timeout)
 ├── UploadRequest (from transport.ts)
 │   ├── acquire() → create BackgroundJob + return MediaUploadHandle
 │   ├── id → requestId

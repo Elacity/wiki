@@ -29,8 +29,8 @@ Provide an ABI encoder function when creating `MediaUploadService`:
 ```typescript
 import { defaultAbiCoder } from '@ethersproject/abi';
 
-const mediaService = new MediaUploadService(apiClient, contractRunner, {
-  abiEncoder: (types, values) => defaultAbiCoder.encode(types, values),
+const mediaService = new MediaUploadService(apiClient, contractRunner, contractExecutor, {
+  abiEncoder: new EthersAbiEncoder(),
 });
 ```
 
@@ -85,11 +85,6 @@ await apiClient.auth.login(address, signature);
 const job = await apiClient.backgroundJobs.retrieveBackgroundJob(requestId);
 console.log('Job status:', job.status);
 console.log('Steps:', job.steps);
-
-// Check available workflow listener strategies
-import { WorkflowProgressListenerFactory } from '@elacity-js/media-packager';
-const strategies = WorkflowProgressListenerFactory.getAvailableStrategies();
-console.log('Available strategies:', strategies.map(s => s.constructor.name));
 
 // If running in Node.js without global WebSocket, force polling mode:
 import { PollingProgressListenerStrategy } from '@elacity-js/media-packager/listeners';

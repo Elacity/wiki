@@ -2,7 +2,7 @@
 
 > **Package**: `@elacity-js/media-packager`
 > **Service**: `MediaUploadService`
-> **Last Updated**: 2026-02-23
+> **Last Updated**: 2026-02-24
 
 ## Overview
 
@@ -187,14 +187,17 @@ The handle returned by `execute()` exposes the following interface:
 
 ### Methods
 
-#### `onProgress(callback): void`
+#### `onProgress(callback): () => void`
 
-Registers a callback to receive real-time progress updates from the active listener strategy.
+Registers a callback to receive real-time progress updates from the active listener strategy. Returns an unsubscribe function.
 
 ```typescript
-handle.onProgress((progress: UploadProgress) => {
+const unsubscribe = handle.onProgress((progress: UploadProgress) => {
   console.log(`${progress.progress}% - ${progress.step} - ${progress.caption}`);
 });
+
+// Later, to stop receiving updates:
+unsubscribe();
 ```
 
 #### `reportProgress(payload): void`
@@ -209,13 +212,19 @@ Starts the selected listener strategy. Safe to call multiple times.
 
 Stops the selected listener strategy. The handle can be re-activated later by calling `startListening()` again.
 
-#### `waitCompletionOf(step): Promise<StepProgress>`
+#### `waitCompletionOf(step, options?): Promise<StepProgress>`
 
-Waits for a specific workflow step to reach `COMPLETED` status. Automatically calls `startListening()` if not already active. Rejects if the step reaches `FAILED`.
+Waits for a specific workflow step to reach `COMPLETED` status. Automatically calls `startListening()` if not already active. Rejects if the step reaches `FAILED` or if the timeout expires.
 
 ```typescript
 const stepResult = await handle.waitCompletionOf('generate_metadata');
 // stepResult: { step: 'generate_metadata', completion: 100, status: 'COMPLETED' }
+
+// With custom options:
+await handle.waitCompletionOf('generate_metadata', {
+  checkInterval: 1000,  // poll internal state every 1s (default: 500ms)
+  timeoutMs: 300_000,   // timeout after 5 minutes (default: 10 minutes)
+});
 ```
 
 ## Input Types
@@ -349,9 +358,12 @@ interface IMediaUploadHandle {
   completion: number;
   startListening(): void;
   stopListening(): void;
-  waitCompletionOf(step: string): Promise<StepProgress>;
+  waitCompletionOf(
+    step: string,
+    options?: { checkInterval?: number; timeoutMs?: number }
+  ): Promise<StepProgress>;
   reportProgress(payload: UploadProgress): void;
-  onProgress(callback: UploadProgressCallback): void;
+  onProgress(callback: UploadProgressCallback): () => void;
 }
 ```
 
@@ -564,7 +576,7 @@ async function uploadVideo() {
     console.log(`${progress.progress}% - ${progress.step} - ${progress.caption}`);
   });
 
-  // 5. Start WebSocket + polling
+  // 5. Start listener strategy
   handle.startListening();
 
   // 6. Wait for encoding to complete

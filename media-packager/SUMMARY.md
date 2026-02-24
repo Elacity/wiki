@@ -60,7 +60,7 @@ The media upload process follows these steps:
 4. **Upload Media File** - Upload to backend (triggers transcode)
 5. **Track Progress** - Selected strategy via `handle.onProgress()` / `handle.waitCompletionOf()`
 6. **Generate Metadata** - Create IPFS metadata (backend)
-7. **Mint to Blockchain** - Call `handle.mint()` or use `autoMint` option
+7. **Mint to Blockchain** - Call `mediaService.mint(handle)` or use `autoMint` option
 
 ## Related Packages
 
