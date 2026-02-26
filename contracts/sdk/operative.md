@@ -213,7 +213,7 @@ const buyableSellable = new OperativeBuyableSellable(operativeAddress, runner);
 // Called by the factory right after proxy initialisation
 await buyableSellable.setupDistributionRights(creatorAddress).then(tx => tx.commit());
 
-// Query the current reseller cut (basis points, 1000 = 100 %)
+// Query the current reseller cut (basis points, max 950 = 95 %)
 const cut = await buyableSellable.resellerCut(); // e.g. 200 = 20 %
 
 // Update to a new cut (owner or distributor only)
@@ -227,7 +227,7 @@ await buyableSellable.setResellerCut(150).then(tx => tx.commit()); // 15 %
 | `0` | 0 % (reseller keeps nothing) |
 | `200` | 20 % |
 | `500` | 50 % |
-| `1000` | 100 % (platform/royalties get 0 %) |
+| `950` | 95 % (max allowed) |
 
 ---
 

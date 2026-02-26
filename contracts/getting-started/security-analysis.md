@@ -113,7 +113,7 @@ The following categories of attack vectors have been identified, analyzed, and d
 | Access Control | **AV-1.x** | Acknowledgement escalation, RBAC centralization, payment processor hijack |
 | Reentrancy & State | **AV-2.x** | Deferred payment double-withdrawal, cross-function reentrancy, `ERC20` approval race |
 | Signature & Crypto | **AV-3.x** | License replay, cross-chain domain replay, smart account format bypass |
-| Economic Exploits | **AV-4.x** | Flash royalty manipulation, `resellerCut` rug pull, overpayment loss, share dilution |
+| Economic Exploits | **AV-4.x** | Flash royalty manipulation, `resellerCut` abuse (AV-4.2 fixed with 950 bps cap), overpayment loss, share dilution |
 | Denial of Service | **AV-5.x** | Royalty holder gas bomb, payment processor blocklist, malicious receiver griefing |
 | Front-Running & MEV | **AV-6.x** | Listing sandwich attack, operative creation front-running |
 | Proxy & Upgrade | **AV-7.x** | Beacon swap, storage collision, initialization front-running |
@@ -163,7 +163,7 @@ To enforce security, verify the following:
 ### For Content Creators
 
 1. **Protect your admin keys** — use hardware wallets for operative ownership
-2. **Set reasonable `resellerCut`** — high values (`>50%`) may deter royalty share investors
+2. **Set reasonable `resellerCut`** — protocol allows up to `95%` (`950` bps), but lower values are healthier for royalty-share market alignment
 3. **Monitor royalty holder count** — excessive fragmentation can block sales
 4. **Review beacon implementations** before consenting to upgrades, needs alternative deployment process like [Defender Relayer](https://docs.openzeppelin.com/defender/tutorial/deploy) or similar.
 
