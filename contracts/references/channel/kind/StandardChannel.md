@@ -7,27 +7,13 @@ ERC-1155 channel contract.
 _Subscription lookups propagate upward through the `ChannelRegistry` to resolve
 multi-channel parent subscriptions._
 
-### TokenIdUnderflow
+### InvalidTokenId
 
 ```solidity
-error TokenIdUnderflow()
+error InvalidTokenId()
 ```
 
-The generated token ID fell in the reserved lower range.
-
-### TokenIdAlreadyUsed
-
-```solidity
-error TokenIdAlreadyUsed(uint256 value)
-```
-
-A token with this ID has already been minted on this channel.
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| value | uint256 | The duplicate token ID |
+The generated token ID is invalid or already minted.
 
 ### authority
 
@@ -44,17 +30,6 @@ address tradeGateway
 ```
 
 Address of the TradeGateway that manages token-level marketplace trades.
-
-### AssetId
-
-_Helper struct used during `mint` to avoid stack-too-deep errors._
-
-```solidity
-struct AssetId {
-  address op;
-  uint256 tokenId;
-}
-```
 
 ### _createAsset
 
@@ -184,14 +159,6 @@ string name
 ```
 
 Human-readable name of this channel.
-
-### MINTER_ROLE
-
-```solidity
-bytes32 MINTER_ROLE
-```
-
-Role hash that gates the `mint` function.
 
 ### mint
 
