@@ -26,6 +26,8 @@ Add new wrapper for a given channel. Basically, the wrapper is a multi-channel
 contract and the wrappee can be either a multi-channel or a digital assets channel
 that contains the medias
 
+_Restricted to acknowledged contract callers from protocol storage._
+
 #### Parameters
 
 | Name | Type | Description |

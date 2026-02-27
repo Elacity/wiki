@@ -9,6 +9,26 @@ This abstract contract is used to track the marketplace listings and offers. It 
 error TaxOverflowError(uint256)
 ```
 
+### InvalidFeeRecipient
+
+```solidity
+error InvalidFeeRecipient(address recipient)
+```
+
+### UnauthorizedTaxSetter
+
+```solidity
+error UnauthorizedTaxSetter(address caller)
+```
+
+### owner
+
+```solidity
+function owner() public view virtual returns (address)
+```
+
+Owner resolver expected from inheriting storage root (e.g., CoreStorage).
+
 ### Listing
 
 Structure to hold listing details
@@ -105,12 +125,12 @@ Get list of offerers for a given token
 function taxInformation() external view returns (uint16, address)
 ```
 
-Returns marketplace fee settings.
+Returns current platform fee settings.
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| [0] | uint16 | Platform fee in basis points and fee recipient address. |
-| [1] | address |  |
+| [0] | uint16 | Fee in basis points over 1000. |
+| [1] | address | Recipient of the platform fee. |
 

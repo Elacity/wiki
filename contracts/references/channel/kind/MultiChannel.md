@@ -55,6 +55,8 @@ function wrapChannel(address addr) external
 
 Register a new channel into a wrapper
 
+_Restricted to channel admins to prevent unauthorized wrapper bindings._
+
 #### Parameters
 
 | Name | Type | Description |

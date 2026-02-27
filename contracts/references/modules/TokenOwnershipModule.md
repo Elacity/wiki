@@ -8,12 +8,6 @@ function balanceOf(address) external view returns (uint256)
 
 ## TokenOwnershipModule
 
-### ZeroThreshold
-
-```solidity
-error ZeroThreshold()
-```
-
 ### acceptedTokens
 
 ```solidity
@@ -41,7 +35,7 @@ Constant that hold threshold for each token
 ### configureTokenOwnershipAccess
 
 ```solidity
-function configureTokenOwnershipAccess(struct ITokenOwnershipAccess.TokenAccessThreshold[] _input) external
+function configureTokenOwnershipAccess(struct ITokenOwnershipAccess.TokenAccessThreshold[] _input) external virtual
 ```
 
 Configure token-based access.
@@ -51,6 +45,12 @@ Configure token-based access.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | _input | struct ITokenOwnershipAccess.TokenAccessThreshold[] | dataset to apply to the contract |
+
+### _configureTokenOwnershipAccess
+
+```solidity
+function _configureTokenOwnershipAccess(struct ITokenOwnershipAccess.TokenAccessThreshold[] _input) internal
+```
 
 ### _registerTokenOwnershipAccess
 

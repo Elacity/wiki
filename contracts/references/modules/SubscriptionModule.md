@@ -44,14 +44,6 @@ error NotExpiredError(address subscriber)
 
 The subscriber still have an active subscription
 
-### InsufficientBalanceError
-
-```solidity
-error InsufficientBalanceError(address owner, uint256 balance, uint256 amount)
-```
-
-The balance if not enough to fulfill the operation
-
 ### PLAN_MANAGER
 
 ```solidity
@@ -97,6 +89,20 @@ Determine the next plan Id for a plan to be created
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | [0] | uint8 | `uint8`-formatted value of the next plan Id |
+
+### configureTokenOwnershipAccess
+
+```solidity
+function configureTokenOwnershipAccess(struct ITokenOwnershipAccess.TokenAccessThreshold[] _input) external
+```
+
+Configure token-based access.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _input | struct ITokenOwnershipAccess.TokenAccessThreshold[] | dataset to apply to the contract |
 
 ### _createPlan
 

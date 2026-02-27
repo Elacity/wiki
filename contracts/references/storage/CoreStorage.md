@@ -22,6 +22,18 @@ event AckAuthorityUpdated(address authority, bool enabled)
 
 Emitted when an ack authority is updated.
 
+### owner
+
+```solidity
+function owner() public view returns (address)
+```
+
+_Required explicit override because `CoreStorage` inherits both
+`OwnableUpgradeable` (which implements `owner()`) and `MarketplaceTracker`
+(which declares `owner()` as virtual for access-control checks). This
+function only resolves the inheritance graph and preserves standard
+Ownable behavior._
+
 ### setAckAuthority
 
 ```solidity
