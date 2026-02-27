@@ -217,6 +217,14 @@ Process payments by incrementing rewards for users instead of direct transfers, 
 
 _Works alongside `RewardsRecipient` to securely manage deferrable and atomic payment splits._
 
+### NotContractError
+
+```solidity
+error NotContractError(address caller)
+```
+
+Thrown when an EOA directly calls deferred/processor methods.
+
 ### shouldTransferFund
 
 ```solidity
@@ -257,6 +265,12 @@ Emitted when a payment is processed atomically.
 | to | address | The address to transfer the payment to. |
 | amount | uint256 | The amount of payment to transfer. |
 | payToken | address | The payment token. |
+
+### isContract
+
+```solidity
+modifier isContract()
+```
 
 ### execute
 

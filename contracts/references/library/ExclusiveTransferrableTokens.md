@@ -32,10 +32,10 @@ event OperatorAllowed(address initiator, address operator, uint256 tokenId)
 function allowedTransfer(address operator, uint256 tkId) public view returns (bool)
 ```
 
-### allowTransferOf
+### _allowTransferOf
 
 ```solidity
-function allowTransferOf(address operator, uint256 tkId) public virtual
+function _allowTransferOf(address operator, uint256 tkId) internal virtual
 ```
 
 ### _preventUnauthorizedTransferOf

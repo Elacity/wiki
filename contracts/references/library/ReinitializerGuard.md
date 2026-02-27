@@ -44,7 +44,7 @@ Enforces caller authorization after first initialization.
 function _validateStorageAddress(address storageAddress) internal view
 ```
 
-Ensures the storage dependency is a deployed contract.
+Ensures the storage dependency matches the expected system-tracker interface.
 
 #### Parameters
 
@@ -77,4 +77,12 @@ Must be implemented by inheriting contracts to check admin-role authorization.
 ```solidity
 function _proxyAdmin() internal view returns (address)
 ```
+
+Returns the address of the proxy admin.
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | address | The address of the proxy admin. |
 

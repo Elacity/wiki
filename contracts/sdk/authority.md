@@ -102,6 +102,8 @@ const tx = await gateway.sellAccess(
 
 **Returns:** `Promise<TransactionResponse>`
 
+> Protocol note: internal `sellAccessOnBehalf` flows are restricted by `CoreStorage.acknowledged(msg.sender)`. Integrations should treat explicit acknowledgement as the authorization primitive, not EOA-vs-contract caller type checks.
+
 
 ### Withdraw Listing
 

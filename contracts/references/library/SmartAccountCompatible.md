@@ -1,7 +1,7 @@
 ## SmartAccountUtils
 
 _Library providing utilities for smart account compatibility
-This handles the difference between EOAs and smart accounts when determining the sender_
+without relying on runtime bytecode-size checks._
 
 ### getSender
 
@@ -9,37 +9,19 @@ This handles the difference between EOAs and smart accounts when determining the
 function getSender() internal view returns (address sender)
 ```
 
-_Get the appropriate sender address based on caller type_
+_Resolve the caller identity for signatures/actions.
+If the direct caller exposes an `owner()` view, that owner is treated as the
+effective signer; otherwise falls back to `tx.origin`._
 
 #### Return Values
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| sender | address | The sender address (msg.sender for smart accounts, origin for EOAs) |
+| sender | address | Effective sender for compatibility flows. |
 
 ### _checkContractOwner
 
 ```solidity
 function _checkContractOwner(address ownedContract) internal view returns (bool, address)
 ```
-
-### isAnyContract
-
-```solidity
-function isAnyContract(address account) internal view returns (bool)
-```
-
-_Check if an address is a contract_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| account | address | The address to check |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | bool | True if the address is a contract, false if it's an EOA |
 

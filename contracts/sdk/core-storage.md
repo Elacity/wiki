@@ -196,6 +196,8 @@ const isAcknowledged = await storage.acknowledged(contractAddress);
 
 **Returns:** `Promise<boolean>`
 
+> Security note: acknowledged identity is the primary trust boundary for internal protocol calls (for example, `whitelistOnly`-guarded storage mutations). The protocol no longer relies on runtime bytecode-size checks for this authorization path.
+
 ## Ownership
 
 ### Get Owner
