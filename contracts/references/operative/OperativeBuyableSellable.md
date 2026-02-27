@@ -7,8 +7,8 @@ are automatically granted to the new owner and revoked from the previous one
 (if they no longer hold any access tokens).
 
 _Deployed behind a beacon proxy via `OperativeBuyableSellableFactory`.
-The `resellerCut` (basis-point percentage, max 950 = 95 %) determines how much
-of the resale price the reseller retains._
+The `resellerCut` (basis points) is capped by `MAX_RESELLER_CUT` to prevent
+full-value extraction on secondary sales._
 
 ### UnauthorizedDistrbutorError
 
@@ -30,7 +30,7 @@ Thrown when `from` does not hold a `DISTRIBUTION_RIGHT` token.
 error ResellerCutOverflow(uint256 value)
 ```
 
-Thrown when the requested reseller cut exceeds the protocol cap (950 basis points).
+Thrown when the requested reseller cut exceeds the protocol cap.
 
 #### Parameters
 
@@ -46,13 +46,21 @@ uint16 OP_TYPE
 
 Operative-type discriminator (`2` = buy-play-sell).
 
+### MAX_RESELLER_CUT
+
+```solidity
+uint16 MAX_RESELLER_CUT
+```
+
+Protocol ceiling for reseller cut in basis points (950 = 95%).
+
 ### resellerCut
 
 ```solidity
 uint16 resellerCut
 ```
 
-Percentage of resale price retained by the reseller, in basis points (max 950).
+Percentage of resale price retained by the reseller, in basis points.
 
 ### onlyDistributor
 
@@ -137,3 +145,4 @@ _See {ERC1155-_update}._
 ```solidity
 function supportsInterface(bytes4 interfaceId) public view virtual returns (bool)
 ```
+

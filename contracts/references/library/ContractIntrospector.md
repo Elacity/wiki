@@ -21,7 +21,7 @@ Thrown when the caller contract is not acknowledged by protocol storage.
 ### whitelistOnly
 
 ```solidity
-modifier whitelistOnly(contract IStorage store)
+modifier whitelistOnly(contract ISystemTracker store)
 ```
 
 Restricts access to acknowledged contract callers.
@@ -30,7 +30,7 @@ Restricts access to acknowledged contract callers.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| store | contract IStorage | Storage contract used to verify acknowledgement. |
+| store | contract ISystemTracker | Storage contract used to verify acknowledgement. |
 
 ### isContract
 

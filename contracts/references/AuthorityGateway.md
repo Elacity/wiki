@@ -55,6 +55,26 @@ Data storage contract
 constructor() public
 ```
 
+### _hasReinitializerRole
+
+```solidity
+function _hasReinitializerRole(address caller) internal view returns (bool)
+```
+
+Must be implemented by inheriting contracts to check admin-role authorization.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| caller | address | Address attempting reinitializer call. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | bool | True when caller has an accepted privileged role. |
+
 ### sellAccess
 
 ```solidity

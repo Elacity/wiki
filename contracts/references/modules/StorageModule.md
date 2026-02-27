@@ -2,7 +2,7 @@
 
 Shared module that stores the protocol `IStorage` reference for inheriting contracts.
 
-_`setStorage` also acknowledges the caller contract in storage._
+_Acknowledgement must be granted explicitly by trusted authorities._
 
 ### _store
 
@@ -18,7 +18,7 @@ Address of the active `IStorage` implementation.
 function setStorage(address s) internal
 ```
 
-Sets the storage contract reference and acknowledges `address(this)`.
+Sets the storage contract reference.
 
 _We need to be very careful here, this method is under security monitoring, it could change/deprecate anytime_
 

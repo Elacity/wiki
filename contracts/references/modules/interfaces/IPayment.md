@@ -70,6 +70,22 @@ error EmptyCommitError()
 
 Thrown when a deferred session has no pending payments to commit.
 
+### UnauthorizedCommitCaller
+
+```solidity
+error UnauthorizedCommitCaller(address from, address caller, address expected)
+```
+
+Thrown when commit is called by a contract different from the session opener.
+
+### DeferredSessionOwnerMismatch
+
+```solidity
+error DeferredSessionOwnerMismatch(address from, address currentOwner, address attemptedOwner)
+```
+
+Thrown when another contract tries to take over an active deferred session.
+
 ### PaymentCommitted
 
 ```solidity

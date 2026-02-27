@@ -13,6 +13,22 @@ Provides universal token transfer mechanisms for both ERC20 and native (ETH) tok
 
 _Helper library to abstract away token type differences during transfers._
 
+### PaymentAmountMismatch
+
+```solidity
+error PaymentAmountMismatch(address token, uint256 expected, uint256 received)
+```
+
+Thrown when an ERC-20 transfer credits less than requested.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| token | address | ERC-20 token address. |
+| expected | uint256 | Requested transfer amount. |
+| received | uint256 | Actual recipient balance delta. |
+
 ### transferFrom
 
 ```solidity
@@ -20,6 +36,10 @@ function transferFrom(struct Amount _amount, address from, address to) external
 ```
 
 Transfers the specified amount of tokens from the `from` address to the `to` address.
+
+_Security note (AV-8.1): payment flows must not assume `requested == received` for ERC-20.
+Some tokens are fee-on-transfer/deflationary and credit the recipient less than the transfer amount.
+If we continue after a short transfer, the protocol can over-credit internal rewards and become insolvent._
 
 #### Parameters
 

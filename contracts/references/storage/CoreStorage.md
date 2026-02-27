@@ -14,3 +14,29 @@ As the single source of truth, CoreStorage inherits multiple specialized tracker
 
 _This contract is designed to be fully upgradeable and aggregates state management._
 
+### AckAuthorityUpdated
+
+```solidity
+event AckAuthorityUpdated(address authority, bool enabled)
+```
+
+Emitted when an ack authority is updated.
+
+### setAckAuthority
+
+```solidity
+function setAckAuthority(address authority, bool enabled) external
+```
+
+Enables or disables a trusted ack authority.
+
+_Only owner can manage ack authorities._
+
+### isAckAuthority
+
+```solidity
+function isAckAuthority(address authority) external view returns (bool)
+```
+
+Returns whether an address is allowed to acknowledge contracts.
+

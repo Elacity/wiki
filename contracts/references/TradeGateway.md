@@ -14,6 +14,26 @@ contract IStorage store
 
 Reference to the central storage contract shared across the ecosystem.
 
+### _hasReinitializerRole
+
+```solidity
+function _hasReinitializerRole(address caller) internal view returns (bool)
+```
+
+Must be implemented by inheriting contracts to check admin-role authorization.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| caller | address | Address attempting reinitializer call. |
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | bool | True when caller has an accepted privileged role. |
+
 ### sellersOf
 
 ```solidity
@@ -104,7 +124,7 @@ function buyToken(address seller, address _contract, uint256 tokenId, uint256 _q
 
 Purchases listed tokens from a seller.
 
-_For native-currency listings, `msg.value` must cover `pricePerToken * _quantity`.
+_For native-currency listings, `msg.value` must exactly match `pricePerToken * _quantity`.
 For `ERC-20` listings, the buyer must have approved this contract to spend the required amount._
 
 #### Parameters
@@ -145,7 +165,7 @@ function createOffer(address _contract, uint256 tokenId, uint256 _quantity, uint
 
 Creates a buy-offer for tokens using native currency (`ETH`/`ELA`).
 
-_`msg.value` must be at least `_pricePerToken * _quantity`. Excess value is not refunded.
+_`msg.value` must exactly match `_pricePerToken * _quantity`.
 The native currency is held in escrow by this contract until the offer is accepted or canceled._
 
 #### Parameters

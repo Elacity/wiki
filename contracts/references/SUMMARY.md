@@ -34,6 +34,7 @@
     * [IERC5501](library/IERC5501.md)
     * [IIPRepresentation](library/IIPRepresentation.md)
     * [MintFeeCollector](library/MintFeeCollector.md)
+    * [ReinitializerGuard](library/ReinitializerGuard.md)
     * [SmartAccountCompatible](library/SmartAccountCompatible.md)
     * [VersionExtractor](library/VersionExtractor.md)
     * [Math](library/math/README.md)
