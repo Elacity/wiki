@@ -105,6 +105,87 @@ Called after the payment processor is set.
 | ---- | ---- | ----------- |
 | _payProc | address | The address of the payment processor. |
 
+## WithdrawReentrancyGuard
+
+Prevents reentrancy in withdrawRewards function.
+
+_Uses ERC-7201 namespaced storage to prevent storage collisions in upgradeable proxy contracts._
+
+### RewardsReentrantCall
+
+```solidity
+error RewardsReentrantCall()
+```
+
+Thrown when a reentrant withdrawRewards() call is detected.
+
+### WithdrawReentrancyGuardStorage
+
+_Storage structure for WithdrawReentrancyGuard using ERC-7201 namespaced storage.
+This prevents storage collisions in upgradeable proxy contracts._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
+```solidity
+struct WithdrawReentrancyGuardStorage {
+  bool _withdrawLocked;
+}
+```
+
+### noReentrantWithdraw
+
+```solidity
+modifier noReentrantWithdraw()
+```
+
+Modifier to prevent reentrancy in withdrawRewards.
+
+### _getIWithdrawReentrancyGuardStorage
+
+```solidity
+function _getIWithdrawReentrancyGuardStorage() internal pure returns (struct WithdrawReentrancyGuard.WithdrawReentrancyGuardStorage s)
+```
+
+_Internal function to access the namespaced storage for WithdrawReentrancyGuard.
+Uses inline assembly to directly access the storage slot defined by ERC-7201._
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| s | struct WithdrawReentrancyGuard.WithdrawReentrancyGuardStorage | Storage reference to the WithdrawReentrancyGuardStorage struct |
+
+### _isWithdrawLocked
+
+```solidity
+function _isWithdrawLocked() internal view returns (bool)
+```
+
+_Internal function to check if the withdrawRewards function is locked._
+
+#### Return Values
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| [0] | bool | bool True if the withdrawRewards function is locked, false otherwise |
+
+### _setWithdrawLocked
+
+```solidity
+function _setWithdrawLocked(bool _withdrawLocked) internal
+```
+
+_Internal function to set the withdrawRewards function lock._
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _withdrawLocked | bool | True to lock the withdrawRewards function, false otherwise |
+
 ## RewardsRecipient
 
 Allows receiving, accumulating, and withdrawing rewards for different addresses.
@@ -125,14 +206,6 @@ Thrown when a non-recognized payment processor tries to mutate rewards.
 | ---- | ---- | ----------- |
 | _proc | address | Caller address that failed processor authorization. |
 
-### RewardsReentrantCall
-
-```solidity
-error RewardsReentrantCall()
-```
-
-Thrown when a reentrant rewards withdrawal is attempted.
-
 ### rewardsOf
 
 ```solidity
@@ -150,14 +223,6 @@ Returns the rewards balance for a user and payment token.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-
-### noReentrantWithdraw
-
-```solidity
-modifier noReentrantWithdraw()
-```
-
-Modifier to prevent reentrancy in withdrawRewards.
 
 ### onlyProcessor
 

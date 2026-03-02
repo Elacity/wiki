@@ -160,6 +160,12 @@ string name
 
 Human-readable name of this channel.
 
+### MINTER_ROLE
+
+```solidity
+function MINTER_ROLE() public pure returns (bytes32)
+```
+
 ### mint
 
 ```solidity
