@@ -15,37 +15,35 @@ This page describes the current smart-contract architecture in `v3-drm-protocol`
 ## Current architecture
 
 ```mermaid
-graph TD
-  U["Users / dApps"] --> CF["ChannelFactory"]
-  U --> AG["AuthorityGateway"]
-  U --> RTG["RoyaltyTradeGateway"]
+flowchart LR
+    EV@{ shape: das, label: "Events Hub" }
+    AG[Authority Gateway] --- CS@{ shape: cyl, label: "Storage" }
+    RT[Royalty Trade Gateway] --- CS
+    subgraph ch [Channels and Subscriptions]
+        direction TD
+        CF{{Channel Factory}} -- "`**createChannel**`" --> CH@{ shape: docs, label: "Channels"}
+        S([Subscription Manager]) --- CH
+    end
+    subgraph op [Media and Operatives]
+        direction TD
+        AF --> OP@{ shape: docs, label: "Operatives"}
+    end
+    AF{{Asset Factory}} --- CS
+    CH --- CS
+    CH -- "`**mint**`" --> AF    
+    EV -..- CH
+    EV -..- AF
+    EV -..- AG
+    EV -..- RT
+    EW@{ shape: subproc, label: "Event Watcher" }
+    EW --- EV
 
-  CF --> SCF["StandardChannel factories"]
-  CF --> MCF["MultiChannelFactory"]
-  SCF --> CH["DigitalAssetPublic / DigitalAssetPrivate"]
-  MCF --> MC["MultiChannel"]
 
-  CH --> AF["AssetFactory"]
-  MC --> AF
-  AF --> OPF["Operative factories"]
-  OPF --> OP["Operatives"]
-
-  AG --> CS["CentralStorage"]
-  RTG --> CS
-  CH --> CS
-  MC --> CS
-  AF --> CS
-
-  CH --> SM["SubscriptionManager"]
-  MC --> SM
-
-  CH --> EHR["EventHubResolver"]
-  AF --> EHR
-  OP --> EHR
-  EHR --> EH["EventHub"]
-
-  CH --> PPF["PaymentProcessorFactory"]
-  PPF --> PP["WithdrawablePaymentProcessor"]
+    style AG fill:#d5ebdb,stroke:#7a9181,stroke-width:1px,color:#7a9181
+    style RT fill:#d5ebdb,stroke:#7a9181,stroke-width:1px,color:#7a9181
+    style CF fill:#d5ebdb,stroke:#7a9181,stroke-width:1px,color:#7a9181
+    style EV fill:#ebe9d5,stroke:#7a9181,stroke-width:1px,color:#7a9181
+    style AF fill:#edf5fa,stroke:#25a1e8,stroke-width:1px,color:#25a1e8
 ```
 
 ## Main runtime flows

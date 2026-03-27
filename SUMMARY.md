@@ -15,12 +15,12 @@
 
 ## Contracts (EVM-compatible)
 * [Introduction](contracts/README.md)
-* [v3.0 (Current)](contracts/v3.0/README.md)
-* v3.0 Getting Started
+* [Overview](contracts/v3.0/README.md)
+* Getting Started
   * [Design Snapshot](contracts/v3.0/getting-started/design-proposal.md)
   * [Ecosystem Overview](contracts/v3.0/getting-started/ecosystem-overview.md)
   * [Security Analysis](contracts/v3.0/getting-started/security-analysis.md)
-* v3.0 Contracts SDK
+* Contracts SDK
   * [Installation](contracts/v3.0/sdk/installation.md)
   * [Authority Gateway](contracts/v3.0/sdk/authority.md)
   * [Royalty Trade Gateway](contracts/v3.0/sdk/royalty-trade-gateway.md)
@@ -31,7 +31,7 @@
   * [Operatives](contracts/v3.0/sdk/operative.md)
   * [Transaction Handling](contracts/v3.0/sdk/transactions.md)
   * [Universal Account Executor](contracts/v3.0/sdk/universal-account-executor.md)
-* [v3.0 Contract References](contracts/v3.0/references/README.md)
+* [Contract References](contracts/v3.0/references/README.md)
 * [v2.0 (Legacy)](contracts/v2.0/README.md)
 
 
