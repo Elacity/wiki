@@ -1,8 +1,8 @@
-# technical_documentation
+# Technical Documentation
 
-This section contains technical deep-dives into specific features and tools within the ELACITY DRM ecosystem.
+Focused implementation notes for the current Foundry-based V3 architecture.
 
-## contents
-* [Storage and Restrictions](storage_and_restrictions.md) - Deep dive into token transfer restrictions and storage investigation tools.
-* [Hardhat Environment](hardhat_environment.md) - Notes on our Hardhat setup and the Hardhat 3 migration challenges.
+## Contents
 
+- [Foundry Environment](foundry_environment.md) - Toolchain, build/test/docs workflow, and deployment policy.
+- [Storage and Restrictions](storage_and_restrictions.md) - Storage model, token restriction behavior, and operational verification notes.

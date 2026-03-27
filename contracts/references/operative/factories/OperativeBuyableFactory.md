@@ -1,102 +1,155 @@
-## OperativeBuyableFactory
+# OperativeBuyableFactory
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/factories/OperativeBuyableFactory.sol)
+
+**Inherits:**
+[BeaconUpgradeableFactory](/contracts/modules/proxy/BeaconUpgradeableFactory.md), [IOperativeFactory](/contracts/operative/IOperativeFactory.md)
+
+**Title:**
+OperativeBuyableFactory
 
 Factory that deploys `OperativeBuyable` (type 1) beacon proxies.
 Each call to `createFromBytes` produces a fully-initialised operative with
 minted tokens, distribution rights, a payment processor, and ownership
 transferred to the content creator.
 
-_Inherits `BeaconUpgradeableFactory` so every proxy shares the same
-upgradeable implementation contract._
+Inherits `BeaconUpgradeableFactory` so every proxy shares the same
+upgradeable implementation contract.
 
-### ContractCreated
 
-```solidity
-event ContractCreated(address creator, address op)
-```
+## State Variables
+### PAYMENT_PROCESSOR_FACTORY
+Factory used to create per-operative payment processors.
 
-Emitted when a new `OperativeBuyable` proxy is deployed.
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| creator | address | Address that will own the new operative. |
-| op | address | Address of the newly-deployed proxy. |
-
-### dataStorage
 
 ```solidity
-contract IStorage dataStorage
+IPaymentProcessorFactory private immutable PAYMENT_PROCESSOR_FACTORY
 ```
 
+
+### cstore
 Shared ecosystem storage contract.
 
-### exists
 
 ```solidity
-mapping(address => bool) exists
+IStorage public cstore
 ```
 
+
+### exists
 Tracks every proxy address deployed by this factory.
+
+
+```solidity
+mapping(address => bool) public exists
+```
+
+
+## Functions
+### constructor
+
+Deploys the factory, registering the beacon implementation and ecosystem dependencies.
+
+**Note:**
+docs-ignore: true
+
+
+```solidity
+constructor(IStorage _cstore, IPaymentProcessorFactory _ppf, address _implementation)
+    BeaconUpgradeableFactory(_implementation, msg.sender);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`_cstore`|`IStorage`|        Shared ecosystem storage contract.|
+|`_ppf`|`IPaymentProcessorFactory`|           Factory that creates payment-processor instances.|
+|`_implementation`|`address`|Address of the `OperativeBuyable` logic contract behind the beacon.|
+
 
 ### createFromBytes
 
-```solidity
-function createFromBytes(address creator, bytes data) external returns (address)
-```
+create the new Operative contract in charge of handling all Operative Tokens
+related to a given Digital Asset. Generally, created contract is a ERC1155
 
-_create the new Operative contract in charge of handling all Operative Tokens
-related to a given Digital Asset. Generally, created contract is a ERC1155_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| creator | address | Address of the creator of the contract |
-| data | bytes | Data to be used to initialize the contract, we use bytes to provide more flexibiity when creating the Operative contract itself |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | address | Address of the created contract |
-
-### createOperativeContract
 
 ```solidity
-function createOperativeContract(address creator, bytes16 contentId, string baseURI, address[] to, uint256[] ids, uint256[] amounts) internal returns (address)
+function createFromBytes(address creator, bytes memory data) external returns (address);
 ```
+**Parameters**
 
-_Creates a new `OperativeBuyable` proxy._
+|Name|Type|Description|
+|----|----|-----------|
+|`creator`|`address`|Address of the creator of the contract|
+|`data`|`bytes`|Data to be used to initialize the contract, we use bytes to provide more flexibiity when creating the Operative contract itself|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| creator | address | Address that will own the new operative. |
-| contentId | bytes16 | Content ID of the operative. |
-| baseURI | string | Base URI for the operative. |
-| to | address[] | Array of addresses to mint tokens to. |
-| ids | uint256[] | Array of token IDs to mint. |
-| amounts | uint256[] | Array of amounts to mint. |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|Address of the created contract|
 
-#### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | address | Address of the newly-deployed proxy. |
+### _createOperativeContract
+
+Creates a new `OperativeBuyable` proxy.
+
+
+```solidity
+function _createOperativeContract(
+    address creator,
+    bytes16 contentId,
+    string memory baseURI,
+    address[] memory to,
+    uint256[] memory ids,
+    uint256[] memory amounts
+) internal returns (address);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`creator`|`address`|Address that will own the new operative.|
+|`contentId`|`bytes16`|Content ID of the operative.|
+|`baseURI`|`string`|Base URI for the operative.|
+|`to`|`address[]`|Array of addresses to mint tokens to.|
+|`ids`|`uint256[]`|Array of token IDs to mint.|
+|`amounts`|`uint256[]`|Array of amounts to mint.|
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|Address of the newly-deployed proxy.|
+
 
 ### updateDataStorage
 
-```solidity
-function updateDataStorage(address _dataStorage) external
-```
-
 Replaces the ecosystem storage reference. Owner-only.
 
-#### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _dataStorage | address | New `IStorage` contract address. |
+```solidity
+function updateDataStorage(address _cstore) external onlyOwner;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`_cstore`|`address`|New `IStorage` contract address.|
+
+
+## Events
+### ContractCreated
+Emitted when a new `OperativeBuyable` proxy is deployed.
+
+
+```solidity
+event ContractCreated(address indexed creator, address indexed op);
+```
+
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`creator`|`address`|Address that will own the new operative.|
+|`op`|`address`|     Address of the newly-deployed proxy.|
 

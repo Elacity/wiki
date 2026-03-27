@@ -1,339 +1,425 @@
-## AuthorityGateway
+# AuthorityGateway
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/AuthorityGateway.sol)
 
-This is the main front contract that governs the access to medias
-It allows to sell, and buy these access tokens, also this is the main contract
-that allows to acquire a license for a specific media.
+**Inherits:**
+Initializable, [ReinitializerGuard](/contracts/modules/library/ReinitializerGuard.md), AccessControlUpgradeable, [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [AccessTradeModule](/contracts/modules/trade/AccessTradeModule.md)
 
-_About versionning and the `reinitializer(uint64)` modifier:
-It is a croissant number and contains 8-bytes to comply with
-`reinitializer(uint64)` modifier of the [`Initializable` contract](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/2c1de3d1a6689233a0469375cb51a41f4ad9ec05/contracts/proxy/utils/Initializable.sol#L152C14-L152C27).
+**Title:**
+AuthorityGateway
 
-*How it is formed?*
- - version of Authority gateway: eg. 2.0 -> [0x02, 0x00]
- - deployment version eg: (ecosystem iteration) 0.6.0: [0x00, 0x06, 0x00]
- - we don't use 3-bytes first bytes and reserve it for future and ensure it keeps increasing_
+Main front-facing contract that governs access to digital media.
+It allows selling and buying access tokens, and checking access rights
+for specific digital assets.
 
-### StorageFault
+About versioning and the `reinitializer(uint64)` modifier:
+It is an increasing number and contains 8-bytes to comply with
+`reinitializer(uint64)` modifier of the `Initializable` contract.
+How it is formed?*
+- version of Authority gateway: eg. 2.0 -> [0x02, 0x00]
+- deployment version eg: (ecosystem iteration) 0.6.0: [0x00, 0x06, 0x00]
+- first 3 bytes are reserved for future use and ensure it keeps increasing
 
-```solidity
-error StorageFault(address s)
-```
 
-StorageFault error
+## State Variables
+### BUY_ACCESS_REENTRANCY_GUARD_SLOT
+Dedicated reentrancy slot for `buyAccess` externals only.
 
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| s | address | Address of the storage contract |
-
-### UnboundContentId
 
 ```solidity
-error UnboundContentId(bytes16 contentId)
+bytes32 private constant BUY_ACCESS_REENTRANCY_GUARD_SLOT =
+    keccak256("elacity.drm.authorityGateway.buyAccess.reentrancy.v1")
 ```
 
-UnboundContentId error
 
-#### Parameters
+### cstore
+Data storage contract.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| contentId | bytes16 | Content ID of the media |
-
-### dataStorage
 
 ```solidity
-contract IStorage dataStorage
+IStorage public cstore
 ```
 
-Data storage contract
+
+## Functions
+### buyAccessNonReentrant
+
+Prevents nested external `buyAccess` entry.
+
+Uses an isolated storage slot so it does not conflict with royalty payout reentrancy guards.
+
+
+```solidity
+modifier buyAccessNonReentrant() ;
+```
 
 ### constructor
 
+**Note:**
+oz-upgrades-unsafe-allow: constructor
+
+
 ```solidity
-constructor() public
+constructor() ;
+```
+
+### initialize
+
+**Notes:**
+- docs-ignore: true
+
+- oz-upgrades-validate-as-initializer: 
+
+
+```solidity
+function initialize(IStorage _dataStorage) public reinitializer(VERSION);
+```
+
+### _buyAccessNonReentrantBefore
+
+
+```solidity
+function _buyAccessNonReentrantBefore() internal;
+```
+
+### _buyAccessNonReentrantAfter
+
+
+```solidity
+function _buyAccessNonReentrantAfter() internal;
 ```
 
 ### _hasReinitializerRole
 
+Checks if the caller has the reinitializer role.
+
+
 ```solidity
-function _hasReinitializerRole(address caller) internal view returns (bool)
+function _hasReinitializerRole(address caller) internal view override returns (bool);
 ```
+**Parameters**
 
-Must be implemented by inheriting contracts to check admin-role authorization.
+|Name|Type|Description|
+|----|----|-----------|
+|`caller`|`address`|Address of the caller.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| caller | address | Address attempting reinitializer call. |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`bool`|True if the caller has the reinitializer role, false otherwise.|
 
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | bool | True when caller has an accepted privileged role. |
 
 ### sellAccess
 
+Sell access tokens.
+
+
 ```solidity
-function sellAccess(address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
+function sellAccess(address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken)
+    external
+    override;
 ```
+**Parameters**
 
-Sell access tokens
+|Name|Type|Description|
+|----|----|-----------|
+|`ledger`|`address`|Address of the ledger contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
+|`_quantity`|`uint256`|Quantity of access tokens to sell.|
+|`_pricePerToken`|`uint256`|Price per access token.|
+|`_payToken`|`address`|Address of the token to be paid.|
 
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| ledger | address | Address of the ledger contract |
-| tokenId | uint256 | Token ID of the access token |
-| _quantity | uint256 | Quantity of access tokens to sell |
-| _pricePerToken | uint256 | Price per access token |
-| _payToken | address | Address of the token to be paid |
 
 ### sellAccessOnBehalf
 
-```solidity
-function sellAccessOnBehalf(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
-```
-
-Sell access tokens, it differs from `.sellAccess` method from its execution context.
+Sell access tokens on behalf of another address.
 Only an acknowledged contract can call this method.
 
-#### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| seller | address | Address of the seller |
-| ledger | address | Address of the ledger contract |
-| tokenId | uint256 | Token ID of the access token |
-| _quantity | uint256 | Quantity of access tokens to sell |
-| _pricePerToken | uint256 | Price per access token |
-| _payToken | address | Address of the token to be paid |
+```solidity
+function sellAccessOnBehalf(
+    address seller,
+    address ledger,
+    uint256 tokenId,
+    uint256 _quantity,
+    uint256 _pricePerToken,
+    address _payToken
+) external override whitelistOnly(cstore);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`seller`|`address`|Address of the seller.|
+|`ledger`|`address`|Address of the ledger contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
+|`_quantity`|`uint256`|Quantity of access tokens to sell.|
+|`_pricePerToken`|`uint256`|Price per access token.|
+|`_payToken`|`address`|Address of the token to be paid.|
+
 
 ### buyAccess
 
+Buy access tokens with native currency.
+
+
 ```solidity
-function buyAccess(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken) external payable
+function buyAccess(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken)
+    external
+    payable
+    override
+    buyAccessNonReentrant;
 ```
+**Parameters**
 
-Buy access tokens
+|Name|Type|Description|
+|----|----|-----------|
+|`seller`|`address`|Address of the seller.|
+|`ledger`|`address`|Address of the ledger contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
+|`_quantity`|`uint256`|Quantity of access tokens to buy.|
+|`_pricePerToken`|`uint256`|Price per access token.|
 
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| seller | address | Address of the seller |
-| ledger | address | Address of the ledger contract |
-| tokenId | uint256 | Token ID of the access token |
-| _quantity | uint256 | Quantity of access tokens to buy |
-| _pricePerToken | uint256 | Price per access token |
 
 ### buyAccess
 
+Buy access tokens with an ERC-20 payment token.
+
+
 ```solidity
-function buyAccess(address seller, address ledger, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken) external
+function buyAccess(
+    address seller,
+    address ledger,
+    uint256 tokenId,
+    uint256 _quantity,
+    uint256 _pricePerToken,
+    address _payToken
+) external override buyAccessNonReentrant;
 ```
+**Parameters**
 
-Buy access tokens
+|Name|Type|Description|
+|----|----|-----------|
+|`seller`|`address`|Address of the seller.|
+|`ledger`|`address`|Address of the ledger contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
+|`_quantity`|`uint256`|Quantity of access tokens to buy.|
+|`_pricePerToken`|`uint256`|Price per access token.|
+|`_payToken`|`address`|Address of the token to be paid.|
 
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| seller | address | Address of the seller |
-| ledger | address | Address of the ledger contract |
-| tokenId | uint256 | Token ID of the access token |
-| _quantity | uint256 | Quantity of access tokens to buy |
-| _pricePerToken | uint256 | Price per access token |
-| _payToken | address | Address of the token to be paid |
 
 ### withdrawListing
 
-```solidity
-function withdrawListing(address op, uint256 tokenId, uint256 quantity) external
-```
+Withdraw listing from the marketplace.
 
-Withdraw listing from the marketplace
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| op | address | Address of the operative contract |
-| tokenId | uint256 | Token ID of the access token |
-| quantity | uint256 | Quantity of access tokens to withdraw |
-
-### acquireLicense
 
 ```solidity
-function acquireLicense(bytes req) external view returns (bytes4, bytes)
+function withdrawListing(address op, uint256 tokenId, uint256 quantity) external override;
 ```
+**Parameters**
 
-Acquire a license for a given Digital Asset
+|Name|Type|Description|
+|----|----|-----------|
+|`op`|`address`|Address of the operative contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
+|`quantity`|`uint256`|Quantity of access tokens to withdraw.|
 
-_Since `0.8.0`, this method is put on deprecation phase in profit of usage of Lit Protocol Key Management_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| req | bytes | The request data |
-
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | bytes4 | The result of the license acquisition |
-| [1] | bytes | The license data |
 
 ### hasAccess
 
+Check if an address has access to the given token.
+
+
 ```solidity
-function hasAccess(address accessor, address ledger, uint256 tokenId) external view returns (bool)
+function hasAccess(address accessor, address ledger, uint256 tokenId) external view returns (bool);
 ```
+**Parameters**
 
-Check if the caller has access to the given token
+|Name|Type|Description|
+|----|----|-----------|
+|`accessor`|`address`|The accessor address.|
+|`ledger`|`address`|The ledger address.|
+|`tokenId`|`uint256`|The token ID.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| accessor | address | The accessor address |
-| ledger | address | The ledger address |
-| tokenId | uint256 | The token ID |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`bool`|True if the accessor has access, false otherwise.|
 
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | bool | hasAccess True if the caller has access, false otherwise |
 
 ### hasAccessByContentId
 
+Check whether an accessor address has access to a media referenced by its content ID.
+
+
 ```solidity
-function hasAccessByContentId(address accessor, bytes16 contentId) external view returns (bool)
+function hasAccessByContentId(address accessor, bytes16 contentId) external view returns (bool);
 ```
+**Parameters**
 
-Check whether an accessor address has access to a media referenced by its KID
+|Name|Type|Description|
+|----|----|-----------|
+|`accessor`|`address`|The accessor address.|
+|`contentId`|`bytes16`|The content ID of the media.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| accessor | address | The accessor address |
-| contentId | bytes16 | The content ID of the media |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`bool`|True if the accessor has access, false otherwise.|
 
-#### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | bool | hasAccess True if the accessor has access, false otherwise |
+### _checkUserAccess
+
+Checks whether an accessor has access to a digital asset. Access is granted
+if the user holds an access-granting token on the operative OR has an active
+subscription on the channel (including token-gated access and multi-channel
+parent propagation).
+
+
+```solidity
+function _checkUserAccess(address accessor, address ledger, uint256 tokenId) internal view returns (bool);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`accessor`|`address`|The address to check.|
+|`ledger`|`address`|The ledger (channel) contract address.|
+|`tokenId`|`uint256`|The token ID within the ledger.|
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`bool`|True if the accessor has access through any path.|
+
 
 ### _getOperative
 
+Get the operative contract for a given ledger and token ID.
+
+
 ```solidity
-function _getOperative(address ledger, uint256 tokenId) internal view returns (address, contract IOperative)
+function _getOperative(address ledger, uint256 tokenId) internal view returns (address, IOperative);
 ```
+**Parameters**
 
-Get the operative contract for a given ledger and token ID
+|Name|Type|Description|
+|----|----|-----------|
+|`ledger`|`address`|Address of the ledger contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| ledger | address | Address of the ledger contract |
-| tokenId | uint256 | Token ID of the access token |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|_op Address of the operative contract.|
+|`<none>`|`IOperative`|Instance of the operative contract.|
 
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | address | _op Address of the operative contract |
-| [1] | contract IOperative | IOperative(_op) Instance of the operative contract |
 
 ### operative
 
+Get the operative contract address for a given ledger and token ID.
+
+
 ```solidity
-function operative(address ledger, uint256 tokenId) external view returns (address)
+function operative(address ledger, uint256 tokenId) external view returns (address);
 ```
+**Parameters**
 
-Get the operative contract for a given ledger and token ID
+|Name|Type|Description|
+|----|----|-----------|
+|`ledger`|`address`|Address of the ledger contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| ledger | address | Address of the ledger contract |
-| tokenId | uint256 | Token ID of the access token |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|Address of the operative contract.|
 
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | address | _op Address of the operative contract |
 
 ### sellersOf
 
+Get the sellers of a given operative contract and token ID.
+
+
 ```solidity
-function sellersOf(address op, uint256 tokenId) external view returns (address[])
+function sellersOf(address op, uint256 tokenId) external view override returns (address[] memory);
 ```
+**Parameters**
 
-Get the sellers of a given operative contract and token ID
+|Name|Type|Description|
+|----|----|-----------|
+|`op`|`address`|Address of the operative contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| op | address | Address of the operative contract |
-| tokenId | uint256 | Token ID of the access token |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address[]`|Array of sellers.|
 
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | address[] | sellers Array of sellers |
 
 ### listings
 
+Get the listing for a given operative contract and token ID.
+
+
 ```solidity
-function listings(address op, uint256 tokenId, address seller) external view returns (uint256, uint256, address)
+function listings(address op, uint256 tokenId, address seller)
+    external
+    view
+    override
+    returns (uint256, uint256, address);
 ```
+**Parameters**
 
-Get the listing for a given operative contract and token ID
+|Name|Type|Description|
+|----|----|-----------|
+|`op`|`address`|Address of the operative contract.|
+|`tokenId`|`uint256`|Token ID of the access token.|
+|`seller`|`address`|Address of the seller.|
 
-#### Parameters
+**Returns**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| op | address | Address of the operative contract |
-| tokenId | uint256 | Token ID of the access token |
-| seller | address | Address of the seller |
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`uint256`|quantity Quantity of access tokens.|
+|`<none>`|`uint256`|pricePerToken Price per access token.|
+|`<none>`|`address`|payToken Address of the token to be paid.|
 
-#### Return Values
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | uint256 | quantity Quantity of access tokens |
-| [1] | uint256 | pricePerToken Price per access token |
-| [2] | address | payToken Address of the token to be paid |
 
 ### supportsLitProtocol
 
-```solidity
-function supportsLitProtocol() external pure returns (bool)
-```
-
 Check if the Authority Gateway supports the Lit Protocol
 CEK bindings. Only recent versions should have it.
-This function will serve as a way to check if the Authority Gateway
-supports the Lit Protocol from contract client side.
 
-#### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | bool | True if the Authority Gateway supports the Lit Protocol, false otherwise |
+```solidity
+function supportsLitProtocol() external pure returns (bool);
+```
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`bool`|True if the Authority Gateway supports the Lit Protocol, false otherwise.|
+
+
+## Errors
+### UnboundContentId
+Thrown when a content ID is not bound to any channel/token pair.
+
+
+```solidity
+error UnboundContentId(bytes16 contentId);
+```
+
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`contentId`|`bytes16`|Content ID of the media.|
 
