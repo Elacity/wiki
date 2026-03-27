@@ -15,21 +15,24 @@
 
 ## Contracts (EVM-compatible)
 * [Introduction](contracts/README.md)
-* [Architecture & Design Proposal](contracts/getting-started/design-proposal.md)
-* [Ecosystem Overview](contracts/getting-started/ecosystem-overview.md)
-* [Security Analysis](contracts/getting-started/security-analysis.md)
-* Contracts SDK
-  * [Installation](contracts/sdk/installation.md)
-  * [AuthorityGateway](contracts/sdk/authority.md)
-  * [TradeGateway](contracts/sdk/trade-gateway.md)
-  * [CoreStorage](contracts/sdk/core-storage.md)
-  * [ChannelCore](contracts/sdk/channel-core.md)
-  * [StandardChannel](contracts/sdk/channel.md)
-  * [MultiChannel](contracts/sdk/multi-channel.md)
-  * [Operatives](contracts/sdk/operative.md)
-  * [Transaction Handling](contracts/sdk/transactions.md)
-  * [Universal Account Executor](contracts/sdk/universal-account-executor.md)
-* [Contracts References](contracts/references/README.md)
+* [v3.0 (Current)](contracts/v3.0/README.md)
+* v3.0 Getting Started
+  * [Design Snapshot](contracts/v3.0/getting-started/design-proposal.md)
+  * [Ecosystem Overview](contracts/v3.0/getting-started/ecosystem-overview.md)
+  * [Security Analysis](contracts/v3.0/getting-started/security-analysis.md)
+* v3.0 Contracts SDK
+  * [Installation](contracts/v3.0/sdk/installation.md)
+  * [Authority Gateway](contracts/v3.0/sdk/authority.md)
+  * [Royalty Trade Gateway](contracts/v3.0/sdk/royalty-trade-gateway.md)
+  * [Central Storage](contracts/v3.0/sdk/central-storage.md)
+  * [Channel Factory](contracts/v3.0/sdk/channel-factory.md)
+  * [Channel Wrappers](contracts/v3.0/sdk/channel.md)
+  * [MultiChannel](contracts/v3.0/sdk/multi-channel.md)
+  * [Operatives](contracts/v3.0/sdk/operative.md)
+  * [Transaction Handling](contracts/v3.0/sdk/transactions.md)
+  * [Universal Account Executor](contracts/v3.0/sdk/universal-account-executor.md)
+* [v3.0 Contract References](contracts/v3.0/references/README.md)
+* [v2.0 (Legacy)](contracts/v2.0/README.md)
 
 
 ## Media Package
