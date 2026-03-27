@@ -35,7 +35,7 @@
 * [v2.0 (Legacy)](contracts/v2.0/README.md)
 
 
-## Media Package
+## Media Packager
 * [Introduction](media-packager/SUMMARY.md)
 * Getting Started
   * [Installation](media-packager/getting-started/installation.md)
