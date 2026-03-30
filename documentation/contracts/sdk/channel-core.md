@@ -24,10 +24,16 @@ ChannelCore has **one fixed deployment per supported network**. Use `fromChainId
 
 ```typescript
 import { ChainId } from '@elacity-js/common';
+import { setupContracts } from '@elacity-js/contracts';
+
+// Optional: default is '3.0'
+setupContracts({ version: '3.0' });
 
 const chainId = ChainId.Base;
 const channelCore = ChannelCore.fromChainId(chainId, adapter);
 ```
+
+> Version note: ecosystem address resolution follows the configured SDK version. In current config, v3 has Base + Arbitrum Sepolia entries; Elastos is available only via v2.
 
 ### Parameters
 

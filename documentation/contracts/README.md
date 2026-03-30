@@ -2,6 +2,8 @@
 
 The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for the Elacity DRM smart contract ecosystem. Built with an adapter pattern, it supports multiple web3 libraries including Ethers.js and Viem.
 
+> Maintainer policy: any change under `packages/contracts/**` must include matching documentation updates in this Contracts wiki section (historically referenced as `.github/wiki/contracts`).
+
 ## What's Inside
 
 This section of the documentation covers the Elacity smart contract ecosystem and its JavaScript SDK wrapper.
@@ -75,11 +77,15 @@ npm install @elacity-js/contracts-viem-adapter viem
 
 ```typescript
 import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
-import { AuthorityGateway } from '@elacity-js/contracts';
+import { AuthorityGateway, setupContracts } from '@elacity-js/contracts';
 import { JsonRpcProvider } from 'ethers';
 
 const provider = new JsonRpcProvider('https://rpc-evm.ela.city');
 const adapter = new EthersAdapter(provider);
+
+// Optional: choose ecosystem/contract version at app setup.
+// Default is '3.0' if this is omitted.
+setupContracts({ version: '3.0' });
 
 const gateway = new AuthorityGateway('0x...', adapter);
 const commitTx = await gateway.sellAccess(ledgerAddress, tokenId, quantity, pricePerToken, payToken);
@@ -97,6 +103,13 @@ The SDK supports two ways to execute state-changing transactions:
 2.  **Transaction Executor**: Use an `ITransactionExecutor` (like the `UniversalAccountTransactionExecutor`) to bundle operations or handle complex execution logic.
 
 For more details, see the [**Transaction Handling**](sdk/transactions.md) guide.
+
+## SDK Versioning Notes
+
+- Contracts SDK defaults to contract/ecosystem version `3.0`.
+- Only ecosystem contracts are version-aware in the SDK (`CoreStorage`, `ChannelCore`, `TradeGateway`, `AuthorityGateway`).
+- Common token/module wrappers (e.g. `ERC20`, `ERC1155`, `StandardChannel`, `MultiChannel`, `SubscriptionModule`, `Operative*`) always use the v3 ABI set.
+- In current SDK config, ecosystem v3 addresses exist only for Base + Arbitrum Sepolia. Elastos has no v3 entry.
 
 ## Documentation Navigation
 

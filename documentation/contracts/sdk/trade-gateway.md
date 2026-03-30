@@ -32,9 +32,15 @@ TradeGateway has **one fixed deployment per supported network**. Use `fromChainI
 
 ```typescript
 import { ChainId } from '@elacity-js/common';
+import { setupContracts } from '@elacity-js/contracts';
 
-const gateway = TradeGateway.fromChainId(ChainId.Elastos, runner);
+// Optional: default is '3.0'
+setupContracts({ version: '3.0' });
+
+const gateway = TradeGateway.fromChainId(ChainId.Base, runner);
 ```
+
+> Version note: ecosystem address resolution follows the configured SDK version. In current config, v3 has Base + Arbitrum Sepolia entries; Elastos is available only via v2.
 
 **Parameters:**
 

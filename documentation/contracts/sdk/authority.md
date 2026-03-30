@@ -11,8 +11,15 @@ import { AuthorityGateway } from '@elacity-js/contracts';
 ## Initialization
 
 ```typescript
+import { setupContracts } from '@elacity-js/contracts';
+
+// Optional: default is '3.0'
+setupContracts({ version: '3.0' });
+
 const gateway = new AuthorityGateway(contractAddress, adapter);
 ```
+
+> Version note: `AuthorityGateway` ABI selection follows the configured SDK contract version.
 
 ### Parameters
 

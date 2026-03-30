@@ -27,11 +27,14 @@ npm install @elacity-js/contracts-viem-adapter viem
 ```typescript
 import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
 import { ChainId } from '@elacity-js/common';
-import { ChannelCore, CoreStorage, StandardChannel, TradeGateway } from '@elacity-js/contracts';
+import { ChannelCore, CoreStorage, StandardChannel, TradeGateway, setupContracts } from '@elacity-js/contracts';
 import { JsonRpcProvider } from 'ethers';
 
 const provider = new JsonRpcProvider('https://rpc-evm.ela.city');
 const adapter = new EthersAdapter(provider);
+
+// Configure once during app startup (default is '3.0')
+setupContracts({ version: '3.0' });
 
 // Ecosystem contracts have a fixed address per supported network (recommended):
 const chainId = ChainId.Base;
@@ -49,7 +52,7 @@ console.log('Balance:', balance.toString());
 ```typescript
 import { ViemAdapter } from '@elacity-js/contracts-viem-adapter';
 import { ChainId } from '@elacity-js/common';
-import { ChannelCore, CoreStorage, StandardChannel, TradeGateway } from '@elacity-js/contracts';
+import { ChannelCore, CoreStorage, StandardChannel, TradeGateway, setupContracts } from '@elacity-js/contracts';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
@@ -59,6 +62,9 @@ const publicClient = createPublicClient({
 });
 
 const adapter = new ViemAdapter(publicClient);
+
+// Configure once during app startup (default is '3.0')
+setupContracts({ version: '3.0' });
 
 // Ecosystem contracts have a fixed address per supported network (recommended):
 const chainId = ChainId.Base;
@@ -79,8 +85,27 @@ Currently:
 - `ChannelCore`
 - `CoreStorage`
 - `TradeGateway`
+- `AuthorityGateway` (version-aware ABI, explicit address instantiation in current SDK wrapper)
 
-Supported chain IDs are exported as `ChainId` (e.g. `ChainId.Base`, `ChainId.ArbitrumSepolia`, `ChainId.Elastos`).
+### Contract Version Setup
+
+Configure the contract/ecosystem version during setup:
+
+```typescript
+import { setupContracts, setupContractClient, getContractVersion } from '@elacity-js/contracts';
+
+setupContracts({ version: '3.0' }); // default
+// or
+setupContractClient({ version: '2.0' });
+
+console.log(getContractVersion());
+```
+
+Versioning behavior:
+- Only ecosystem contracts are version-aware.
+- Standard/common wrappers (e.g. `ERC20`, `ERC1155`, `StandardChannel`, `MultiChannel`, `SubscriptionModule`, `Operative*`) always use v3 ABIs.
+- For ecosystem addresses, `2.0` keeps existing addresses.
+- `3.0` currently has Base + Arbitrum Sepolia entries only. Elastos has no `3.0` entry.
 
 You can instantiate them with `fromChainId(chainId, runner)`, or use `getEcosystemContractAddress(chainId, key)` if you only need the address.
 
@@ -158,4 +183,3 @@ const result = await executor.execute([
 For more in-depth information on how transactions are handled in the SDK, please refer to:
 - [**Transaction Handling**](transactions.md)
 - [**Universal Account Executor**](universal-account-executor.md)
-
