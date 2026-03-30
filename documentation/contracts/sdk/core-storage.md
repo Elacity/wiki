@@ -1,5 +1,7 @@
 # CoreStorage
 
+> Compatibility wrapper: in protocol `v3.0`, prefer [`CentralStorage`](./central-storage.md). `CoreStorage` remains available for `v2.0` continuity and migration-safe upgrades.
+
 The `CoreStorage` class provides a typed wrapper for interacting with the Elacity CoreStorage smart contract. This is the central storage contract that maintains ecosystem-wide data including IP references, channel relationships, marketplace listings, and system configuration.
 
 This is a **system-centric contract** — state mutations are handled internally by the smart contract or by authorised ecosystem contracts (gateways, factories). The SDK exposes read-only queries.

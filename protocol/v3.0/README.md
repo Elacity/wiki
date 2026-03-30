@@ -1,22 +1,30 @@
 ---
-description: Access Economy Protocol v3 implementation references
+description: Access Economy Protocol (3.0)
 icon: terminal
 ---
 
 # Access Economy Protocol (v3.0)
 
-Version 3.0 documentation is focused on protocol behavior and integration surfaces for external developers and integrators.
+Version 3.0 is the current protocol architecture. This section focuses on contract behavior, system design, and integration surfaces.
 
 ## Read First
 
 - [Overview](overview.md)
 - [Architecture Notes](architecture.md)
+- [Getting Started](getting-started/README.md)
 
-## API References
+## Technical and Manual Notes
+
+- [Technical Documentation](technical/README.md)
+- [Manual Documentation](manual/README.md)
+
+## Contract References
 
 - [Contract References](references/README.md)
 - [Reference Index](references/SUMMARY.md)
 
-## Scope
+## Scope and Boundaries
 
-These docs cover protocol contracts in this repository (`contracts/`) and their public-facing interactions.
+These docs cover protocol contracts in this repository (`contracts/`) and public on-chain behavior.
+
+SDK wrappers and client ergonomics are documented separately in [Documentation / Contracts](../../documentation/contracts/README.md).

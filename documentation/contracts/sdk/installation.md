@@ -27,7 +27,13 @@ npm install @elacity-js/contracts-viem-adapter viem
 ```typescript
 import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
 import { ChainId } from '@elacity-js/common';
-import { ChannelCore, CoreStorage, StandardChannel, TradeGateway, setupContracts } from '@elacity-js/contracts';
+import {
+  ChannelFactory,
+  CentralStorage,
+  RoyaltyTradeGateway,
+  StandardChannel,
+  setupContracts,
+} from '@elacity-js/contracts';
 import { JsonRpcProvider } from 'ethers';
 
 const provider = new JsonRpcProvider('https://rpc-evm.ela.city');
@@ -38,9 +44,9 @@ setupContracts({ version: '3.0' });
 
 // Ecosystem contracts have a fixed address per supported network (recommended):
 const chainId = ChainId.Base;
-const coreStorage = CoreStorage.fromChainId(chainId, adapter);
-const channelCore = ChannelCore.fromChainId(chainId, adapter);
-const tradeGateway = TradeGateway.fromChainId(chainId, adapter);
+const centralStorage = CentralStorage.fromChainId(chainId, adapter);
+const channelFactory = ChannelFactory.fromChainId(chainId, adapter);
+const royaltyTradeGateway = RoyaltyTradeGateway.fromChainId(chainId, adapter);
 
 const contract = new StandardChannel('0x...', adapter);
 const balance = await contract.balanceOf('0x...');
@@ -52,7 +58,13 @@ console.log('Balance:', balance.toString());
 ```typescript
 import { ViemAdapter } from '@elacity-js/contracts-viem-adapter';
 import { ChainId } from '@elacity-js/common';
-import { ChannelCore, CoreStorage, StandardChannel, TradeGateway, setupContracts } from '@elacity-js/contracts';
+import {
+  ChannelFactory,
+  CentralStorage,
+  RoyaltyTradeGateway,
+  StandardChannel,
+  setupContracts,
+} from '@elacity-js/contracts';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
@@ -68,9 +80,9 @@ setupContracts({ version: '3.0' });
 
 // Ecosystem contracts have a fixed address per supported network (recommended):
 const chainId = ChainId.Base;
-const coreStorage = CoreStorage.fromChainId(chainId, adapter);
-const channelCore = ChannelCore.fromChainId(chainId, adapter);
-const tradeGateway = TradeGateway.fromChainId(chainId, adapter);
+const centralStorage = CentralStorage.fromChainId(chainId, adapter);
+const channelFactory = ChannelFactory.fromChainId(chainId, adapter);
+const royaltyTradeGateway = RoyaltyTradeGateway.fromChainId(chainId, adapter);
 
 const contract = new StandardChannel('0x...', adapter);
 const balance = await contract.balanceOf('0x...');
@@ -82,9 +94,10 @@ console.log('Balance:', balance.toString());
 Some contracts are **singletons per network** (one deployment per supported chainId) and their addresses are provided by the SDK.
 
 Currently:
-- `ChannelCore`
-- `CoreStorage`
-- `TradeGateway`
+- `ChannelFactory` (`ChannelCore` compatibility alias)
+- `CentralStorage` (`CoreStorage` compatibility alias)
+- `RoyaltyTradeGateway` (`TradeGateway` compatibility alias)
+- `EventHub` (v3 only)
 - `AuthorityGateway` (version-aware ABI, explicit address instantiation in current SDK wrapper)
 
 ### Contract Version Setup
@@ -103,17 +116,38 @@ console.log(getContractVersion());
 
 Versioning behavior:
 - Only ecosystem contracts are version-aware.
+- Canonical v3 names: `CentralStorage`, `ChannelFactory`, `RoyaltyTradeGateway`.
+- Compatibility aliases: `CoreStorage`, `ChannelCore`, `TradeGateway`.
 - Standard/common wrappers (e.g. `ERC20`, `ERC1155`, `StandardChannel`, `MultiChannel`, `SubscriptionModule`, `Operative*`) always use v3 ABIs.
 - For ecosystem addresses, `2.0` keeps existing addresses.
 - `3.0` currently has Base + Arbitrum Sepolia entries only. Elastos has no `3.0` entry.
 
 You can instantiate them with `fromChainId(chainId, runner)`, or use `getEcosystemContractAddress(chainId, key)` if you only need the address.
 
+### ABI Helpers (Advanced)
+
+```typescript
+import { getContractAbi, getContractAbiForVersion } from '@elacity-js/contracts';
+
+// Uses active setupContracts() version
+const activeAbi = getContractAbi('AuthorityGateway');
+
+// Explicit version selection
+const v2Abi = getContractAbiForVersion('TradeGateway', '2.0');
+const v3Abi = getContractAbiForVersion('RoyaltyTradeGateway', '3.0');
+```
+
+`getContractAbi(contract)` is intentionally version-implicit (uses active SDK setup).  
+Use `getContractAbiForVersion(contract, version)` for deterministic explicit lookup.
+
 ## Available Contracts
 
 ### Core Contracts
-- `ChannelCore`: Factory contract for creating and managing Elacity channels. Handles channel creation through registered factories.
-- `CoreStorage`: Central storage contract for ecosystem data including IP bindings, channel relationships, marketplace listings, and system configuration.
+- `ChannelFactory`: Canonical v3 channel entrypoint.
+- `CentralStorage`: Canonical v3 storage entrypoint.
+- `EventHub`: v3 event-router for centralized protocol emissions.
+- `ChannelCore`: Compatibility alias of `ChannelFactory`.
+- `CoreStorage`: Compatibility alias of `CentralStorage`.
 
 ### Channel Contracts
 - `StandardChannel`: Elacity Standard Channel contract (can be Public or Private). Combines ERC-1155 functionality with subscription management. Supports minting.
@@ -121,7 +155,8 @@ You can instantiate them with `fromChainId(chainId, runner)`, or use `getEcosyst
 
 ### Gateway Contracts
 - `AuthorityGateway`: Access control, licensing, and access token marketplace.
-- `TradeGateway`: Marketplace dedicated to trading royalty tokens (ROYALTY_SHARE tokens from Operative contracts).
+- `RoyaltyTradeGateway`: Canonical v3 marketplace for royalty-token trading.
+- `TradeGateway`: Compatibility alias of `RoyaltyTradeGateway`.
 
 ### Asset Contracts
 - `Operative`: Specialized ERC-1155 contracts that manage access rights and royalty distribution for digital assets.

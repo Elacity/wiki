@@ -18,14 +18,14 @@ REST and GraphQL API client for interacting with Elacity's backend services:
 
 ---
 
-### ⚡ [@elacity-js/contracts](contracts/SUMMARY.md)
+### ⚡ [@elacity-js/contracts](contracts/README.md)
 
 Framework-agnostic smart contract wrappers for interacting with Elacity's on-chain contracts:
 - Support for popular libraries (Ethers.js, Viem, Web3.js)
 - Type-safe contract interactions
 - Factory, vault, and token contract wrappers
 
-[→ View Contracts documentation](contracts/SUMMARY.md)
+[→ View Contracts documentation](contracts/README.md)
 
 ---
 
@@ -75,11 +75,10 @@ Choose the package that best fits your needs:
 
 - **Building a web app with backend integration?** Start with the [API package](api/SUMMARY.md)
 - **Uploading and minting media content?** Use the [Media package](media-packager/SUMMARY.md)
-- **Interacting directly with smart contracts?** Check out the [Contracts package](contracts/SUMMARY.md)
+- **Interacting directly with smart contracts?** Check out the [Contracts package](contracts/README.md)
 - **Playing DRM-protected media?** Use the [Media Player package](media-player/SUMMARY.md)
 - **Need shared utilities?** Explore the [Common package](common/SUMMARY.md)
 
 ## Support
 
 For issues, questions, or contributions, please visit our GitHub repository or contact the Elacity team.
-

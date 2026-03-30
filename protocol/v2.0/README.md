@@ -1,18 +1,20 @@
 ---
-description: Access Economy Protocol v2 implementation references (historical)
+description: Access Economy Protocol (2.0)
 icon: terminal
 ---
 
 # Access Economy Protocol (v2.0)
 
-This section is implementation-focused and keeps v2 protocol contract references for compatibility and historical context.
+This section preserves the v2 contract model for historical context, migration support, and compatibility checks.
 
-## Start Here
+## Start Here (Historical Context)
 
+- [Getting Started](getting-started/README.md)
+- [Technical Notes](technical/README.md)
 - [Contract References](references/README.md)
 - [Reference Index](references/SUMMARY.md)
 
-## SDK and Client Integration Docs
+## SDK and Client Integration
 
 SDK/client-facing documentation (Ethers, Viem, executors, usage guides) is maintained under:
 
@@ -21,5 +23,5 @@ SDK/client-facing documentation (Ethers, Viem, executors, usage guides) is maint
 
 ## Notes
 
-- v2 protocol pages are archived references.
-- Active protocol implementation documentation is under [`../v3.0`](../v3.0/README.md).
+- v2 pages are archived implementation references and may differ from current runtime behavior.
+- Active protocol documentation is under [v3.0](../v3.0/README.md).

@@ -15,21 +15,24 @@
 
 ## Contracts (EVM-compatible)
 * [Introduction](contracts/README.md)
-* [Architecture & Design Proposal](contracts/getting-started/design-proposal.md)
-* [Ecosystem Overview](contracts/getting-started/ecosystem-overview.md)
-* [Security Analysis](contracts/getting-started/security-analysis.md)
 * Contracts SDK
   * [Installation](contracts/sdk/installation.md)
   * [AuthorityGateway](contracts/sdk/authority.md)
+  * [EventHub](contracts/sdk/event-hub.md)
+  * [CentralStorage](contracts/sdk/central-storage.md)
   * [TradeGateway](contracts/sdk/trade-gateway.md)
+  * [RoyaltyTradeGateway](contracts/sdk/royalty-trade-gateway.md)
   * [CoreStorage](contracts/sdk/core-storage.md)
   * [ChannelCore](contracts/sdk/channel-core.md)
+  * [ChannelFactory](contracts/sdk/channel-factory.md)
   * [StandardChannel](contracts/sdk/channel.md)
   * [MultiChannel](contracts/sdk/multi-channel.md)
   * [Operatives](contracts/sdk/operative.md)
   * [Transaction Handling](contracts/sdk/transactions.md)
   * [Universal Account Executor](contracts/sdk/universal-account-executor.md)
-* [Contracts References](../../protocol/v2.0/README.md)
+* Protocol
+  * [Protocol v3.0](../protocol/v3.0/README.md)
+  * [Protocol v2.0](../protocol/v2.0/README.md)
 
 
 ## Media Package

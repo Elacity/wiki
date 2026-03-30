@@ -1,5 +1,7 @@
 # TradeGateway
 
+> Compatibility wrapper: in protocol `v3.0`, prefer [`RoyaltyTradeGateway`](./royalty-trade-gateway.md). `TradeGateway` remains available for `v2.0` continuity and migration-safe upgrades.
+
 The `TradeGateway` class provides a typed wrapper for interacting with the Elacity Trade Gateway smart contract. **This contract is dedicated to trading ERC-1155 tokens** — specifically royalty shares (`ROYALTY_SHARE` tokens from Operative contracts) and other non-access-token ERC-1155 tokens.
 
 ## Purpose

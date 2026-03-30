@@ -1,79 +1,46 @@
-# Contracts - Smart Contract SDK
+# Contracts SDK Documentation
 
-The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for the Elacity DRM smart contract ecosystem. Built with an adapter pattern, it supports multiple web3 libraries including Ethers.js and Viem.
+The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for Elacity smart contracts, with adapters for Ethers and Viem.
 
-> Maintainer policy: any change under `packages/contracts/**` must include matching documentation updates in this Contracts wiki section (historically referenced as `.github/wiki/contracts`).
+This section is dedicated to SDK and client integration. Protocol architecture and contract references live under `protocol/`.
 
-## What's Inside
+> Maintainer policy: any change under `packages/contracts/**` must include matching updates in this section.
 
-This section of the documentation covers the Elacity smart contract ecosystem and its JavaScript SDK wrapper.
+## Start Here
 
-### 📚 Getting Started
+- [SDK Installation](sdk/installation.md)
+- [Transaction Handling](sdk/transactions.md)
+- [Universal Account Executor](sdk/universal-account-executor.md)
 
-New to Elacity contracts? Start here:
+## SDK Contract Wrappers
 
-- **[Architecture & Design Proposal](getting-started/design-proposal.md)** - Comprehensive overview of the DRM contract ecosystem, including vision, specifications, and rationale
-- **[Ecosystem Overview](getting-started/ecosystem-overview.md)** - High-level architecture, core components, and interaction flows
-- **[Installation Guide](sdk/installation.md)** - Install the SDK and choose your preferred web3 adapter
+- [AuthorityGateway](sdk/authority.md)
+- [EventHub](sdk/event-hub.md)
+- [CentralStorage](sdk/central-storage.md)
+- [ChannelFactory](sdk/channel-factory.md)
+- [RoyaltyTradeGateway](sdk/royalty-trade-gateway.md)
+- [CoreStorage](sdk/core-storage.md) (legacy alias; prefer CentralStorage on v3)
+- [ChannelCore](sdk/channel-core.md) (legacy alias; prefer ChannelFactory on v3)
+- [TradeGateway](sdk/trade-gateway.md)
+- [StandardChannel](sdk/channel.md)
+- [MultiChannel](sdk/multi-channel.md)
+- [Operatives](sdk/operative.md)
 
-### 📖 Contract References
+## Protocol Documentation
 
-Auto-generated documentation for all smart contracts:
-
-- **[Contract API Reference](../../protocol/v2.0/README.md)** - Complete API documentation for gateways, channels, operatives, modules, and storage contracts
-- **[Contract Index](../../protocol/v2.0/SUMMARY.md)** - Full listing of all documented contracts
-
-## Quick Overview
-
-The Elacity DRM ecosystem provides:
-
-- **🔐 Advanced Digital Rights Management** - Cryptographic licensing with ECDH/ECDSA protocols
-- **💰 Multi-Stakeholder Royalties** - Complex revenue sharing inspired by EIP-2981, EIP-4910, and EIP-5553
-- **🎫 Flexible Access Models** - Permanent ownership, resale rights, and subscriptions
-- **🏪 Dual Marketplace System** - AuthorityGateway for access tokens, TradeGateway for asset trading
-- **📦 Modular Architecture** - Reusable modules for licensing, payments, royalties, and subscriptions
-
-## Architecture Layers
-
-```
-┌────────────────────────────────────────────┐
-│     Gateway Layer (Entry Points)           │
-│  AuthorityGateway  |  TradeGateway        │
-├────────────────────────────────────────────┤
-│     Asset Layer (Digital Content)          │
-│     Channels  |  Operatives                │
-├────────────────────────────────────────────┤
-│     Module Layer (Specialized Logic)       │
-│  License | Trade | Payment | Royalty | Sub │
-├────────────────────────────────────────────┤
-│     Storage Layer (Central Registry)       │
-│          CoreStorage                        │
-└────────────────────────────────────────────┘
-```
-
-## Key Contracts
-
-| Contract | Purpose |
-|----------|---------|
-| **AuthorityGateway** | Access control, licensing, and access token marketplace |
-| **TradeGateway** | General asset trading (royalty shares, distribution rights) |
-| **Channels** | ERC-1155 containers for digital assets (StandardChannel, MultiChannel) |
-| **Operatives** | Access control contracts for individual assets |
-| **CoreStorage** | Centralized data hub for ecosystem-wide registry |
+- [Protocol v3.0](../../protocol/v3.0/README.md) (current architecture and references)
+- [Protocol v2.0](../../protocol/v2.0/README.md) (historical compatibility references)
 
 ## Installation
 
 ```bash
-# Install the core package
 npm install @elacity-js/contracts
-
-# Choose an adapter
 npm install @elacity-js/contracts-ethers-adapter ethers
-# OR
+# or
 npm install @elacity-js/contracts-viem-adapter viem
 ```
 
-## Usage Example
+## Usage
 
 ```typescript
 import { EthersAdapter } from '@elacity-js/contracts-ethers-adapter';
@@ -83,37 +50,24 @@ import { JsonRpcProvider } from 'ethers';
 const provider = new JsonRpcProvider('https://rpc-evm.ela.city');
 const adapter = new EthersAdapter(provider);
 
-// Optional: choose ecosystem/contract version at app setup.
-// Default is '3.0' if this is omitted.
-setupContracts({ version: '3.0' });
+setupContracts({ version: '3.0' }); // optional, defaults to 3.0
 
 const gateway = new AuthorityGateway('0x...', adapter);
-const commitTx = await gateway.sellAccess(ledgerAddress, tokenId, quantity, pricePerToken, payToken);
+const pending = await gateway.sellAccess(
+  ledgerAddress,
+  tokenId,
+  quantity,
+  pricePerToken,
+  payToken
+);
 
-// Direct commitment
-const tx = await commitTx.commit();
-const receipt = await tx.wait();
+const tx = await pending.commit();
+await tx.wait();
 ```
 
-## Transaction Handling
+## Versioning Notes
 
-The SDK supports two ways to execute state-changing transactions:
-
-1.  **Direct Commitment**: Call `.commit()` on the object returned by a contract method.
-2.  **Transaction Executor**: Use an `ITransactionExecutor` (like the `UniversalAccountTransactionExecutor`) to bundle operations or handle complex execution logic.
-
-For more details, see the [**Transaction Handling**](sdk/transactions.md) guide.
-
-## SDK Versioning Notes
-
-- Contracts SDK defaults to contract/ecosystem version `3.0`.
-- Only ecosystem contracts are version-aware in the SDK (`CoreStorage`, `ChannelCore`, `TradeGateway`, `AuthorityGateway`).
-- Common token/module wrappers (e.g. `ERC20`, `ERC1155`, `StandardChannel`, `MultiChannel`, `SubscriptionModule`, `Operative*`) always use the v3 ABI set.
-- In current SDK config, ecosystem v3 addresses exist only for Base + Arbitrum Sepolia. Elastos has no v3 entry.
-
-## Documentation Navigation
-
-- Start with the [**Ecosystem Overview**](getting-started/ecosystem-overview.md) for architectural understanding
-- Review the [**Design Proposal**](getting-started/design-proposal.md) for detailed specifications
-- Follow the [**Installation Guide**](sdk/installation.md) to integrate the SDK
-- Explore [**Contract References**](../../protocol/v2.0/README.md) for API documentation
+- SDK defaults to ecosystem version `3.0`.
+- Ecosystem wrappers are version-aware (`CentralStorage`, `ChannelFactory`, `RoyaltyTradeGateway`, `AuthorityGateway`, `EventHub`).
+- Legacy aliases remain available (`CoreStorage`, `ChannelCore`, `TradeGateway`) for compatibility.
+- Shared module/token wrappers use the v3 ABI set.

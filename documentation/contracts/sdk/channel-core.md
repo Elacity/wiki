@@ -1,5 +1,7 @@
 # ChannelCore
 
+> Compatibility wrapper: in protocol `v3.0`, prefer [`ChannelFactory`](./channel-factory.md). `ChannelCore` remains available for `v2.0` continuity and migration-safe upgrades.
+
 The `ChannelCore` class provides a typed wrapper for interacting with the Elacity ChannelCore smart contract. This is the factory contract responsible for creating Elacity channels.
 
 This is a **system-centric contract** — factory registration and ownership management are handled by the contract admin. Only channel creation is publicly available.
