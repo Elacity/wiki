@@ -2,6 +2,8 @@
 
 Entry-point documents for understanding the current protocol model and migration context.
 
+For Solidity-level behavior, consider [`Elacity/v3-drm-protocol`](https://github.com/Elacity/v3-drm-protocol) as the canonical source.
+
 ## Contents
 
 - [Design Snapshot](design-proposal.md)

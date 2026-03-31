@@ -9,7 +9,7 @@ Version `3.0` is the current protocol architecture. This section focuses on cont
 
 ## Getting Started
 
-- [Overview](overview.md)
+- [Overview](getting-started/ecosystem-overview.md)
 - [Architecture Notes](architecture.md)
 - [Getting Started](getting-started/README.md)
 
@@ -25,6 +25,9 @@ Version `3.0` is the current protocol architecture. This section focuses on cont
 
 ## Scope and Boundaries
 
-These docs cover protocol contracts in this repository (`contracts/`) and public on-chain behavior.
+The Solidity source of truth for protocol v3 is the external repository:
+[`Elacity/v3-drm-protocol`](https://github.com/Elacity/v3-drm-protocol).
+
+This section in `js-sdk` provides synced protocol design/reference documentation for integrators and external developers.
 
 SDK wrappers and client ergonomics are documented separately in [Documentation / Contracts](../../documentation/contracts/README.md).

@@ -16,7 +16,7 @@ import { ethers } from 'ethers';
 
 // 1. Initialize API client
 const apiClient = new ElacityClient({
-  chainId: ChainId.BASE_MAINNET,
+  chainId: ChainId.Base,
 });
 
 // 2. Authenticate

@@ -30,6 +30,7 @@ This document captures the current design direction reflected in the repository,
 - `SubscriptionManager` owns channel-scoped subscription state.
 - Channels preserve user-facing subscription entrypoints as delegating facades.
 - Current call shape: `subscribePlan(uint8 planId, bytes args)`.
+- SDK-facing integration surface: use `StandardChannel` or `MultiChannel` subscription methods directly (no standalone `SubscriptionModule` SDK wrapper).
 
 ### 4) Event model
 

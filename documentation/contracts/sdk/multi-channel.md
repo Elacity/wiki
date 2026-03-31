@@ -107,11 +107,15 @@ const royalties = await multi.royaltyInfo(salePrice);
 ### Subscribe / unsubscribe
 
 ```typescript
-// ERC-20 plan
-await multi.subscribePlan(planId, false).then(tx => tx.commit());
+// ERC-20 plan (no extra args -> encoded as 0x)
+await multi.subscribePlan(planId).then(tx => tx.commit());
 
 // Native currency plan
-await multi.subscribePlan(planId, false, totalValue).then(tx => tx.commit());
+await multi.subscribePlan(
+  planId,
+  { tokenURI: 'ipfs://.../subscription-token.json' },
+  totalValue
+).then(tx => tx.commit());
 
 await multi.unsubscribePlan(planId).then(tx => tx.commit());
 ```
@@ -120,6 +124,7 @@ await multi.unsubscribePlan(planId).then(tx => tx.commit());
 
 ```typescript
 const active = await multi.hasActiveSubscription(subscriberAddress);
+const expiry = await multi.getExpiry(planId, subscriberAddress);
 // Returns true if active on this multi-channel OR any wrapped child channel
 ```
 
@@ -136,7 +141,25 @@ const nextId = await multi.nextPlanId();
 
 ```typescript
 await multi.bulkUpdatePlans([
-  { actionType: 'create', args: '0x...' },
+  {
+    actionType: 'add',
+    payToken: '0x0000000000000000000000000000000000000000',
+    price: 1_000_000n,
+    duration: 7n * 24n * 60n * 60n,
+    tokenURI: 'ipfs://.../plan-1.json',
+  },
+  {
+    actionType: 'update',
+    planId: 1,
+    payToken: '0x0000000000000000000000000000000000000000',
+    price: 1_250_000n,
+    duration: 30n * 24n * 60n * 60n,
+    tokenURI: 'ipfs://.../plan-1-updated.json',
+  },
+  {
+    actionType: 'remove',
+    planId: 2,
+  },
 ]).then(tx => tx.commit());
 ```
 
@@ -208,7 +231,7 @@ for (const addr of [channel1, channel2, channel3]) {
 }
 
 // A single subscription now covers all three channels
-await multi.subscribePlan(0, false, price).then(tx => tx.commit());
+await multi.subscribePlan(0, { tokenURI: 'ipfs://.../bundle-subscription.json' }, price).then(tx => tx.commit());
 
 const active = await multi.hasActiveSubscription(userAddress); // true
 ```

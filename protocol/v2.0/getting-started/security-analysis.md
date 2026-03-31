@@ -37,7 +37,7 @@ Contracts must be **acknowledged** by CoreStorage to participate in the ecosyste
 - **Self-acknowledgement** is permitted for initialization flows
 - Only the **owner** can un-acknowledge contracts
 
-> **Security Note**: The transitive trust model has known escalation risks (see [AV-1.5](../../../../ignition/modules/bugfix/ELACITY-2184/AUDIT.md#av-15-self-acknowledgement-privilege-escalation--pending) in the Audit Report). Monitoring acknowledgement events is recommended.
+> **Security Note**: The transitive trust model has known escalation risks (see finding `AV-1.5` in the v2 audit report). Monitoring acknowledgement events is recommended.
 
 ### Proxy & Upgrade Safety
 

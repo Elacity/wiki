@@ -118,7 +118,7 @@ Versioning behavior:
 - Only ecosystem contracts are version-aware.
 - Canonical v3 names: `CentralStorage`, `ChannelFactory`, `RoyaltyTradeGateway`.
 - Compatibility aliases: `CoreStorage`, `ChannelCore`, `TradeGateway`.
-- Standard/common wrappers (e.g. `ERC20`, `ERC1155`, `StandardChannel`, `MultiChannel`, `SubscriptionModule`, `Operative*`) always use v3 ABIs.
+- Standard/common wrappers (e.g. `ERC20`, `ERC1155`, `StandardChannel`, `MultiChannel`, `Operative*`) always use v3 ABIs.
 - For ecosystem addresses, `2.0` keeps existing addresses.
 - `3.0` currently has Base + Arbitrum Sepolia entries only. Elastos has no `3.0` entry.
 
@@ -164,8 +164,8 @@ Use `getContractAbiForVersion(contract, version)` for deterministic explicit loo
 ### Standard Token Interfaces
 - `ERC20`, `ERC721`, `ERC1155`: Standard token interfaces.
 
-### Module Contracts
-- `SubscriptionModule`: Core subscription management module (inherited by all channel types).
+### Subscription Features
+- Subscription methods are exposed directly on channel wrappers (`StandardChannel`, `MultiChannel`) rather than a standalone `SubscriptionModule` SDK wrapper.
 
 ## Transaction Executors
 
@@ -184,10 +184,10 @@ const executor = new StandardTransactionExecutor(runner);
 
 // With StandardTransactionExecutor, dryRun stays false.
 // Contract calls execute normally — same as calling channel.mint() directly.
-const result = await executor.execute(runner, [
+const response = await executor.execute([
   channel.mint(uri, opType, opRawData, sellRawData),
 ]);
-const receipt = await result.wait();
+await Promise.all(response.transactions.map((tx) => tx.wait()));
 ```
 
 ### Bundled Execution via Particle Universal Account
@@ -209,10 +209,11 @@ const executor = new UniversalAccountTransactionExecutor(runner, {
 
 // Bundle multiple contract calls into one UA meta-transaction.
 // The executor toggles dryRun, collects raw calldata, then sends via UA.
-const result = await executor.execute([
+const response = await executor.execute([
   channel.mint(uri, opType, opRawData, sellRawData),
   operative.setApprovalForAll(operator, true),
 ]);
+await Promise.all(response.transactions.map((tx) => tx.wait()));
 ```
 
 For more in-depth information on how transactions are handled in the SDK, please refer to:

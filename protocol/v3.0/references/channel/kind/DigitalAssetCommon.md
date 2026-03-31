@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/channel/kind/DigitalAssetCommon.sol)
 
 **Inherits:**
-Initializable, [StorageModule](/contracts/modules/core/StorageModule.md), [ChannelConfigurable](/contracts/channel/ChannelConfigurable.md), [SubscriptionModule](/contracts/modules/subscription/SubscriptionModule.md), [MintAssetFeeCollector](/contracts/modules/library/MintAssetFeeCollector.md)
+Initializable, [StorageModule](../../modules/core/StorageModule.md), [ChannelConfigurable](../../channel/ChannelConfigurable.md), [SubscriptionModule](../../modules/subscription/SubscriptionModule.md), [MintAssetFeeCollector](../../modules/library/MintAssetFeeCollector.md)
 
 **Title:**
 DigitalAssetCommon

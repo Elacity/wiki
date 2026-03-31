@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/storage/FeesInformation.sol)
 
 **Inherits:**
-[IFeesInformation](/contracts/storage/IFeesInformation.md), OwnableUpgradeable
+[IFeesInformation](../storage/IFeesInformation.md), OwnableUpgradeable
 
 **Title:**
 FeesInformation

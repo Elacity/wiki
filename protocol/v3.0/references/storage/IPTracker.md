@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/storage/IPTracker.sol)
 
 **Inherits:**
-[IIPTracker](/contracts/storage/IIPTracker.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md)
+[IIPTracker](../storage/IIPTracker.md), [ContractIntrospector](../modules/library/ContractIntrospector.md)
 
 **Title:**
 IPTracker

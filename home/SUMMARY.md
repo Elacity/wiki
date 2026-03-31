@@ -1,3 +1,4 @@
 # Table of contents
 
-* [Developer Platform](README.md)
+* [ElacityLabs Docs](README.md)
+* [Information Architecture](information-architecture.md)

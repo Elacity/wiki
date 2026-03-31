@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/channel/kind/StandardChannel.sol)
 
 **Inherits:**
-[DigitalAssetCommon](/contracts/channel/kind/DigitalAssetCommon.md), [DigitalAsset](/contracts/modules/assets/DigitalAsset.md)
+[DigitalAssetCommon](../../channel/kind/DigitalAssetCommon.md), [DigitalAsset](../../modules/assets/DigitalAsset.md)
 
 **Title:**
 DigitalAssetPrivate

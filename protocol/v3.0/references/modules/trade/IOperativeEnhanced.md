@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/trade/IOperativeEnhanced.sol)
 
 **Inherits:**
-[IOperative](/contracts/operative/IOperative.md), [IResellable](/contracts/modules/trade/IResellable.md)
+[IOperative](../../operative/IOperative.md), [IResellable](../../modules/trade/IResellable.md)
 
 **Title:**
 IOperativeEnhanced

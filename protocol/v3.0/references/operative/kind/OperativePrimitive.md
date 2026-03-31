@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/kind/OperativePrimitive.sol)
 
 **Inherits:**
-[IOperative](/contracts/operative/IOperative.md), ERC1155SupplyUpgradeable, [OwnableExclusiveTransferrableTokens](/contracts/modules/library/OwnableExclusiveTransferrableTokens.md), [TradeAccessRestriction](/contracts/modules/trade/TradeAccessRestriction.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [RewardsRecipient](/contracts/modules/payment/RewardsRecipient.md), [RoyaltyModule](/contracts/modules/royalty/RoyaltyModule.md)
+[IOperative](../../operative/IOperative.md), ERC1155SupplyUpgradeable, [OwnableExclusiveTransferrableTokens](../../modules/library/OwnableExclusiveTransferrableTokens.md), [TradeAccessRestriction](../../modules/trade/TradeAccessRestriction.md), [ContractIntrospector](../../modules/library/ContractIntrospector.md), [RewardsRecipient](../../modules/payment/RewardsRecipient.md), [RoyaltyModule](../../modules/royalty/RoyaltyModule.md)
 
 **Title:**
 OperativePrimitive

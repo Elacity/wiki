@@ -38,7 +38,7 @@ import { ElacityClient } from '@elacity-js/api';
 import { ChainId } from '@elacity-js/common';
 
 const client = new ElacityClient({
-  chainId: ChainId.BASE_MAINNET, // or your target chain
+  chainId: ChainId.Base, // or your target chain
 });
 
 // Authenticate first
@@ -358,7 +358,7 @@ Complete example for tracking a media upload and minting process:
 ```typescript
 import { ElacityClient, JobStatus } from '@elacity-js/api';
 
-const client = new ElacityClient({ chainId: ChainId.BASE_MAINNET });
+const client = new ElacityClient({ chainId: ChainId.Base });
 await client.auth.login(address, signature);
 
 // 1. Create job when upload starts
@@ -490,8 +490,8 @@ See the [Media Package Documentation](../../media-packager/SUMMARY.md) for media
 
 ## Related Documentation
 
-- [Media Minting Process](../../../../elacity-web/docs/wiki/Technical/Media-Minting-Process.md) - Frontend implementation details
-- [GraphQL Schema](../../../../packages/api/graphql/schema.graphql) - Complete API schema
+- [Media Packager Quick Start](../../media-packager/getting-started/quick-start.md) - End-to-end media upload and minting flow
+- [OpenAPI Integration](../../../references/openapi-integration.md) - API schema and client generation workflow
 - [Channel Service](./channel.md) - Channel management for media uploads
 
 ## Error Handling

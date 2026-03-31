@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/channel/ChannelRegistry.sol)
 
 **Inherits:**
-Initializable, [IChannelRegistry](/contracts/channel/IChannelRegistry.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md)
+Initializable, [IChannelRegistry](../channel/IChannelRegistry.md), [ContractIntrospector](../modules/library/ContractIntrospector.md)
 
 **Title:**
 ChannelRegistry

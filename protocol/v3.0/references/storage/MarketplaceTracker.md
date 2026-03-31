@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/storage/MarketplaceTracker.sol)
 
 **Inherits:**
-[IMarketplaceTracker](/contracts/storage/IMarketplaceTracker.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md)
+[IMarketplaceTracker](../storage/IMarketplaceTracker.md), [ContractIntrospector](../modules/library/ContractIntrospector.md)
 
 **Title:**
 MarketplaceTracker

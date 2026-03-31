@@ -36,9 +36,9 @@ const response = await executor.execute([
 
 console.log('Bundle transaction ID:', response.transactionId);
 
-// 3. Wait for completion
+// 3. Wait for completion (SDK-compatible transaction responses)
 await Promise.all(
-  response.transactions.map(
+  (response.transactions ?? []).map(
     async (tx) => tx.wait()
   )
 )

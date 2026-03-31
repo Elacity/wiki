@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/channel/factories/MultiChannelFactory.sol)
 
 **Inherits:**
-[IChannelFactory](/contracts/channel/factories/IChannelFactory.md), [ChannelFoundationFactory](/contracts/channel/factories/ChannelFoundationFactory.md), [StorageModule](/contracts/modules/core/StorageModule.md), [BeaconUpgradeableFactory](/contracts/modules/proxy/BeaconUpgradeableFactory.md), [MintChannelFeeCollector](/contracts/modules/library/MintChannelFeeCollector.md)
+[IChannelFactory](../../channel/factories/IChannelFactory.md), [ChannelFoundationFactory](../../channel/factories/ChannelFoundationFactory.md), [StorageModule](../../modules/core/StorageModule.md), [BeaconUpgradeableFactory](../../modules/proxy/BeaconUpgradeableFactory.md), [MintChannelFeeCollector](../../modules/library/MintChannelFeeCollector.md)
 
 **Title:**
 MultiChannelFactory

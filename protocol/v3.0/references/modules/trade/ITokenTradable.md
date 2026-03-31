@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/trade/ITokenTradable.sol)
 
 **Inherits:**
-[ITradable](/contracts/modules/trade/ITradable.md)
+[ITradable](../../modules/trade/ITradable.md)
 
 **Title:**
 ITokenTradable

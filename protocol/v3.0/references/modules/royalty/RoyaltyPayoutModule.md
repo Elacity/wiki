@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/royalty/RoyaltyPayoutModule.sol)
 
 **Inherits:**
-[RoyaltyReentrancyGuard](/contracts/modules/royalty/RoyaltyReentrancyGuard.md), Initializable, [PaymentModule](/contracts/modules/payment/PaymentModule.md)
+[RoyaltyReentrancyGuard](../../modules/royalty/RoyaltyReentrancyGuard.md), Initializable, [PaymentModule](../../modules/payment/PaymentModule.md)
 
 **Title:**
 RoyaltyPayoutModule

@@ -36,6 +36,7 @@ The API SDK automatically routes requests to the appropriate environment based o
 * [Installation](getting-started/installation.md)
 * [Authentication](getting-started/authentication.md)
 * [Dataset and Pagination](getting-started/dataset-and-pagination.md)
+* [Errors and Retries](getting-started/errors-and-retries.md)
 
 ## Services
 * [Account & Identity](services/identity.md)
@@ -43,4 +44,3 @@ The API SDK automatically routes requests to the appropriate environment based o
 * [NFTs](services/nfts.md)
 * [Collections](services/collection.md)
 * [Background Jobs](services/background-job.md)
-

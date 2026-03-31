@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/trade/TradeFoundationModule.sol)
 
 **Inherits:**
-Initializable, ContextUpgradeable, [ITradableErrors](/contracts/modules/trade/ITradableErrors.md), [ITradableEvents](/contracts/modules/trade/ITradableEvents.md)
+Initializable, ContextUpgradeable, [ITradableErrors](../../modules/trade/ITradableErrors.md), [ITradableEvents](../../modules/trade/ITradableEvents.md)
 
 **Title:**
 TradeFoundationModule

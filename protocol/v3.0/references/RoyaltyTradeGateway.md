@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/RoyaltyTradeGateway.sol)
 
 **Inherits:**
-Initializable, AccessControlUpgradeable, [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [ReinitializerGuard](/contracts/modules/library/ReinitializerGuard.md), [TokenTradeModule](/contracts/modules/trade/TokenTradeModule.md), [TradeRestrictionExtension](/contracts/modules/trade/TradeRestrictionExtension.md)
+Initializable, AccessControlUpgradeable, [ContractIntrospector](modules/library/ContractIntrospector.md), [ReinitializerGuard](modules/library/ReinitializerGuard.md), [TokenTradeModule](modules/trade/TokenTradeModule.md), [TradeRestrictionExtension](modules/trade/TradeRestrictionExtension.md)
 
 **Title:**
 RoyaltyTradeGateway

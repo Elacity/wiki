@@ -170,11 +170,15 @@ const royalties = await channel.royaltyInfo(salePrice);
 ### Subscribe / unsubscribe
 
 ```typescript
-// ERC-20 payment plan
-await channel.subscribePlan(planId, false).then(tx => tx.commit());
+// ERC-20 payment plan (no extra args -> encoded as 0x)
+await channel.subscribePlan(planId).then(tx => tx.commit());
 
-// Native currency payment plan
-await channel.subscribePlan(planId, false, totalValue).then(tx => tx.commit());
+// Native currency payment plan with optional subscription token URI metadata
+await channel.subscribePlan(
+  planId,
+  { tokenURI: 'ipfs://.../subscription-token.json' },
+  totalValue
+).then(tx => tx.commit());
 
 await channel.unsubscribePlan(planId).then(tx => tx.commit());
 ```
@@ -183,6 +187,7 @@ await channel.unsubscribePlan(planId).then(tx => tx.commit());
 
 ```typescript
 const active = await channel.hasActiveSubscription(subscriberAddress);
+const expiry = await channel.getExpiry(planId, subscriberAddress);
 ```
 
 ### Read plans
@@ -203,8 +208,25 @@ Requires the `PLAN_MANAGER` role.
 
 ```typescript
 await channel.bulkUpdatePlans([
-  { actionType: 'create', args: '0x...' },
-  { actionType: 'update', args: '0x...' },
+  {
+    actionType: 'add',
+    payToken: '0x0000000000000000000000000000000000000000',
+    price: 1_000_000n,
+    duration: 30n * 24n * 60n * 60n,
+    tokenURI: 'ipfs://.../plan-1.json',
+  },
+  {
+    actionType: 'update',
+    planId: 1,
+    payToken: '0x0000000000000000000000000000000000000000',
+    price: 1_200_000n,
+    duration: 30n * 24n * 60n * 60n,
+    tokenURI: 'ipfs://.../plan-1-updated.json',
+  },
+  {
+    actionType: 'remove',
+    planId: 2,
+  },
 ]).then(tx => tx.commit());
 ```
 

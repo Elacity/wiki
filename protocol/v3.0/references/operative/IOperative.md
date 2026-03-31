@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/IOperative.sol)
 
 **Inherits:**
-IERC1155, [IERC2981Enhanced](/contracts/modules/royalty/IERC2981Enhanced.md)
+IERC1155, [IERC2981Enhanced](../modules/royalty/IERC2981Enhanced.md)
 
 **Title:**
 IOperative

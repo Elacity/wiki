@@ -37,8 +37,8 @@ This command:
 
 1. generates `forge doc` output in a temp directory,
 2. transforms it to a solidity-docgen-like structure,
-3. syncs references into `.github/wiki/protocol/v3.0/references`,
-4. syncs manual docs into `.github/wiki/protocol/v3.0/manual`.
+3. syncs contract references into the Protocol v3 reference section,
+4. syncs manual pages into the Protocol v3 manual section.
 
 ## Notes on compatibility
 

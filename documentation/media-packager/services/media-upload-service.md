@@ -34,7 +34,7 @@ import { EthersAdapter, EthersAbiEncoder } from '@elacity-js/contracts-ethers-ad
 import { MediaUploadService } from '@elacity-js/media-packager';
 import { PollingProgressListenerStrategy } from '@elacity-js/media-packager/listeners';
 
-const apiClient = new ElacityClient({ chainId: ChainId.BASE_MAINNET });
+const apiClient = new ElacityClient({ chainId: ChainId.Base });
 await apiClient.auth.login(address, signature);
 
 const contractRunner = new EthersAdapter(signer);
@@ -530,7 +530,7 @@ import { ethers } from 'ethers';
 
 async function uploadVideo() {
   // 1. Setup
-  const apiClient = new ElacityClient({ chainId: ChainId.BASE_MAINNET });
+  const apiClient = new ElacityClient({ chainId: ChainId.Base });
   await apiClient.auth.login(address, signature);
 
   const provider = new ethers.BrowserProvider(window.ethereum);

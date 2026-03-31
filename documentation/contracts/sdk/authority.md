@@ -70,9 +70,12 @@ const tx = await gateway.buyAccessERC20(
   pricePerToken,    // Price per token (in wei)
   paymentTokenAddr  // Address of the ERC-20 payment token
 );
+
+const response = await tx.commit();
+await response.wait();
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<ICommitableContractTransaction>`
 
 ### Buy Access (Native)
 
@@ -87,9 +90,12 @@ const tx = await gateway.buyAccessNative(
   pricePerToken,    // Price per token (in wei)
   value             // Total native value to send (must match quantity * price)
 );
+
+const response = await tx.commit();
+await response.wait();
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<ICommitableContractTransaction>`
 
 ## Selling Access Tokens
 
@@ -105,9 +111,12 @@ const tx = await gateway.sellAccess(
   pricePerToken,    // Price per token (in wei)
   payToken          // Address of the payment token
 );
+
+const response = await tx.commit();
+await response.wait();
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<ICommitableContractTransaction>`
 
 > Protocol note: internal `sellAccessOnBehalf` flows are restricted by `CoreStorage.acknowledged(msg.sender)`. Integrations should treat explicit acknowledgement as the authorization primitive, not EOA-vs-contract caller type checks.
 
@@ -122,9 +131,12 @@ const tx = await gateway.withdrawListing(
   tokenId,          // Token ID
   quantity          // Quantity to withdraw
 );
+
+const response = await tx.commit();
+await response.wait();
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<ICommitableContractTransaction>`
 
 ## Marketplace Queries
 

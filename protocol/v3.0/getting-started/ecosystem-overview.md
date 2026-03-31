@@ -77,7 +77,7 @@ flowchart LR
 
 ### 5) Subscription
 
-1. User calls channel `subscribePlan(uint8 planId, bytes args)`.
+1. User calls channel `subscribePlan(uint8 planId, bytes args)` (SDK: `StandardChannel.subscribePlan(...)` or `MultiChannel.subscribePlan(...)`).
 2. Channel delegates workflow/state logic to `SubscriptionManager`.
 3. Access checks may resolve through subscription or operative ownership.
 

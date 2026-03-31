@@ -16,13 +16,11 @@
 ## Technical Documentation
 
 * [Technical Overview](technical/README.md)
-* [Foundry Environment](technical/foundry_environment.md)
 * [Storage and Restrictions](technical/storage_and_restrictions.md)
 
 ## Manual
 
 * [Manual Overview](manual/README.md)
-* [History Digest](manual/history-digest.md)
 * [Legacy to V3 ABI Migration](manual/legacy-to-v3-abi-migration.md)
 * [Current Architecture and Interactions](manual/current-architecture.md)
 

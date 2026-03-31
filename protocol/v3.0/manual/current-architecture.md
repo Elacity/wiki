@@ -89,7 +89,7 @@ graph TD
 
 ### Subscription purchase
 
-1. User calls channel `subscribePlan(planId, args)`.
+1. User calls channel `subscribePlan(planId, args)` (SDK wrappers: `StandardChannel` or `MultiChannel`).
 2. Channel delegates subscription state and validation to `SubscriptionManager`.
 3. Manager calls back channel for mint/payment side-effects when required.
 4. Access checks can resolve via subscription status in addition to operative ownership.

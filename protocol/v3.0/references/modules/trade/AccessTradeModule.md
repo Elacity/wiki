@@ -2,7 +2,7 @@
 [Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/trade/AccessTradeModule.sol)
 
 **Inherits:**
-Initializable, [IAccessTradable](/contracts/modules/trade/IAccessTradable.md), [TradeFoundationModule](/contracts/modules/trade/TradeFoundationModule.md), [RoyaltyPayoutModule](/contracts/modules/royalty/RoyaltyPayoutModule.md)
+Initializable, [IAccessTradable](../../modules/trade/IAccessTradable.md), [TradeFoundationModule](../../modules/trade/TradeFoundationModule.md), [RoyaltyPayoutModule](../../modules/royalty/RoyaltyPayoutModule.md)
 
 This module is handling the workflow of sales and trades of the access token
 ```mermaid

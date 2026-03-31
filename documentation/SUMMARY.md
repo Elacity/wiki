@@ -58,6 +58,8 @@
   * [Player API](media-player/api/player.md)
   * [Events](media-player/api/events.md)
   * [Types](media-player/api/types.md)
+* Development
+  * [Troubleshooting](media-player/development/troubleshooting.md)
 
 
 ## Common Reference

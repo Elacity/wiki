@@ -12,7 +12,7 @@ Contracts emit by calling dedicated `emit*` functions on the hub.
 ## Functions
 ### emitAssetCreated
 
-Emits an [AssetCreated](/contracts/events/IEventHub.md#assetcreated) event through the hub.
+Emits an [AssetCreated](../events/IEventHub.md#assetcreated) event through the hub.
 
 
 ```solidity
@@ -39,7 +39,7 @@ function emitAssetCreated(
 
 ### emitTokenAccessRegistered
 
-Emits a [TokenAccessRegistered](/contracts/events/IEventHub.md#tokenaccessregistered) event through the hub.
+Emits a [TokenAccessRegistered](../events/IEventHub.md#tokenaccessregistered) event through the hub.
 
 
 ```solidity
@@ -56,7 +56,7 @@ function emitTokenAccessRegistered(address context, address _tokenAddress, uint2
 
 ### emitTokenAccessRemoved
 
-Emits a [TokenAccessRemoved](/contracts/events/IEventHub.md#tokenaccessremoved) event through the hub.
+Emits a [TokenAccessRemoved](../events/IEventHub.md#tokenaccessremoved) event through the hub.
 
 
 ```solidity
@@ -72,7 +72,7 @@ function emitTokenAccessRemoved(address context, address _tokenAddress) external
 
 ### emitPaymentLog
 
-Emits a [PaymentLog](/contracts/events/IEventHub.md#paymentlog) event through the hub.
+Emits a [PaymentLog](../events/IEventHub.md#paymentlog) event through the hub.
 
 
 ```solidity
@@ -91,7 +91,7 @@ function emitPaymentLog(address context, address from, address to, uint256 amoun
 
 ### emitPaymentCommitted
 
-Emits a [PaymentCommitted](/contracts/events/IEventHub.md#paymentcommitted) event through the hub.
+Emits a [PaymentCommitted](../events/IEventHub.md#paymentcommitted) event through the hub.
 
 
 ```solidity
@@ -116,7 +116,7 @@ function emitPaymentCommitted(
 
 ### emitRewardsWithdrawn
 
-Emits a [RewardsWithdrawn](/contracts/events/IEventHub.md#rewardswithdrawn) event through the hub.
+Emits a [RewardsWithdrawn](../events/IEventHub.md#rewardswithdrawn) event through the hub.
 
 
 ```solidity
@@ -134,7 +134,7 @@ function emitRewardsWithdrawn(address context, address to, uint256 amount, addre
 
 ### emitRewardsIncremented
 
-Emits a [RewardsIncremented](/contracts/events/IEventHub.md#rewardsincremented) event through the hub.
+Emits a [RewardsIncremented](../events/IEventHub.md#rewardsincremented) event through the hub.
 
 
 ```solidity
@@ -159,7 +159,7 @@ function emitRewardsIncremented(
 
 ### emitAtomicNativeTransfer
 
-Emits an [AtomicNativeTransfer](/contracts/events/IEventHub.md#atomicnativetransfer) event through the hub.
+Emits an [AtomicNativeTransfer](../events/IEventHub.md#atomicnativetransfer) event through the hub.
 
 
 ```solidity

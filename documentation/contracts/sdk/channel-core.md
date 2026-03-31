@@ -58,7 +58,7 @@ const tx = await channelCore.createChannel(
 );
 ```
 
-**Returns:** `Promise<TransactionResponse>`
+**Returns:** `Promise<ICommitableContractTransaction>`
 
 **Note:** The factory for the specified `channelType` and `scope` must be registered by the admin before creating a channel.
 
@@ -96,6 +96,7 @@ const tx = await channelCore.createChannel(
   '0x'                  // Additional data
 );
 
-await tx.wait();
+const response = await tx.commit();
+await response.wait();
 console.log('Channel created!');
 ```
