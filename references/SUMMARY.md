@@ -12,5 +12,5 @@
     spec:
       ref:
         kind: openapi
-        spec: gitbook-petstore
+        spec: elacity-rest-api
   ```

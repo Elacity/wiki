@@ -1,12 +1,8 @@
 ---
-description: Learn more about documenting APIs in GitBook.
+description: Interactive REST API reference generated from the OpenAPI specification.
 icon: terminal
 ---
 
-# Developer Platform API
+# Elacity REST API (`v1.11.3`)
 
-GitBook automatically generates pages and endpoints for your OpenAPI spec. Fully customizable and equipped with testing capabilities, your documentation has never been more powerful.
-
-The API reference below is automatically generated from a demo OpenAPI spec in this space.
-
-<a href="https://gitbookio.github.io/onboarding-template-images/gitbook-petstore.yaml" class="button primary" data-icon="arrow-up-right-from-square">View OpenAPI spec</a>
+This REST service serves basics and common interfaces for generic data and a way to process upload over the platform.
