@@ -4,7 +4,6 @@
 
 ## General
 
-* [Overview](overview.md)
 * [Architecture Notes](architecture.md)
 
 ## Getting Started
@@ -31,3 +30,7 @@
 
 * [Contract References](references/README.md)
 * [Reference Index](references/SUMMARY.md)
+
+## Client Docs
+
+* [Contracts SDK Docs](../../documentation/contracts/README.md)

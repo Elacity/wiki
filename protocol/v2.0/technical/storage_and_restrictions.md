@@ -1,8 +1,8 @@
-# technical_update_transfer_restrictions_and_storage_investigation_tools
+# Technical Updates & Investigation Tools
 
 This document summarizes recent changes to token transfer restrictions and introduces new tools for contract storage investigation.
 
-## 1. transfer_restriction_updates
+## 1. Transfer Restriction Checker
 
 The ELACITY DRM system uses an "exclusive transfer" mechanism to regulate the movement of sensitive tokens within operative contracts. Recent updates have refined these restrictions to support new use cases, such as Smart Accounts and decentralized trading.
 
@@ -29,18 +29,18 @@ The restriction on transferring `ROYALTY_SHARE` tokens (ID 2) has been disabled 
 
 ---
 
-## 2. storage_investigation_tools
+## 2. Storage Investigation Tools
 
 Recent debugging efforts (ELACITY-2152) have introduced new tools and configurations to assist in auditing contract storage and state.
 
-### 2.1 storage_layout_configuration
+### 2.1 Storage Layout Configuration
 
 To facilitate storage layout analysis, `remix.config.json` has been added to the project, and `compiler_config.json` was updated/replaced.
 
 - **Configuration**: The compiler settings now explicitly include `storageLayout` in the `outputSelection`.
 - **Benefit**: This allows developers using Remix or other compatible tools to see the exact storage slot and offset for every variable in the contract, which is essential for manual state verification and ensuring upgrade safety.
 
-### 2.2 token_restriction_checker_task
+### 2.2 Token Restriction Checker Task
 
 A new Hardhat task `check-restriction` has been added in `tasks/check-auth.ts`. This tool is specifically designed to verify if a token is marked as exclusive and if an operator is authorized, by directly querying the contract's storage.
 
@@ -61,7 +61,7 @@ A new Hardhat task `check-restriction` has been added in `tasks/check-auth.ts`. 
   - **Direct Storage Access**: Uses `provider.getStorage()` to check values at computed mapping slots, bypassing contract getters.
   - **Educational**: Prints the computed storage slots, which can be cross-referenced with block explorers.
 
-### 2.3 channel_factory_checker_task
+### 2.3 Channel Factory Checker task
 
 A specific task `check-channel-factory` has been added in `tasks/check-channel-factories.ts` to audit the `factories` nested mapping in `ChannelCore.sol`.
 
@@ -73,7 +73,7 @@ A specific task `check-channel-factory` has been added in `tasks/check-channel-f
   - **Nested Mapping Logic**: Correcty computes slots for `mapping(uint8 => mapping(uint8 => address))` by performing double keccak256 operations as defined by the Solidity storage layout.
   - **Context**: Useful for verifying that the `ChannelCore` registry has been correctly initialized with the intended factory addresses for Standard and Multi-channels.
 
-### 2.4 erc_7201_slot_calculator
+### 2.4 ERC-7201 calculator
 
 Located at `scripts/calaculate-slot.js`, this utility remains a core tool for calculating storage slots for namespaced storage as defined in **ERC-7201**.
 

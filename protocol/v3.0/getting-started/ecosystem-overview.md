@@ -15,6 +15,7 @@ This page describes the current smart-contract architecture in `v3-drm-protocol`
 ## Current architecture
 
 ```mermaid
+
 flowchart LR
     EV@{ shape: das, label: "Events Hub" }
     AG[Authority Gateway] --- CS@{ shape: cyl, label: "Storage" }
@@ -44,6 +45,7 @@ flowchart LR
     style CF fill:#d5ebdb,stroke:#7a9181,stroke-width:1px,color:#7a9181
     style EV fill:#ebe9d5,stroke:#7a9181,stroke-width:1px,color:#7a9181
     style AF fill:#edf5fa,stroke:#25a1e8,stroke-width:1px,color:#25a1e8
+
 ```
 
 ## Main runtime flows

@@ -1,15 +1,15 @@
 ---
 description: Access Economy Protocol (2.0)
-icon: terminal
+icon: file-contract
 ---
 
 # Access Economy Protocol (v2.0)
 
 This section preserves the v2 contract model for historical context, migration support, and compatibility checks.
 
-## Start Here (Historical Context)
+## Getting Started
 
-- [Getting Started](getting-started/README.md)
+- [Overview](getting-started/README.md)
 - [Technical Notes](technical/README.md)
 - [Contract References](references/README.md)
 - [Reference Index](references/SUMMARY.md)
@@ -19,7 +19,6 @@ This section preserves the v2 contract model for historical context, migration s
 SDK/client-facing documentation (Ethers, Viem, executors, usage guides) is maintained under:
 
 - [Documentation / Contracts](../../documentation/contracts/README.md)
-- [Documentation / Contracts / SDK](../../documentation/contracts/sdk/installation.md)
 
 ## Notes
 

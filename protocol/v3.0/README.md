@@ -1,13 +1,13 @@
 ---
 description: Access Economy Protocol (3.0)
-icon: terminal
+icon: file-contract
 ---
 
 # Access Economy Protocol (v3.0)
 
-Version 3.0 is the current protocol architecture. This section focuses on contract behavior, system design, and integration surfaces.
+Version `3.0` is the current protocol architecture. This section focuses on contract behavior, system design, and integration surfaces.
 
-## Read First
+## Getting Started
 
 - [Overview](overview.md)
 - [Architecture Notes](architecture.md)
