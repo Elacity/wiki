@@ -1,92 +1,49 @@
 ---
-description: New updates and improvements
+description: Release notes for the js-sdk monorepo
 icon: clock-rotate-left
 ---
 
 # Changelog
 
-{% updates format="full" %}
-{% update date="2025-12-03" %}
-## Product update
+This changelog tracks releases for the `<js-sdk>` repository.
 
-See what’s new and improved in our latest update.
+## v0.3
 
-### Product feature
+### 0.3.0 - Upcoming
 
-* Feature description
-* Feature description
+Reference range: `1c396b9..HEAD`
 
-<a href="https://gitbook.com/" class="button primary">Read the documentation</a>
+#### Added
 
-<div align="left"><figure><img src="https://gitbookio.github.io/onboarding-template-images/placeholder.png" alt=""><figcaption></figcaption></figure></div>
+* enabled protocol 3.0 support (`a0ac250`)
+#### Changed
 
-<details>
+* more adjustments (`d2486ad`)
+#### Docs
 
-<summary>Improved</summary>
+* open-api integration (cleanup and doc integration) (`d0bbc95`)
+#### Commits
 
-* Product improvement
-* Product improvement
-* Product improvement
-* Product improvement
-* Product improvement
+* `d0bbc95` 2026-03-31 docs: open-api integration (cleanup and doc integration)
+* `d2486ad` 2026-03-31 refactor: more adjustments
+* `a0ac250` 2026-03-30 feat: enabled protocol 3.0 support
 
-</details>
+#### Scope
 
-<details>
+* `packages/contracts` (64 files)
+* `packages/api` (3 files)
+* `packages/media-packager` (3 files)
+* `packages/common` (2 files)
+* `packages/contracts-ethers-adapter` (2 files)
+* `packages/contracts-ua-executor` (2 files)
+* `packages/contracts-viem-adapter` (2 files)
+* `.github/wiki` (1 files)
 
-<summary>Fixed</summary>
+## v0.2
 
-* Product fix
-* Product fix
-* Product fix
-* Product fix
-* Product fix
+### 0.2.0-beta - Initial baseline
 
-</details>
-{% endupdate %}
+Reference commit: `1c396b9`
 
-{% update date="2025-11-28" %}
-## Product update
-
-See what’s new and improved in our latest update.
-
-### Product feature #1
-
-* Feature description
-* Feature description
-
-<a href="https://gitbook.com/" class="button primary">Read the documentation</a>
-
-### Product feature #2
-
-* Feature description
-* Feature description
-* Feature description
-
-<a href="https://gitbook.com/" class="button primary">Read the documentation</a>
-
-<details>
-
-<summary>Improved</summary>
-
-* Product improvement
-* Product improvement
-* Product improvement
-* Product improvement
-* Product improvement
-
-</details>
-
-<details>
-
-<summary>Fixed</summary>
-
-* Product fix
-* Product fix
-* Product fix
-* Product fix
-* Product fix
-
-</details>
-{% endupdate %}
-{% endupdates %}
+* Baseline state for the current js-sdk release line.
+* Subsequent changes for `0.3.0` are tracked from this commit forward.
