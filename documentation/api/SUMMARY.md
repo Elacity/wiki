@@ -12,6 +12,12 @@ The API SDK automatically routes requests to the appropriate environment based o
 | **8453** | Base | Production |
 | **421614** | Arbitrum Sepolia | Staging |
 
+## Disclaimer
+
+> This API sdk doesn't cover a comprehensive set of all the endpoints from the REST and GraphQL, it only implements most frequently used endpoints to achieve most common workflows.
+> You can find a comprenshive backend implementation in [API REST Reference](../../references/README.md) and [GraphQL Reference](../../graphql/README.md).
+> Please file an issue to request and extend support of any existing endpoints.
+
 ### Quick Start
 
 1.  **Installation**:
