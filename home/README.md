@@ -1,18 +1,63 @@
 ---
-description: Entry point and navigation map for ElacityLabs Docs spaces.
+description: Welcome to your team’s developer platform
 ---
 
-# ElacityLabs Docs
+# Developer Platform
 
-This is the top-level landing space for the ElacityLabs documentation site.
+<h2 align="center">Developer platform template</h2>
 
-The docs are organized as independent GitBook spaces with clear boundaries:
+<p align="center">Welcome to your team’s new developer platform</p>
 
-- `Documentation`: SDK guides, integration guides, and developer workflows.
-- `API Reference`: endpoint-focused API reference material.
-- `Protocol v3.0`: current smart-contract design and references.
-- `Protocol v2.0`: legacy protocol reference for migration and compatibility.
-- `Changelog`: release notes and notable updates.
-- `Help Center`: troubleshooting and support paths.
+<p align="center"><a href="http://app.gitbook.com/join" class="button primary">Sign up</a> <a href="http://app.gitbook.com/join" class="button secondary">Log in</a></p>
 
-Use the docs-site sidebar to move across spaces and protocol variants.
+<table data-view="cards"><thead><tr><th></th><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><h4><i class="fa-leaf">:leaf:</i></h4></td><td><strong>No code</strong></td><td>Get started with the developer platform in 5 minutes.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/">Documentation</a></td><td><a href=".gitbook/assets/no-code.jpg">no-code.jpg</a></td></tr><tr><td><h4><i class="fa-server">:server:</i></h4></td><td><strong>Hosted</strong></td><td>Learn more about hosting the developer platform.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/">Documentation</a></td><td><a href=".gitbook/assets/hosted.jpg">hosted.jpg</a></td></tr><tr><td><h4><i class="fa-terminal">:terminal:</i></h4></td><td><strong>API reference</strong></td><td>Browse, test, and implement APIs.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/NCW8PvkrgTSU6PMsWsDu/">API Reference</a></td><td><a href=".gitbook/assets/api-reference.jpg">api-reference.jpg</a></td></tr></tbody></table>
+
+{% columns %}
+{% column %}
+### Get started in 5 minutes
+
+Setting up your first API call should be the easiest part of getting started. With clear endpoints, copy-paste-ready examples, and quick authentication, you’ll be up and running in minutes—not hours.
+
+No guesswork, no complexity—just your first successful call, fast.
+
+<a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/" class="button primary" data-icon="rocket-launch">Get started</a> <a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/NCW8PvkrgTSU6PMsWsDu/" class="button secondary" data-icon="terminal">API reference</a>
+{% endcolumn %}
+
+{% column %}
+{% code title="index.js" overflow="wrap" %}
+```javascript
+// Import the SDK
+import ExampleAPI from "example-api";
+
+// Initialize the client
+const client = new ExampleAPI({ apiKey: "YOUR_API_KEY" });
+
+// Send your first message
+const response = await client.messages.send({
+  message: "Hello, world!"
+});
+
+```
+{% endcode %}
+{% endcolumn %}
+{% endcolumns %}
+
+{% columns %}
+{% column %}
+<figure><img src="https://gitbookio.github.io/onboarding-template-images/placeholder.png" alt=""><figcaption></figcaption></figure>
+{% endcolumn %}
+
+{% column %}
+### Learn more about the developer platform
+
+Read guides, watch tutorials, and learn more about working with the developer platform and integrating it with your own stack.
+
+<a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/uKpxx88w85zo0DQOuSX4/" class="button primary" data-icon="book-open">Guides</a> <a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/" class="button secondary" data-icon="book">Documentation</a>
+{% endcolumn %}
+{% endcolumns %}
+
+<h2 align="center">Join a community of over 3,000 developers</h2>
+
+<p align="center">Join our Discord community or create your first PR in just a few steps.</p>
+
+<table data-card-size="large" data-view="cards"><thead><tr><th></th><th></th><th></th><th></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><h4><i class="fa-discord">:discord:</i></h4></td><td><strong>Discord community</strong></td><td>Join our Discord community to post questions, get help, and share resources with over 3,000 like-minded developers.</td><td><a href="https://www.gitbook.com/" class="button secondary">Join Discord</a></td><td></td></tr><tr><td><h4><i class="fa-github">:github:</i></h4></td><td><strong>GitHub</strong></td><td>Our product is 100% open source and built by developers just like you. Head to our GitHub repository to learn how to submit your first PR.</td><td><a href="https://www.gitbook.com/" class="button secondary">Submit a PR</a></td><td></td></tr></tbody></table>
