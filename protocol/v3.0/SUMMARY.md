@@ -2,27 +2,20 @@
 
 * [Access Economy Protocol (v3.0)](README.md)
 
-## General
-
-* [Architecture Notes](architecture.md)
-
 ## Getting Started
 
-* [Getting Started Overview](getting-started/README.md)
+* [Overview](getting-started/README.md)
 * [Design Snapshot](getting-started/design-proposal.md)
 * [Ecosystem Overview](getting-started/ecosystem-overview.md)
 * [Security Analysis](getting-started/security-analysis.md)
 
-## Technical Documentation
+## Developer Notes
 
-* [Technical Overview](technical/README.md)
-* [Storage and Restrictions](technical/storage_and_restrictions.md)
-
-## Manual
-
-* [Manual Overview](manual/README.md)
+* [Overview](manual/README.md)
+* [Technical Insights](technical/README.md)
 * [Legacy to V3 ABI Migration](manual/legacy-to-v3-abi-migration.md)
 * [Current Architecture and Interactions](manual/current-architecture.md)
+* [Storage and Restrictions](technical/storage_and_restrictions.md)
 
 ## References
 
