@@ -2,7 +2,7 @@
 
 The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for Elacity smart contracts, with adapters for Ethers and Viem.
 
-This section is dedicated to SDK and client integration. Protocol architecture and contract references live under `protocol/`.
+This section is dedicated to SDK and client integration. For protocol architecture and contract references, see [Access Economy Protocol v3.0](../../protocol/v3.0/README.md).
 
 > Maintainer policy: any change under `packages/contracts/**` must include matching updates in this section.
 
@@ -28,8 +28,7 @@ This section is dedicated to SDK and client integration. Protocol architecture a
 
 ## Protocol Documentation
 
-- [Protocol v3.0](../../protocol/v3.0/README.md) (current architecture and references)
-- [Protocol v2.0](../../protocol/v2.0/README.md) (historical compatibility references)
+- [Access Economy Protocol v3.0](../../protocol/v3.0/README.md)
 
 ## Installation
 

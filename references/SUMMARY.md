@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Developer Platform API](README.md)
+* [Elacity REST API v1.x](README.md)
 
 ## Reference
 

@@ -30,9 +30,7 @@
   * [Operatives](contracts/sdk/operative.md)
   * [Transaction Handling](contracts/sdk/transactions.md)
   * [Universal Account Executor](contracts/sdk/universal-account-executor.md)
-* Protocol
-  * [Protocol v3.0](../protocol/v3.0/README.md)
-  * [Protocol v2.0](../protocol/v2.0/README.md)
+* [Protocol](../protocol/v3.0/README.md)
 
 
 ## Media Package
