@@ -8,3 +8,4 @@ icon: code
 Use the GraphQL endpoint that matches your target environment.
 
 - [Endpoints](endpoints.md)
+- [GraphiQL Explorer](graphiql.md)
