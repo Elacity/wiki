@@ -1,5 +1,3 @@
-# GraphQL API
+# GraphQL Playground
 
-* [Overview](README.md)
-* [Endpoints](endpoints.md)
-* [GraphiQL Explorer](graphiql.md)
+* [Playground](README.md)

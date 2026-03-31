@@ -1,11 +1,20 @@
 ---
-description: GraphQL API references by environment.
-icon: code
+description: Interactive GraphiQL explorer embeds by environment.
+icon: hexagon-nodes
 ---
 
-# GraphQL API
+# Elacity GraphQL Playground
 
-Use the GraphQL endpoint that matches your target environment.
+{% tabs %}
+{% tab title="Staging" %}
+{% embed url="https://staging.ela.city/api/2.0/graphql" %}
+{% endtab %}
 
-- [Endpoints](endpoints.md)
-- [GraphiQL Explorer](graphiql.md)
+{% tab title="ESC" %}
+{% embed url="https://next.ela.city/api/2.0/graphql" %}
+{% endtab %}
+
+{% tab title="Base" %}
+{% embed url="https://base.ela.city/api/2.0/graphql" %}
+{% endtab %}
+{% endtabs %}
