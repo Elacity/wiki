@@ -48,19 +48,11 @@ const items = await client.nfts.fetchItems(...presets.buyNow);
 {% endcolumn %}
 {% endcolumns %}
 
-{% columns %}
-{% column %}
-<figure><img src="https://gitbookio.github.io/onboarding-template-images/placeholder.png" alt=""><figcaption></figcaption></figure>
-{% endcolumn %}
-
-{% column %}
 #### Keep on track of changes
 
 Get always on track of all of the changes overall the system for a better integration experience
 
 <a href="https://app.gitbook.com/s/NvhEwQZWtWjwRyiY2sTp/" class="button primary" data-icon="book-open">Changelog</a>&#x20;
-{% endcolumn %}
-{% endcolumns %}
 
 <h2 align="center">Need help? Join the community</h2>
 
