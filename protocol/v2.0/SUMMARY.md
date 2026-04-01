@@ -20,7 +20,6 @@
 * [Hardhat Environment](technical/hardhat_environment.md)
 * [Storage and Restrictions](technical/storage_and_restrictions.md)
 
-
 ## Client Docs
 
-* [Contracts SDK Docs](../../documentation/contracts/README.md)
+* [Contracts SDKs](https://app.gitbook.com/s/3XvtoAOLz7xBoGxBi0rw/contracts-evm-compatible)
