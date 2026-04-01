@@ -9,6 +9,11 @@
 * [Ecosystem Overview](getting-started/ecosystem-overview.md)
 * [Security Analysis](getting-started/security-analysis.md)
 
+## References
+
+* [Contract References](references/README.md)
+* [Reference Index](references/SUMMARY.md)
+
 ## Developer Notes
 
 * [Overview](manual/README.md)
@@ -16,11 +21,6 @@
 * [Legacy to V3 ABI Migration](manual/legacy-to-v3-abi-migration.md)
 * [Current Architecture and Interactions](manual/current-architecture.md)
 * [Storage and Restrictions](technical/storage_and_restrictions.md)
-
-## References
-
-* [Contract References](references/README.md)
-* [Reference Index](references/SUMMARY.md)
 
 ## Client Docs
 

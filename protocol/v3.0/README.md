@@ -9,25 +9,27 @@ Version `3.0` is the current protocol architecture. This section focuses on cont
 
 ## Getting Started
 
-- [Overview](getting-started/ecosystem-overview.md)
-- [Architecture Notes](architecture.md)
-- [Getting Started](getting-started/README.md)
-
-## Technical and Manual Notes
-
-- [Technical Documentation](technical/README.md)
-- [Manual Documentation](manual/README.md)
+* [Overview](getting-started/ecosystem-overview.md)
+* [Getting Started](getting-started/)
+* [ecosystem-overview.md](getting-started/ecosystem-overview.md "mention")
+* [design-proposal.md](getting-started/design-proposal.md "mention")
 
 ## Contract References
 
-- [Contract References](references/README.md)
-- [Reference Index](references/SUMMARY.md)
+* [Contract References](references/)
+* [Reference Index](references/SUMMARY.md)
+
+## Technical Materials
+
+* [Overview](manual/)
+* [Technical Insights](technical/)
+
+
 
 ## Scope and Boundaries
 
-The Solidity source of truth for protocol v3 is the external repository:
-[`Elacity/v3-drm-protocol`](https://github.com/Elacity/v3-drm-protocol).
+The Solidity source of truth for protocol v3 is the external repository: [`Elacity/v3-drm-protocol`](https://github.com/Elacity/v3-drm-protocol).
 
 This section in `js-sdk` provides synced protocol design/reference documentation for integrators and external developers.
 
-SDK wrappers and client ergonomics are documented separately in [Documentation / Contracts](../../documentation/contracts/README.md).
+SDK wrappers and client ergonomics are documented separately in [Documentation / Contracts](../../documentation/contracts/).
