@@ -1,41 +1,47 @@
 ---
-description: Welcome to your team’s developer platform
+description: Integrate and build a decentrelised DRM system with Ela.city
+icon: code
 ---
 
-# Developer Platform
+# Elacity Developer Platform
 
-<h2 align="center">Developer platform template</h2>
+<h2 align="center">Getting Started</h2>
 
-<p align="center">Welcome to your team’s new developer platform</p>
+<p align="center">Start your integration journey here!</p>
 
-<p align="center"><a href="http://app.gitbook.com/join" class="button primary">Sign up</a> <a href="http://app.gitbook.com/join" class="button secondary">Log in</a></p>
+<p align="center"><a href="https://app.gitbook.com/s/3XvtoAOLz7xBoGxBi0rw/" class="button primary">Documentation</a> <a href="https://js-sdk-demo-latest.onrender.com/" class="button secondary">View Demo</a></p>
 
-<table data-view="cards"><thead><tr><th></th><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><h4><i class="fa-leaf">:leaf:</i></h4></td><td><strong>No code</strong></td><td>Get started with the developer platform in 5 minutes.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/">Documentation</a></td><td><a href=".gitbook/assets/no-code.jpg">no-code.jpg</a></td></tr><tr><td><h4><i class="fa-server">:server:</i></h4></td><td><strong>Hosted</strong></td><td>Learn more about hosting the developer platform.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/">Documentation</a></td><td><a href=".gitbook/assets/hosted.jpg">hosted.jpg</a></td></tr><tr><td><h4><i class="fa-terminal">:terminal:</i></h4></td><td><strong>API reference</strong></td><td>Browse, test, and implement APIs.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/NCW8PvkrgTSU6PMsWsDu/">API Reference</a></td><td><a href=".gitbook/assets/api-reference.jpg">api-reference.jpg</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="image">Cover image</th></tr></thead><tbody><tr><td><i class="fa-cart-shopping-fast">:cart-shopping-fast:</i></td><td><strong>Typescript Support</strong></td><td>Integrate dDRM on your web-based application and marketplace.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/">https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/</a></td><td data-object-fit="cover"><a href=".gitbook/assets/Libweb3 2.png">Libweb3 2.png</a></td></tr><tr><td><i class="fa-hexagon-nodes-bolt">:hexagon-nodes-bolt:</i></td><td><strong>Access Economy Protocol</strong></td><td>Learn more about the protocol built and deployed on EVM-based network</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/">https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/</a></td><td><a href=".gitbook/assets/Elacity Labs.png">Elacity Labs.png</a></td></tr><tr><td><i class="fa-terminal">:terminal:</i></td><td><strong>API reference</strong></td><td>Browse, test, and implement APIs.</td><td><a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/NCW8PvkrgTSU6PMsWsDu/">https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/NCW8PvkrgTSU6PMsWsDu/</a></td><td><a href=".gitbook/assets/Flint 2.jpg">Flint 2.jpg</a></td></tr></tbody></table>
+
+
 
 {% columns %}
 {% column %}
-### Get started in 5 minutes
+#### Friendly integration
 
-Setting up your first API call should be the easiest part of getting started. With clear endpoints, copy-paste-ready examples, and quick authentication, you’ll be up and running in minutes—not hours.
+Setting up the API lies on specific network you are intended to work with.&#x20;
 
-No guesswork, no complexity—just your first successful call, fast.
+Interact with API REST and Graphql through \`@elacity-js/api\` and leverage on realtime-cached data from network activities
 
-<a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/" class="button primary" data-icon="rocket-launch">Get started</a> <a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/NCW8PvkrgTSU6PMsWsDu/" class="button secondary" data-icon="terminal">API reference</a>
+
+
+<a href="https://app.gitbook.com/s/3XvtoAOLz7xBoGxBi0rw/api-layer" class="button primary" data-icon="rocket-launch">Get started</a> <a href="https://app.gitbook.com/s/3XvtoAOLz7xBoGxBi0rw/contracts-evm-compatible" class="button secondary" data-icon="hexagon-nodes-bolt">Protocol</a>
 {% endcolumn %}
 
 {% column %}
 {% code title="index.js" overflow="wrap" %}
 ```javascript
-// Import the SDK
-import ExampleAPI from "example-api";
+// Import statement
+import { ElacityClient, type NFTItem } from '@elacity-js/api';
+import { presets } from '@elacity-js/api/query';
 
 // Initialize the client
-const client = new ExampleAPI({ apiKey: "YOUR_API_KEY" });
-
-// Send your first message
-const response = await client.messages.send({
-  message: "Hello, world!"
+const client = new ElacityClient({
+  chainId: 8453, // Base
 });
+
+// Get list of NFTs based on preset query
+const items = await client.nfts.fetchItems(...presets.buyNow);
 
 ```
 {% endcode %}
@@ -48,16 +54,16 @@ const response = await client.messages.send({
 {% endcolumn %}
 
 {% column %}
-### Learn more about the developer platform
+#### Keep on track of changes
 
-Read guides, watch tutorials, and learn more about working with the developer platform and integrating it with your own stack.
+Get always on track of all of the changes overall the system for a better integration experience
 
-<a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/uKpxx88w85zo0DQOuSX4/" class="button primary" data-icon="book-open">Guides</a> <a href="https://app.gitbook.com/o/4MuPhoLmRoszPOWBxvkU/s/x8iBADAyrABxD01kmAEw/" class="button secondary" data-icon="book">Documentation</a>
+<a href="https://app.gitbook.com/s/NvhEwQZWtWjwRyiY2sTp/" class="button primary" data-icon="book-open">Changelog</a>&#x20;
 {% endcolumn %}
 {% endcolumns %}
 
-<h2 align="center">Join a community of over 3,000 developers</h2>
+<h2 align="center">Need help? Join the community</h2>
 
-<p align="center">Join our Discord community or create your first PR in just a few steps.</p>
+<p align="center">Join our Telegram community or contribute to many of our open source projects in Github</p>
 
-<table data-card-size="large" data-view="cards"><thead><tr><th></th><th></th><th></th><th></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><h4><i class="fa-discord">:discord:</i></h4></td><td><strong>Discord community</strong></td><td>Join our Discord community to post questions, get help, and share resources with over 3,000 like-minded developers.</td><td><a href="https://www.gitbook.com/" class="button secondary">Join Discord</a></td><td></td></tr><tr><td><h4><i class="fa-github">:github:</i></h4></td><td><strong>GitHub</strong></td><td>Our product is 100% open source and built by developers just like you. Head to our GitHub repository to learn how to submit your first PR.</td><td><a href="https://www.gitbook.com/" class="button secondary">Submit a PR</a></td><td></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th></th><th></th><th></th><th></th><th data-hidden data-card-cover data-type="image">Cover image</th></tr></thead><tbody><tr><td><i class="fa-telegram">:telegram:</i></td><td><strong>Join the community</strong></td><td>Join our Telegram community to post questions, get help, and share resources to like-minded people.</td><td><a href="https://t.me/elacity" class="button secondary">Join @elacity</a></td><td><a href=".gitbook/assets/Directory.png">Directory.png</a></td></tr><tr><td><i class="fa-github">:github:</i></td><td><strong>GitHub</strong></td><td>Head to our GitHub repository to learn more and/or contribute via PRs.</td><td><a href="https://github.com/Elacity" class="button secondary">Submit a PR</a></td><td><a href=".gitbook/assets/Welcome to Elacity compressed.png">Welcome to Elacity compressed.png</a></td></tr></tbody></table>
