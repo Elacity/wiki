@@ -1,34 +1,34 @@
-# Contracts SDK Documentation
+# Introduction
 
 The `@elacity-js/contracts` package provides framework-agnostic TypeScript wrappers for Elacity smart contracts, with adapters for Ethers and Viem.
 
-This section is dedicated to SDK and client integration. For protocol architecture and contract references, see [Access Economy Protocol v3.0](../../protocol/v3.0/README.md).
+This section is dedicated to SDK and client integration. For protocol architecture and contract references, see [Access Economy Protocol v3.0](/broken/pages/E577a0sx5kMtBDVnrkP5).
 
 > Maintainer policy: any change under `packages/contracts/**` must include matching updates in this section.
 
 ## Start Here
 
-- [SDK Installation](sdk/installation.md)
-- [Transaction Handling](sdk/transactions.md)
-- [Universal Account Executor](sdk/universal-account-executor.md)
+* [SDK Installation](sdk/installation.md)
+* [Transaction Handling](sdk/transactions.md)
+* [Universal Account Executor](sdk/universal-account-executor.md)
 
 ## SDK Contract Wrappers
 
-- [AuthorityGateway](sdk/authority.md)
-- [EventHub](sdk/event-hub.md)
-- [CentralStorage](sdk/central-storage.md)
-- [ChannelFactory](sdk/channel-factory.md)
-- [RoyaltyTradeGateway](sdk/royalty-trade-gateway.md)
-- [CoreStorage](sdk/core-storage.md) (legacy alias; prefer CentralStorage on v3)
-- [ChannelCore](sdk/channel-core.md) (legacy alias; prefer ChannelFactory on v3)
-- [TradeGateway](sdk/trade-gateway.md)
-- [StandardChannel](sdk/channel.md)
-- [MultiChannel](sdk/multi-channel.md)
-- [Operatives](sdk/operative.md)
+* [AuthorityGateway](sdk/authority.md)
+* [EventHub](sdk/event-hub.md)
+* [CentralStorage](sdk/central-storage.md)
+* [ChannelFactory](sdk/channel-factory.md)
+* [RoyaltyTradeGateway](sdk/royalty-trade-gateway.md)
+* [CoreStorage](sdk/core-storage.md) (legacy alias; prefer CentralStorage on v3)
+* [ChannelCore](sdk/channel-core.md) (legacy alias; prefer ChannelFactory on v3)
+* [TradeGateway](sdk/trade-gateway.md)
+* [StandardChannel](sdk/channel.md)
+* [MultiChannel](sdk/multi-channel.md)
+* [Operatives](sdk/operative.md)
 
 ## Protocol Documentation
 
-- [Access Economy Protocol v3.0](../../protocol/v3.0/README.md)
+* [Access Economy Protocol v3.0](/broken/pages/E577a0sx5kMtBDVnrkP5)
 
 ## Installation
 
@@ -66,7 +66,7 @@ await tx.wait();
 
 ## Versioning Notes
 
-- SDK defaults to ecosystem version `3.0`.
-- Ecosystem wrappers are version-aware (`CentralStorage`, `ChannelFactory`, `RoyaltyTradeGateway`, `AuthorityGateway`, `EventHub`).
-- Legacy aliases remain available (`CoreStorage`, `ChannelCore`, `TradeGateway`) for compatibility.
-- Shared module/token wrappers use the v3 ABI set.
+* SDK defaults to ecosystem version `3.0`.
+* Ecosystem wrappers are version-aware (`CentralStorage`, `ChannelFactory`, `RoyaltyTradeGateway`, `AuthorityGateway`, `EventHub`).
+* Legacy aliases remain available (`CoreStorage`, `ChannelCore`, `TradeGateway`) for compatibility.
+* Shared module/token wrappers use the v3 ABI set.
