@@ -48,6 +48,7 @@ Converts `hive://` public gateway URLs into accessible HTTPS links.
 - `ensureDate(value: any): Date | null`: Safely converts various inputs (number, string, Date) into a `Date` object or `null`. Also exported as `asDate`.
 - `timeFormat(durationInSeconds: number): string`: Formats a duration (e.g., `3661` -> `"1:01:01"`).
 - `convertDuration(duration: DurationRecord): number`: Converts a duration object (e.g., `{ hours: 1, minutes: 30 }`) into total seconds.
+- `convertDurationFromSeconds(durationInSeconds: number): DurationRecord`: Converts total seconds into a per-unit duration object (e.g., `3665` -> `{ hours: 1, minutes: 1, seconds: 5 }`).
 
 ## Other Utilities
 
