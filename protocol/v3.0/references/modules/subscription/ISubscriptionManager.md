@@ -181,7 +181,7 @@ Emitted when an account subscribes to a plan.
 
 
 ```solidity
-event AccountSubscribed(address indexed subscriber, uint8 indexed planId, uint256 expiry, bool recurring);
+event AccountSubscribed(address indexed subscriber, address indexed channel, uint8 indexed planId, uint256 expiry, string tokenUri);
 ```
 
 **Parameters**
@@ -189,16 +189,17 @@ event AccountSubscribed(address indexed subscriber, uint8 indexed planId, uint25
 |Name|Type|Description|
 |----|----|-----------|
 |`subscriber`|`address`|Subscriber address.|
+|`channel`|`address`|Channel address.|
 |`planId`|`uint8`|Plan identifier.|
 |`expiry`|`uint256`|Subscription expiration timestamp.|
-|`recurring`|`bool`|Recurring flag for the subscription.|
+|`tokenUri`|`string`|Metadata token URI emitted for backend sync.|
 
 ### AccountUnsubscribed
 Emitted when an account unsubscribes from a plan.
 
 
 ```solidity
-event AccountUnsubscribed(address indexed subscriber, uint8 indexed planId);
+event AccountUnsubscribed(address indexed subscriber, address indexed channel, uint8 indexed planId);
 ```
 
 **Parameters**
@@ -206,6 +207,7 @@ event AccountUnsubscribed(address indexed subscriber, uint8 indexed planId);
 |Name|Type|Description|
 |----|----|-----------|
 |`subscriber`|`address`|Subscriber address.|
+|`channel`|`address`|Channel address.|
 |`planId`|`uint8`|Plan identifier.|
 
 ### PlanCreated
@@ -357,4 +359,3 @@ struct Subscription {
 |`timestamp`|`uint256`|Subscription start timestamp.|
 |`expiry`|`uint256`|Subscription expiration timestamp.|
 |`recurring`|`bool`|Whether renewal is expected to recur automatically.|
-

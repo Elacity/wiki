@@ -122,4 +122,5 @@
   * [SystemTracker](storage/SystemTracker.md)
 * [AuthorityGateway](AuthorityGateway.md)
 * [Ecosystem](Ecosystem.md)
+* [MIGRATION_NOTES](MIGRATION_NOTES.md)
 * [RoyaltyTradeGateway](RoyaltyTradeGateway.md)
