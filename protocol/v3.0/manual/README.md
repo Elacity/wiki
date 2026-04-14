@@ -1,14 +1,25 @@
 # Smart Contracts Manual Documentation
 
-This folder contains hand-written documentation that complements generated contract references for external integrators.
+This folder contains hand-written documentation that complements generated contract references.
+
+These pages are designed to be injected into the wiki build output by `utils/build-contract-docs.sh`.
 
 ## Pages
 
+- [History Digest](history-digest.md)
 - [Legacy to V3 ABI Migration Guide](legacy-to-v3-abi-migration.md)
 - [Current Architecture and Interactions](current-architecture.md)
 
-## Maintainer Notes
+## Build Integration
 
-- [History Digest](history-digest.md) - internal evolution log, useful for maintainers and audits.
+Run:
 
-Documentation sync is handled by repository tooling during doc refresh cycles.
+```sh
+./utils/build-contract-docs.sh
+```
+
+This will:
+
+1. generate fresh `forge doc` output in a temporary directory,
+2. sync generated references to `.github/wiki/contracts/references`,
+3. sync these manual pages to `.github/wiki/contracts/manual`.

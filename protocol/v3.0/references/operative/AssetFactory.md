@@ -1,8 +1,8 @@
 # AssetFactory
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/AssetFactory.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/operative/AssetFactory.sol)
 
 **Inherits:**
-[IDigitalAssetCreator](../operative/IDigitalAssetCreator.md), Initializable, OwnableUpgradeable, [ContractIntrospector](../modules/library/ContractIntrospector.md)
+[IDigitalAssetCreator](/contracts/operative/IDigitalAssetCreator.md), Initializable, OwnableUpgradeable, [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md)
 
 **Title:**
 AssetFactory

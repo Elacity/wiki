@@ -1,8 +1,8 @@
 # SubscriptionManager
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/subscription/SubscriptionManager.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/subscription/SubscriptionManager.sol)
 
 **Inherits:**
-Initializable, OwnableUpgradeable, [ISubscriptionManager](../../modules/subscription/ISubscriptionManager.md)
+Initializable, OwnableUpgradeable, [ISubscriptionManager](/contracts/modules/subscription/ISubscriptionManager.md)
 
 **Title:**
 SubscriptionManager
@@ -444,7 +444,8 @@ Creates a new plan in the channel namespace.
 
 
 ```solidity
-function _createPlan(address channel, address payToken, uint256 price, uint256 duration) internal;
+function _createPlan(address channel, address payToken, uint256 price, uint256 duration, string memory planURI)
+    internal;
 ```
 **Parameters**
 
@@ -454,6 +455,7 @@ function _createPlan(address channel, address payToken, uint256 price, uint256 d
 |`payToken`|`address`|Payment token (zero-address for native).|
 |`price`|`uint256`|Plan price.|
 |`duration`|`uint256`|Plan duration in seconds.|
+|`planURI`|`string`||
 
 
 ### _createPlanFromActionArgs
@@ -469,9 +471,14 @@ Updates an existing plan.
 
 
 ```solidity
-function _updatePlan(address channel, uint8 planId, address payToken, uint256 price, uint256 duration)
-    internal
-    planExists(channel, planId);
+function _updatePlan(
+    address channel,
+    uint8 planId,
+    address payToken,
+    uint256 price,
+    uint256 duration,
+    string memory planURI
+) internal planExists(channel, planId);
 ```
 **Parameters**
 
@@ -482,6 +489,7 @@ function _updatePlan(address channel, uint8 planId, address payToken, uint256 pr
 |`payToken`|`address`|Payment token.|
 |`price`|`uint256`|Price.|
 |`duration`|`uint256`|Duration.|
+|`planURI`|`string`||
 
 
 ### _updatePlanFromActionArgs

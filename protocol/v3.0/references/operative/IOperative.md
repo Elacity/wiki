@@ -1,8 +1,8 @@
 # IOperative
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/IOperative.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/operative/IOperative.sol)
 
 **Inherits:**
-IERC1155, [IERC2981Enhanced](../modules/royalty/IERC2981Enhanced.md)
+IERC1155, [IERC2981Enhanced](/contracts/modules/royalty/IERC2981Enhanced.md)
 
 **Title:**
 IOperative
@@ -52,6 +52,21 @@ function tokenURI(uint256 tokenId) external view returns (string memory);
 |Name|Type|Description|
 |----|----|-----------|
 |`<none>`|`string`|URI string for the token metadata.|
+
+
+### protocolVersion
+
+Returns the protocol major/minor version this operative implementation targets.
+
+
+```solidity
+function protocolVersion() external view returns (string memory);
+```
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`string`|Version string in `major.minor` format (for example `3.0`).|
 
 
 ### checkAccess

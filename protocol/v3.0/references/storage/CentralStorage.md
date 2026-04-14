@@ -1,8 +1,8 @@
 # CentralStorage
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/storage/CentralStorage.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/storage/CentralStorage.sol)
 
 **Inherits:**
-Initializable, [IStorage](../storage/IStorage.md), [SystemTracker](../storage/SystemTracker.md), [IPTracker](../storage/IPTracker.md), [MarketplaceTracker](../storage/MarketplaceTracker.md), [ChannelRegistry](../channel/ChannelRegistry.md), [FeesInformation](../storage/FeesInformation.md)
+Initializable, [IStorage](/contracts/storage/IStorage.md), [SystemTracker](/contracts/storage/SystemTracker.md), [IPTracker](/contracts/storage/IPTracker.md), [MarketplaceTracker](/contracts/storage/MarketplaceTracker.md), [ChannelRegistry](/contracts/channel/ChannelRegistry.md), [FeesInformation](/contracts/storage/FeesInformation.md)
 
 **Title:**
 CentralStorage - The Central Intelligence & Data Hub of the Elacity DRM Ecosystem

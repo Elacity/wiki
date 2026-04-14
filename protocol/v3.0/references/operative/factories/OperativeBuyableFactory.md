@@ -1,8 +1,8 @@
 # OperativeBuyableFactory
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/factories/OperativeBuyableFactory.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/operative/factories/OperativeBuyableFactory.sol)
 
 **Inherits:**
-[BeaconUpgradeableFactory](../../modules/proxy/BeaconUpgradeableFactory.md), [IOperativeFactory](../../operative/IOperativeFactory.md)
+[BeaconUpgradeableFactory](/contracts/modules/proxy/BeaconUpgradeableFactory.md), [IOperativeFactory](/contracts/operative/IOperativeFactory.md)
 
 **Title:**
 OperativeBuyableFactory

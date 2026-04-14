@@ -1,8 +1,8 @@
 # ISubscriptionManager
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/subscription/ISubscriptionManager.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/subscription/ISubscriptionManager.sol)
 
 **Inherits:**
-[ISubscriptionPrimitive](../../modules/subscription/ISubscriptionPrimitive.md)
+[ISubscriptionPrimitive](/contracts/modules/subscription/ISubscriptionPrimitive.md)
 
 **Title:**
 ISubscriptionManager
@@ -181,7 +181,9 @@ Emitted when an account subscribes to a plan.
 
 
 ```solidity
-event AccountSubscribed(address indexed subscriber, address indexed channel, uint8 indexed planId, uint256 expiry, string tokenUri);
+event AccountSubscribed(
+    address indexed subscriber, address indexed channel, uint8 indexed planId, uint256 expiry, string tokenUri
+);
 ```
 
 **Parameters**
@@ -192,7 +194,7 @@ event AccountSubscribed(address indexed subscriber, address indexed channel, uin
 |`channel`|`address`|Channel address.|
 |`planId`|`uint8`|Plan identifier.|
 |`expiry`|`uint256`|Subscription expiration timestamp.|
-|`tokenUri`|`string`|Metadata token URI emitted for backend sync.|
+|`tokenUri`|`string`|Metadata token URI emitted related to the subscription token.|
 
 ### AccountUnsubscribed
 Emitted when an account unsubscribes from a plan.
@@ -216,30 +218,35 @@ We basically need this event to keep on track and process sync of new creted pla
 
 
 ```solidity
-event PlanCreated(uint8 indexed planId, address indexed payToken, uint256 price, uint256 duration);
+event PlanCreated(
+    address indexed channel, uint8 indexed planId, address payToken, uint256 price, uint256 duration, string planURI
+);
 ```
 
 **Parameters**
 
 |Name|Type|Description|
 |----|----|-----------|
+|`channel`|`address`||
 |`planId`|`uint8`|Identification of the subscription plan|
 |`payToken`|`address`|Token used for the payment|
 |`price`|`uint256`|The Price of the target subscription|
 |`duration`|`uint256`|Period of validity of the new created plan|
+|`planURI`|`string`||
 
 ### PlanRemoved
 We trigger this event when a given plan is removed from the contract
 
 
 ```solidity
-event PlanRemoved(uint8 indexed planId);
+event PlanRemoved(address indexed channel, uint8 indexed planId);
 ```
 
 **Parameters**
 
 |Name|Type|Description|
 |----|----|-----------|
+|`channel`|`address`||
 |`planId`|`uint8`|Identification of the subscription plan|
 
 ### PlanUpdated
@@ -249,17 +256,21 @@ unecessary transaction if no data has changed
 
 
 ```solidity
-event PlanUpdated(uint8 indexed planId, address indexed payToken, uint256 price, uint256 duration);
+event PlanUpdated(
+    address indexed channel, uint8 indexed planId, address payToken, uint256 price, uint256 duration, string planURI
+);
 ```
 
 **Parameters**
 
 |Name|Type|Description|
 |----|----|-----------|
+|`channel`|`address`||
 |`planId`|`uint8`|Identification of the subscription plan|
 |`payToken`|`address`|Token used for the payment|
 |`price`|`uint256`|The Price of the target subscription|
 |`duration`|`uint256`|Period of validity of the new created plan|
+|`planURI`|`string`||
 
 ## Errors
 ### PlanNotFound
@@ -359,3 +370,4 @@ struct Subscription {
 |`timestamp`|`uint256`|Subscription start timestamp.|
 |`expiry`|`uint256`|Subscription expiration timestamp.|
 |`recurring`|`bool`|Whether renewal is expected to recur automatically.|
+

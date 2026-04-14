@@ -25,6 +25,7 @@
 * [library](library/README.md)
   * [BytesMask](library/BytesMask.md)
   * [ConstraintedTokenId](library/ConstraintedTokenId.md)
+  * [ProtocolVersioned](library/ProtocolVersioned.md)
   * [TokenIdGenerator](library/TokenIdGenerator.md)
   * [TokenURIConversion](library/TokenURIConversion.md)
   * [VersionExtractor](library/VersionExtractor.md)

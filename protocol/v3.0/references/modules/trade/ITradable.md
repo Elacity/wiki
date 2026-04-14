@@ -1,8 +1,8 @@
 # ITradable
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/trade/ITradable.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/trade/ITradable.sol)
 
 **Inherits:**
-[ITradableErrors](../../modules/trade/ITradableErrors.md), [ITradableEvents](../../modules/trade/ITradableEvents.md)
+[ITradableErrors](/contracts/modules/trade/ITradableErrors.md), [ITradableEvents](/contracts/modules/trade/ITradableEvents.md)
 
 **Title:**
 ITradable

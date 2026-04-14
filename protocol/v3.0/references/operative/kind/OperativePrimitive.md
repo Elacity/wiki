@@ -1,8 +1,8 @@
 # OperativePrimitive
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/kind/OperativePrimitive.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/operative/kind/OperativePrimitive.sol)
 
 **Inherits:**
-[IOperative](../../operative/IOperative.md), ERC1155SupplyUpgradeable, [OwnableExclusiveTransferrableTokens](../../modules/library/OwnableExclusiveTransferrableTokens.md), [TradeAccessRestriction](../../modules/trade/TradeAccessRestriction.md), [ContractIntrospector](../../modules/library/ContractIntrospector.md), [RewardsRecipient](../../modules/payment/RewardsRecipient.md), [RoyaltyModule](../../modules/royalty/RoyaltyModule.md)
+[IOperative](/contracts/operative/IOperative.md), ERC1155SupplyUpgradeable, [OwnableExclusiveTransferrableTokens](/contracts/modules/library/OwnableExclusiveTransferrableTokens.md), [TradeAccessRestriction](/contracts/modules/trade/TradeAccessRestriction.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [RewardsRecipient](/contracts/modules/payment/RewardsRecipient.md), [RoyaltyModule](/contracts/modules/royalty/RoyaltyModule.md), [ProtocolVersioned](/contracts/library/ProtocolVersioned.md)
 
 **Title:**
 OperativePrimitive
@@ -210,6 +210,21 @@ function checkAccess(address account) external view virtual returns (AccessLevel
 |Name|Type|Description|
 |----|----|-----------|
 |`<none>`|`AccessLevel[]`|Array of `AccessLevel` structs for each checked token.|
+
+
+### protocolVersion
+
+Returns the protocol major/minor version this operative implementation targets.
+
+
+```solidity
+function protocolVersion() public pure virtual override(IOperative, ProtocolVersioned) returns (string memory);
+```
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`string`|Version string in `major.minor` format (for example `3.0`).|
 
 
 ### uri

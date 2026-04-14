@@ -1,8 +1,8 @@
 # TradeAccessRestriction
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/trade/TradeAccessRestriction.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/trade/TradeAccessRestriction.sol)
 
 **Inherits:**
-ERC165, [ITradeAccessRestriction](../../modules/trade/ITradeAccessRestriction.md)
+ERC165, [ITradeAccessRestriction](/contracts/modules/trade/ITradeAccessRestriction.md)
 
 **Title:**
 TradeAccessRestriction

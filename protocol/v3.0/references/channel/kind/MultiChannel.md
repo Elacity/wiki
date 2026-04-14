@@ -1,8 +1,8 @@
 # MultiChannel
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/channel/kind/MultiChannel.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/channel/kind/MultiChannel.sol)
 
 **Inherits:**
-Initializable, [StorageModule](../../modules/core/StorageModule.md), [ChannelConfigurable](../../channel/ChannelConfigurable.md), [SubscriptionModule](../../modules/subscription/SubscriptionModule.md), [IChannelWrapper](../../channel/IChannelWrapper.md)
+Initializable, [StorageModule](/contracts/modules/core/StorageModule.md), [ProtocolVersioned](/contracts/library/ProtocolVersioned.md), [ChannelConfigurable](/contracts/channel/ChannelConfigurable.md), [SubscriptionModule](/contracts/modules/subscription/SubscriptionModule.md), [IChannelWrapper](/contracts/channel/IChannelWrapper.md)
 
 **Title:**
 MultiChannel

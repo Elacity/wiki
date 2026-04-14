@@ -1,8 +1,8 @@
 # StandardChannelPrivateFactory
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/channel/factories/StandardChannelFactory.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/channel/factories/StandardChannelFactory.sol)
 
 **Inherits:**
-[StandardChannelFactory](../../channel/factories/StandardChannelFactory.md)
+[StandardChannelFactory](/contracts/channel/factories/StandardChannelFactory.md)
 
 **Title:**
 StandardChannelPrivateFactory

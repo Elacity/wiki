@@ -1,8 +1,8 @@
 # OperativeBuyableSellable
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/operative/kind/OperativeBuyableSellable.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/operative/kind/OperativeBuyableSellable.sol)
 
 **Inherits:**
-[OperativePrimitive](../../operative/kind/OperativePrimitive.md), [IResellable](../../modules/trade/IResellable.md)
+[OperativePrimitive](/contracts/operative/kind/OperativePrimitive.md), [IResellable](/contracts/modules/trade/IResellable.md)
 
 **Title:**
 OperativeBuyableSellable

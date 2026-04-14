@@ -1,5 +1,5 @@
 # ISubscriptionChannelHooks
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/subscription/SubscriptionManager.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/subscription/SubscriptionManager.sol)
 
 
 ## Functions
@@ -45,5 +45,21 @@ function processSubscriptionState(
 |`plan`|`ISubscriptionManageable.SubscriptionPlan`|Selected plan.|
 |`subscriberCount`|`uint256`|Existing subscriber count for plan before this call.|
 |`subscriptionTokenURI`|`string`||
+
+
+### setPlanTokenURI
+
+Sets the token URI for a plan.
+
+
+```solidity
+function setPlanTokenURI(uint8 planId, string calldata planTokenURI) external;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`planId`|`uint8`|Plan identifier.|
+|`planTokenURI`|`string`|Token URI.|
 
 

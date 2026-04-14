@@ -21,7 +21,6 @@ This guide is for integrators migrating ABI consumers from the legacy ecosystem 
 - Old style: `subscribePlan(planId, recurring)`
 - Current style: `subscribePlan(uint8 planId, bytes args)`
 - Current baseline behavior: recurring semantics are disabled (`false`) and extensible args carry metadata context.
-- SDK-facing usage: call subscription methods from `StandardChannel` / `MultiChannel` wrappers directly (there is no standalone `SubscriptionModule` SDK wrapper).
 
 ### Naming normalization
 
@@ -85,15 +84,3 @@ This guide is for integrators migrating ABI consumers from the legacy ecosystem 
 - Prefer typed interface calls over low-level encoded call paths.
 - Treat EventHub as required infrastructure in environments configured for mandatory routing.
 - Maintain regression tests for all signature changes before releasing SDK updates.
-
-## 6. SDK integration notes (v3)
-
-```typescript
-// Standard channel
-await channel.subscribePlan(planId); // empty args -> 0x
-await channel.subscribePlan(planId, { tokenURI: 'ipfs://.../subscription-token.json' }, value);
-
-// Multi-channel
-await multi.subscribePlan(planId);
-await multi.subscribePlan(planId, { tokenURI: 'ipfs://.../subscription-token.json' }, value);
-```

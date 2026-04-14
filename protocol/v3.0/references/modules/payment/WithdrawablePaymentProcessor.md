@@ -1,8 +1,8 @@
 # WithdrawablePaymentProcessor
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/674fb60a18e2aa14b7080f0f43e11002723bd5b3/contracts/modules/payment/WithdrawablePaymentProcessor.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/payment/WithdrawablePaymentProcessor.sol)
 
 **Inherits:**
-IERC165, Initializable, ContextUpgradeable, OwnableUpgradeable, ReentrancyGuard, [IPaymentProcessor](../../modules/payment/IPaymentProcessor.md), [IDeferrablePayment](../../modules/payment/IDeferrablePayment.md)
+IERC165, Initializable, ContextUpgradeable, OwnableUpgradeable, ReentrancyGuard, [IPaymentProcessor](/contracts/modules/payment/IPaymentProcessor.md), [IDeferrablePayment](/contracts/modules/payment/IDeferrablePayment.md)
 
 **Title:**
 WithdrawablePaymentProcessor
