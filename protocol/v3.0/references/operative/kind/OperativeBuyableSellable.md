@@ -1,5 +1,5 @@
 # OperativeBuyableSellable
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/operative/kind/OperativeBuyableSellable.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/operative/kind/OperativeBuyableSellable.sol)
 
 **Inherits:**
 [OperativePrimitive](/contracts/operative/kind/OperativePrimitive.md), [IResellable](/contracts/modules/trade/IResellable.md)

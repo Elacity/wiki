@@ -1,5 +1,5 @@
 # SubscriptionModule
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/subscription/SubscriptionModule.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/modules/subscription/SubscriptionModule.sol)
 
 **Inherits:**
 [ISubscribable](/contracts/modules/subscription/ISubscribable.md), [ISubscriptionManageable](/contracts/modules/subscription/ISubscriptionManageable.md), AccessControlUpgradeable, IERC1155, ERC1155Upgradeable, ERC1155SupplyUpgradeable, ERC1155URIStorageUpgradeable, [RoyaltyPayoutModule](/contracts/modules/royalty/RoyaltyPayoutModule.md), [IERC2981Enhanced](/contracts/modules/royalty/IERC2981Enhanced.md), [AccessControlExclusiveTransferrableTokens](/contracts/modules/library/AccessControlExclusiveTransferrableTokens.md), [TokenOwnershipModule](/contracts/modules/access-control/TokenOwnershipModule.md), [TradeAccessRestriction](/contracts/modules/trade/TradeAccessRestriction.md), [RewardsRecipient](/contracts/modules/payment/RewardsRecipient.md), [RoyaltyModule](/contracts/modules/royalty/RoyaltyModule.md)

@@ -1,5 +1,5 @@
 # ChannelRegistry
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/channel/ChannelRegistry.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/channel/ChannelRegistry.sol)
 
 **Inherits:**
 Initializable, [IChannelRegistry](/contracts/channel/IChannelRegistry.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md)
@@ -19,10 +19,20 @@ has an active subscription (via `ISubscribable.hasActiveSubscription`), it queri
 this registry to also consider subscriptions held on any parent multi-channel.
 
 Inherited by `CoreStorage`. The tree is stored as
-`mapping(child => EnumerableSet<parent>)` and is append-only in the current design.
+`mapping(child => EnumerableSet<parent>)`. Wrapper requests are accepted immediately
+only when the initiating wrapper and the target channel share a `DEFAULT_ADMIN_ROLE`
+holder; otherwise they are queued in `pendingBindings` until a target-channel admin
+approves them through `approveWrapper`.
 
 
 ## State Variables
+### DEFAULT_ADMIN_ROLE
+
+```solidity
+bytes32 private constant DEFAULT_ADMIN_ROLE = 0x00
+```
+
+
 ### CHANNEL_REGISTRY_STORAGE_LOCATION
 Storage slot for ChannelRegistryStorage.
 Formula: keccak256(abi.encode(uint256(keccak256("elacity.drm.storage.ChannelRegistry")) - 1)) & ~bytes32(uint256(0xff))
@@ -46,11 +56,11 @@ function _getChannelRegistryStorage() private pure returns (ChannelRegistryStora
 
 ### addWrapper
 
-Add new wrapper for a given channel. Basically, the wrapper is a multi-channel
-contract and the wrappee can be either a multi-channel or a digital assets channel
-that contains the medias
+Requests or finalizes a wrapper relationship for a given channel.
 
 Restricted to acknowledged contract callers from protocol storage.
+Validates both channel endpoints implement `hasRole`, then either finalizes the edge
+immediately or records it in `pendingBindings` for later approval.
 
 
 ```solidity
@@ -64,9 +74,25 @@ function addWrapper(address ch, address wrapper) external override whitelistOnly
 |`wrapper`|`address`|Address of the wrapper, this contract is not supposed to contain media Instead, all medias belonging all channels it wraps should be considered accessible from its context|
 
 
+### approveWrapper
+
+Approves a previously requested wrapper binding.
+
+
+```solidity
+function approveWrapper(address ch, address wrapper) external override;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`ch`|`address`|Address of the wrappee channel.|
+|`wrapper`|`address`|Address of the wrapper channel.|
+
+
 ### topLevelOf
 
-Retrieve the list of all wrapper on top-level f the given channel
+Retrieve the list of all finalized wrappers registered for the given channel.
 
 
 ```solidity
@@ -82,8 +108,80 @@ function topLevelOf(address chan) public view returns (address[] memory);
 
 |Name|Type|Description|
 |----|----|-----------|
-|`<none>`|`address[]`|List of addresse of all the channels that wrap the given one|
+|`<none>`|`address[]`|List of addresses of all the channels that wrap the given one|
 
+
+### pendingBindingsOf
+
+Retrieve the list of wrapper requests pending approval for a given channel.
+
+
+```solidity
+function pendingBindingsOf(address chan) public view returns (address[] memory);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`chan`|`address`||
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address[]`|List of wrapper channels awaiting approval.|
+
+
+### _sharesAdminWithInitiator
+
+Determines whether the initiating wrapper flow is controlled by the same admin.
+
+Uses `tx.origin` to compare the external initiator against `DEFAULT_ADMIN_ROLE`
+on both the wrappee and wrapper channels.
+
+
+```solidity
+function _sharesAdminWithInitiator(address ch, address wrapper) private view returns (bool);
+```
+
+### _requireAccessControlChannel
+
+Ensures the provided channel exposes AccessControl-compatible role checks.
+
+
+```solidity
+function _requireAccessControlChannel(address channel) private view;
+```
+
+### _supportsHasRole
+
+Probes whether a channel implements `hasRole(bytes32,address)`.
+
+Used to reject non-channel or non-AccessControl endpoints before registry mutation.
+
+
+```solidity
+function _supportsHasRole(address channel) private view returns (bool supported);
+```
+
+## Errors
+### InvalidChannel
+
+```solidity
+error InvalidChannel(address channel);
+```
+
+### MissingBindingApproval
+
+```solidity
+error MissingBindingApproval(address channel, address wrapper);
+```
+
+### UnauthorizedBindingApproval
+
+```solidity
+error UnauthorizedBindingApproval(address channel, address caller);
+```
 
 ## Structs
 ### ChannelRegistryStorage
@@ -98,6 +196,11 @@ struct ChannelRegistryStorage {
      * <target-channel> -> <wrapper-channel>
      */
     mapping(address => EnumerableSet.AddressSet) chTree;
+    /**
+     * @dev Pending wrapper proposals awaiting approval from the wrappee's admin.
+     * <target-channel> -> <wrapper-channel>
+     */
+    mapping(address => EnumerableSet.AddressSet) pendingBindings;
 }
 ```
 

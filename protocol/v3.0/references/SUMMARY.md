@@ -58,6 +58,7 @@
     * [IPaymentProcessor](modules/payment/IPaymentProcessor.md)
     * [IPaymentProcessorFactory](modules/payment/IPaymentProcessorFactory.md)
     * [IRewardsRecipient](modules/payment/IRewardsRecipient.md)
+    * [IStorageBoundRecipient](modules/payment/IStorageBoundRecipient.md)
     * [PaymentModule](modules/payment/PaymentModule.md)
     * [PaymentProcessorFactory](modules/payment/PaymentProcessorFactory.md)
     * [RewardsRecipient](modules/payment/RewardsRecipient.md)

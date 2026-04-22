@@ -1,5 +1,5 @@
 # WithdrawablePaymentProcessor
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/modules/payment/WithdrawablePaymentProcessor.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/modules/payment/WithdrawablePaymentProcessor.sol)
 
 **Inherits:**
 IERC165, Initializable, ContextUpgradeable, OwnableUpgradeable, ReentrancyGuard, [IPaymentProcessor](/contracts/modules/payment/IPaymentProcessor.md), [IDeferrablePayment](/contracts/modules/payment/IDeferrablePayment.md)
@@ -10,6 +10,10 @@ WithdrawablePaymentProcessor
 Routes payments into reward balances and optionally settles deferred transfers in bulk.
 
 Deployed behind beacon proxies via `PaymentProcessorFactory`.
+Authorized callers are limited to the configured `recipient` and protocol contracts
+that hold `SystemRoles.ROLE_PAYMENT_EXECUTOR` in storage.
+Deferred executions accumulate both payment obligations and beneficiary credits, and
+rewards are released only after `commit` successfully settles the underlying funds.
 
 
 ## State Variables
@@ -40,11 +44,13 @@ bytes32 private constant WITHDRAWABLE_PROCESSOR_STORAGE_SLOT =
 
 
 ## Functions
-### isContract
+### onlyAuthorizedPaymentExecutor
+
+Restricts entrypoints to the recipient or a registered payment executor.
 
 
 ```solidity
-modifier isContract() ;
+modifier onlyAuthorizedPaymentExecutor() ;
 ```
 
 ### _getWithdrawableProcessorStorage
@@ -76,11 +82,16 @@ docs-ignore: true
 function initialize(address _recipient, bool _transferFund) public initializer;
 ```
 
-### _checkWhetherContract
+### _onlyAuthorizedPaymentExecutor
+
+Validates that the caller can drive processor payment flows.
+
+Access is granted to the `recipient` itself and to contracts holding
+`SystemRoles.ROLE_PAYMENT_EXECUTOR` on the recipient's shared storage contract.
 
 
 ```solidity
-function _checkWhetherContract() internal view;
+function _onlyAuthorizedPaymentExecutor() internal view;
 ```
 
 ### execute
@@ -89,7 +100,10 @@ Executes token-denominated payment routing.
 
 
 ```solidity
-function execute(address from, address to, uint256 _amount, address _payToken) external isContract nonReentrant;
+function execute(address from, address to, uint256 _amount, address _payToken)
+    external
+    onlyAuthorizedPaymentExecutor
+    nonReentrant;
 ```
 **Parameters**
 
@@ -107,7 +121,7 @@ Executes native-currency payment routing.
 
 
 ```solidity
-function execute(address from, address to) external payable isContract nonReentrant;
+function execute(address from, address to) external payable onlyAuthorizedPaymentExecutor nonReentrant;
 ```
 **Parameters**
 
@@ -123,7 +137,7 @@ Opens a deferred payment session for a payer.
 
 
 ```solidity
-function defer(address from) public isContract nonReentrant;
+function defer(address from) public onlyAuthorizedPaymentExecutor nonReentrant;
 ```
 **Parameters**
 
@@ -138,7 +152,7 @@ Commits and settles deferred payments for a payer.
 
 
 ```solidity
-function commit(address from, address _payToken) external payable isContract nonReentrant;
+function commit(address from, address _payToken) external payable onlyAuthorizedPaymentExecutor nonReentrant;
 ```
 **Parameters**
 
@@ -162,6 +176,11 @@ function supportsInterface(bytes4 interfaceId) external pure returns (bool);
 ```
 
 ### _lockPayment
+
+Records or immediately settles a payment routed through this processor.
+
+Immediate payments transfer funds before crediting rewards.
+Deferred payments accumulate the funding obligation and beneficiary credits until `commit`.
 
 
 ```solidity
@@ -189,6 +208,26 @@ function isDeferred(address from) public view returns (bool);
 |`<none>`|`bool`|`true` if deferred mode is active.|
 
 
+### _releaseDeferredRewards
+
+Releases all deferred reward credits for a payer/token pair after settlement.
+
+Pending beneficiaries are drained from the set as credits are emitted to the recipient.
+
+
+```solidity
+function _releaseDeferredRewards(PaymentProcessorStorage storage $, address from, address payToken) private;
+```
+
+### _recipientStorage
+
+Resolves the shared storage contract exposed by the configured recipient.
+
+
+```solidity
+function _recipientStorage() private view returns (address);
+```
+
 ### receive
 
 **Note:**
@@ -209,12 +248,12 @@ event AtomicNativeTransfer(address indexed from, address indexed to, uint256 amo
 ```
 
 ## Errors
-### NotContractError
-Thrown when an EOA directly calls deferred/processor methods.
+### UnauthorizedPaymentExecutor
+Thrown when a caller lacks recipient or payment-executor authorization.
 
 
 ```solidity
-error NotContractError(address caller);
+error UnauthorizedPaymentExecutor(address caller);
 ```
 
 ### InvalidRecipient
@@ -243,6 +282,12 @@ struct PaymentProcessorStorage {
     mapping(address user => bool) isDeferred;
     /// @notice Contract that opened deferred payment session per payer.
     mapping(address user => address caller) deferredSessionOwner;
+    /// @notice Deferred reward accumulation: payer => token => beneficiary => amount.
+    mapping(address user => mapping(address paymentToken => mapping(address beneficiary => uint256 amount)))
+        deferredRewards;
+    /// @notice Deferred reward beneficiary index: payer => token => beneficiaries.
+    mapping(address user => mapping(address paymentToken => EnumerableSet.AddressSet beneficiaries))
+        deferredRewardRecipients;
 }
 ```
 

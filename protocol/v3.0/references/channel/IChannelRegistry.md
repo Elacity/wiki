@@ -1,18 +1,19 @@
 # IChannelRegistry
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/a429f79c38ae4f5221da86eca62d9868f0a5a7fd/contracts/channel/IChannelRegistry.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/channel/IChannelRegistry.sol)
 
 **Title:**
 IChannelRegistry
 
-Defines a channel registry contract
+Defines the wrapper graph and approval workflow between channels.
 
 
 ## Functions
 ### addWrapper
 
-Add new wrapper for a given channel. Basically, the wrapper is a multi-channel
-contract and the wrappee can be either a multi-channel or a digital assets channel
-that contains the medias
+Requests or finalizes a wrapper relationship for a given channel.
+
+Implementations may finalize immediately when both channels share governance,
+otherwise they may place the request into a pending-approval state.
 
 
 ```solidity
@@ -26,9 +27,25 @@ function addWrapper(address ch, address wrapper) external;
 |`wrapper`|`address`|Address of the wrapper, this contract is not supposed to contain media Instead, all medias belonging all channels it wraps should be considered accessible from its context|
 
 
+### approveWrapper
+
+Approves a previously requested wrapper binding.
+
+
+```solidity
+function approveWrapper(address ch, address wrapper) external;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`ch`|`address`|Address of the wrappee channel.|
+|`wrapper`|`address`|Address of the wrapper channel.|
+
+
 ### topLevelOf
 
-Retrieve the list of all wrapper on top-level f the given channel
+Retrieve the list of all finalized wrappers registered for the given channel.
 
 
 ```solidity
@@ -44,12 +61,33 @@ function topLevelOf(address ch) external view returns (address[] memory);
 
 |Name|Type|Description|
 |----|----|-----------|
-|`<none>`|`address[]`|List of addresse of all the channels that wrap the given one|
+|`<none>`|`address[]`|List of addresses of all the channels that wrap the given one|
+
+
+### pendingBindingsOf
+
+Retrieve the list of wrapper requests pending approval for a given channel.
+
+
+```solidity
+function pendingBindingsOf(address ch) external view returns (address[] memory);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`ch`|`address`|Address of the wrappee channel.|
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address[]`|List of wrapper channels awaiting approval.|
 
 
 ## Events
 ### ChannelBound
-This event is trigger when 2 channels are hooked to each other
+Emitted when a wrapper relationship is finalized between two channels.
 
 
 ```solidity
@@ -62,4 +100,20 @@ event ChannelBound(address channel, address wrapper);
 |----|----|-----------|
 |`channel`|`address`|This is the wrappee channel, which is at the leaf-side of the tree|
 |`wrapper`|`address`|Address of the channel that wraps|
+
+### AwaitBindingApproval
+Emitted when a wrapper binding is pending approval from the target channel admin.
+
+
+```solidity
+event AwaitBindingApproval(address channel, address wrapper, address requester);
+```
+
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`channel`|`address`|Wrappee channel awaiting approval.|
+|`wrapper`|`address`|Proposed wrapper channel.|
+|`requester`|`address`|Acknowledged contract that initiated the binding request.|
 

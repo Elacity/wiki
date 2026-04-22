@@ -9,6 +9,7 @@
 - [IPaymentProcessor](IPaymentProcessor.md)
 - [IPaymentProcessorFactory](IPaymentProcessorFactory.md)
 - [IRewardsRecipient](IRewardsRecipient.md)
+- [IStorageBoundRecipient](IStorageBoundRecipient.md)
 - [PaymentModule](PaymentModule.md)
 - [PaymentProcessorFactory](PaymentProcessorFactory.md)
 - [RewardsRecipient](RewardsRecipient.md)
