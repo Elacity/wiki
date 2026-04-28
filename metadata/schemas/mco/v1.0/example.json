@@ -1,0 +1,181 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/mco/v1.0/schema.json",
+  "title": "Contract - 4210523-uhd_3840_2160_24fps",
+  "type": "MCO",
+  "description": "Media Contract Ontology (MCO) formatted in JSON",
+  "image": "ipfs://QmUCdYfKagTbiFU86ya5HnfASSSQnYX7nttjikvLtJiaBE",
+  "contract": {
+    "class": "Contract",
+    "identifier": "http://mpeg.org/contract2A",
+    "metadata": {
+      "rdfs:label": "CONTRACT 4 - On demand stream, Resell - Indie Label",
+      "rdfs:comment": "This contract is generally executed over the Authority (Smart Contract) and an Operative Contract which is deployed on behalf of the Publisher",
+      "KID": "1c84e7e9c77f46418feade114e7eac0e",
+      "ISCC": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F"
+    },
+    "parties": {
+      "http://mpeg.org/Authority": {
+        "class": "Contract",
+        "identifier": "http://mpeg.org/Authority",
+        "metadata": {
+          "rdfs:label": "Authority",
+          "rdfs:comment": "Authority contract in charge of executing this media contract",
+          "address": "0x8fe6bf9877B78BF0126819ff2593235E54Ee1E29"
+        },
+        "deonticsIssued": [
+          "http://mpeg.org/permission1"
+        ],
+        "actionsIsSubject": [
+          "http://mpeg.org/pay2",
+          "http://mpeg.org/resell3"
+        ]
+      },
+      "http://mpeg.org/OperativeContract": {
+        "class": "Contract",
+        "identifier": "http://mpeg.org/OperativeContract",
+        "metadata": {
+          "rdfs:label": "OperativeContract",
+          "rdfs:comment": "Contract in charge of holding deontics tokens"
+        },
+        "deonticsIssued": [
+          "http://mpeg.org/obligation2",
+          "http://mpeg.org/permission3"
+        ],
+        "actionsIsSubject": [
+          "http://mpeg.org/pay2"
+        ]
+      },
+      "http://mpeg.org/StakeholderGroup": {
+        "class": "Party",
+        "identifier": "http://mpeg.org/StakeholderGroup",
+        "metadata": {
+          "rdfs:label": "Stakeholders"
+        },
+        "actionsIsSubject": [
+          "http://mpeg.org/pay2"
+        ]
+      },
+      "http://mpeg.org/Consumer": {
+        "class": "EndUser",
+        "role": "EndUser",
+        "identifier": "http://mpeg.org/Consumer",
+        "metadata": {
+          "rdfs:label": "Consumer"
+        },
+        "actionsIsSubject": [
+          "http://mpeg.org/pay1",
+          "http://mpeg.org/play1",
+          "http://mpeg.org/resell3"
+        ]
+      },
+      "http://mpeg.org/Creator1": {
+        "class": "Party",
+        "role": "Creator",
+        "identifier": "http://mpeg.org/Creator1",
+        "metadata": {
+          "rdfs:label": "Creator",
+          "address": "0xf95e65B81288C70aBb372125d0Bf9b972828635D"
+        }
+      }
+    },
+    "deontics": {
+      "http://mpeg.org/permission1": {
+        "class": "MCOPermission",
+        "type": "MCOPermission",
+        "identifier": "http://mpeg.org/permission1",
+        "metadata": {
+          "rdfs:label": "Consumer can play the media"
+        },
+        "issuedIn": "http://mpeg.org/OperativeContract",
+        "issuer": "http://mpeg.org/Autority",
+        "actedBySubject": "http://mpeg.org/Consumer",
+        "actObjects": [
+          "http://mpeg.org/Video"
+        ],
+        "act": "http://mpeg.org/play1"
+      },
+      "http://mpeg.org/obligation2": {
+        "class": "Obligation",
+        "type": "Obligation",
+        "identifier": "http://mpeg.org/obligation2",
+        "metadata": {
+          "rdfs:label": "Enforce royalties payment",
+          "rdfs:comment": "Authority must pay the royalties to stakeholder according to owning share tokens"
+        },
+        "issuedIn": "http://mpeg.org/OperativeContract",
+        "issuer": "http://mpeg.org/Authority",
+        "act": "http://mpeg.org/pay2"
+      },
+      "http://mpeg.org/obligation3": {
+        "class": "Obligation",
+        "type": "Obligation",
+        "identifier": "http://mpeg.org/obligation3",
+        "metadata": {
+          "rdfs:label": "Consumer pays a fixed rate"
+        },
+        "issuedIn": "http://mpeg.org/contract2A",
+        "issuer": "http://mpeg.org/Consumer",
+        "act": "http://mpeg.org/pay1",
+        "actedBySubject": "http://mpeg.org/Consumer"
+      }
+    },
+    "actions": {
+      "http://mpeg.org/pay1": {
+        "class": "Payment",
+        "type": "Payment",
+        "identifier": "http://mpeg.org/pay1",
+        "actedBy": "http://mpeg.org/Consumer",
+        "actedOver": [
+          "http://mpeg.org/Video"
+        ]
+      },
+      "http://mpeg.org/pay2": {
+        "class": "Payment",
+        "type": "Payment",
+        "identifier": "http://mpeg.org/pay2",
+        "actedBy": "http://mpeg.org/Authority",
+        "beneficiaries": [
+          "http://mpeg.org/StakeholderGroup"
+        ]
+      },
+      "http://mpeg.org/distribute3": {
+        "class": "Disribute",
+        "type": "Disribute",
+        "identifier": "http://mpeg.org/distribute3",
+        "actedBy": "http://mpeg.org/Distributor"
+      },
+      "http://mpeg.org/action1": {
+        "class": "Play",
+        "type": "Play",
+        "identifier": "http://mpeg.org/play1",
+        "actedBy": "http://mpeg.org/Consumer",
+        "actedOver": [
+          "http://mpeg.org/Video"
+        ]
+      },
+      "http://mpeg.org/resell3": {
+        "class": "Distribute",
+        "type": "Distribute",
+        "identifier": "http://mpeg.org/resell3",
+        "actedBy": "http://mpeg.org/Consumer",
+        "actedOver": [
+          "http://mpeg.org/Video"
+        ]
+      }
+    },
+    "objects": {
+      "http://mpeg.org/Video": {
+        "class": "Work",
+        "type": "Work",
+        "identifier": "http://mpeg.org/Video",
+        "metadata": {
+          "rdfs:title": "4210523-uhd_3840_2160_24fps",
+          "rdfs:label": "VIDEO",
+          "KID": "1c84e7e9c77f46418feade114e7eac0e",
+          "ISCC": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F"
+        }
+      }
+    }
+  }
+}

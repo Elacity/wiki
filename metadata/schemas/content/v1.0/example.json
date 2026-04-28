@@ -1,0 +1,165 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/content/v1.0/schema.json",
+  "title": "4210523-uhd_3840_2160_24fps",
+  "type": "Video",
+  "description": "Details about the content, technical informations, etc.",
+  "image": "ipfs://QmUCdYfKagTbiFU86ya5HnfASSSQnYX7nttjikvLtJiaBE",
+  "contract": [
+    {
+      "class": "Work",
+      "type": "Work",
+      "identifier": "http://mpeg.org/Video",
+      "metadata": {
+        "rdfs:title": "4210523-uhd_3840_2160_24fps",
+        "rdfs:label": "VIDEO",
+        "KID": "1c84e7e9c77f46418feade114e7eac0e",
+        "ISCC": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F"
+      }
+    }
+  ],
+  "properties": {
+    "dna": {
+      "iscc": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F",
+      "iscc_raw": "00b23f31427675d89712d9d983f0f8e72604208b3496731234734630598bd31df9722c30",
+      "title": "4210523-uhd_3840_2160_24fps",
+      "title_trimmed": "4210523uhd3840216024fps",
+      "tophash": "598bd31df9722c305cdbb94977434147cf1f03b21c17bc95f143a3358b723c81",
+      "gmt": "image",
+      "bits": [
+        "1011001000111111001100010100001001110110011101011101100010010111",
+        "1101100111011001100000111111000011111000111001110010011000000100",
+        "1000101100110100100101100111001100010010001101000111001101000110",
+        "0101100110001011110100110001110111111001011100100010110000110000"
+      ]
+    },
+    "format": {
+      "bit_rate": "1036",
+      "duration": "15.000000",
+      "filename": "/data/output/adbc9af6-090a-4857-8974-3ed6d56c15f6/main/stream.mpd",
+      "format_long_name": "Dynamic Adaptive Streaming over HTTP",
+      "format_name": "dash",
+      "nb_programs": 1,
+      "nb_stream_groups": 0,
+      "nb_streams": 2,
+      "probe_score": 100,
+      "size": "1944",
+      "start_time": "0.000000"
+    },
+    "streams": [
+      {
+        "avg_frame_rate": "24000/1001",
+        "bit_rate": "197825",
+        "closed_captions": 0,
+        "codec_long_name": "Alliance for Open Media AV1",
+        "codec_name": "av1",
+        "codec_tag": "0x31307661",
+        "codec_tag_string": "av01",
+        "codec_type": "video",
+        "coded_height": 1080,
+        "coded_width": 1920,
+        "color_primaries": "bt709",
+        "color_range": "tv",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "disposition": {
+          "attached_pic": 0,
+          "captions": 0,
+          "clean_effects": 0,
+          "comment": 0,
+          "default": 1,
+          "dependent": 0,
+          "descriptions": 0,
+          "dub": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "karaoke": 0,
+          "lyrics": 0,
+          "metadata": 0,
+          "multilayer": 0,
+          "non_diegetic": 0,
+          "original": 0,
+          "still_image": 0,
+          "timed_thumbnails": 0,
+          "visual_impaired": 0
+        },
+        "extradata_size": 20,
+        "field_order": "progressive",
+        "film_grain": 0,
+        "has_b_frames": 0,
+        "height": 1080,
+        "index": 0,
+        "level": 8,
+        "pix_fmt": "yuv420p",
+        "profile": "Main",
+        "r_frame_rate": "24000/1001",
+        "refs": 1,
+        "side_data_list": [
+          {
+            "side_data_type": "Encryption initialization data"
+          }
+        ],
+        "start_pts": 0,
+        "start_time": "0.000000",
+        "tags": {
+          "id": "video/av01",
+          "variant_bitrate": "201787"
+        },
+        "time_base": "1/24000",
+        "width": 1920
+      },
+      {
+        "avg_frame_rate": "0/0",
+        "bit_rate": "139636",
+        "bits_per_sample": 0,
+        "channel_layout": "stereo",
+        "channels": 2,
+        "codec_long_name": "AAC (Advanced Audio Coding)",
+        "codec_name": "aac",
+        "codec_tag": "0x6134706d",
+        "codec_tag_string": "mp4a",
+        "codec_type": "audio",
+        "disposition": {
+          "attached_pic": 0,
+          "captions": 0,
+          "clean_effects": 0,
+          "comment": 0,
+          "default": 1,
+          "dependent": 0,
+          "descriptions": 0,
+          "dub": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "karaoke": 0,
+          "lyrics": 0,
+          "metadata": 0,
+          "multilayer": 0,
+          "non_diegetic": 0,
+          "original": 0,
+          "still_image": 0,
+          "timed_thumbnails": 0,
+          "visual_impaired": 0
+        },
+        "extradata_size": 2,
+        "index": 1,
+        "initial_padding": 0,
+        "profile": "LC",
+        "r_frame_rate": "0/0",
+        "sample_fmt": "fltp",
+        "sample_rate": "48000",
+        "side_data_list": [
+          {
+            "side_data_type": "Encryption initialization data"
+          }
+        ],
+        "start_pts": 0,
+        "start_time": "0.000000",
+        "tags": {
+          "id": "audio/und/mp4a.40.2",
+          "variant_bitrate": "147259"
+        },
+        "time_base": "1/48000"
+      }
+    ]
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/asset/v1.0/schema.json",
+  "title": "Asset Metadata",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "schema": {
+      "const": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/asset/v1.0/schema.json"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "kid": {
+      "type": "string"
+    },
+    "iscc": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string",
+      "enum": [
+        "Video",
+        "Audio",
+        "Image",
+        "Text",
+        "Other"
+      ]
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "previewURL": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "object": {
+          "type": "string"
+        },
+        "protectionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          ]
+        }
+      },
+      "required": [
+        "uri",
+        "contentType"
+      ],
+      "additionalProperties": true
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "encrypted": {
+          "type": "boolean"
+        },
+        "algorithm": {
+          "type": "string"
+        },
+        "protectionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "dataToEncryptHash": {
+          "type": "string"
+        },
+        "actionCid": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "chain": {
+          "type": "string"
+        },
+        "chainId": {
+          "type": "integer"
+        },
+        "rpc": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "cid",
+        "mimeType",
+        "size",
+        "encrypted",
+        "algorithm"
+      ],
+      "additionalProperties": true
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "type": "integer"
+        },
+        "ledger": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "contract": {
+          "type": "string"
+        },
+        "labelType": {
+          "type": "string"
+        },
+        "distribution": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "legal": {}
+      },
+      "additionalProperties": true
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trait_type": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "trait_type",
+          "value"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "version",
+    "schema",
+    "name",
+    "description",
+    "media"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "contentType"
+        ],
+        "properties": {
+          "contentType": {
+            "not": {
+              "const": "Video"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties": {
+            "not": {
+              "required": [
+                "contract"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -69,6 +69,10 @@ Common utilities and shared interfaces used across all SDK packages:
 
 ---
 
+## Metadata Standards
+
+Canonical metadata JSON schemas and examples are documented in [metadata/schemas](../metadata/schemas/README.md).
+
 ## Getting Started
 
 Choose the package that best fits your needs:

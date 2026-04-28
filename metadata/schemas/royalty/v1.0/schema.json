@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/royalty/v1.0/schema.json",
+  "title": "Royalty Metadata",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "schema": {
+      "const": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/royalty/v1.0/schema.json"
+    },
+    "type": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "decimals": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contentType": {
+      "type": "string",
+      "enum": [
+        "Video",
+        "Audio",
+        "Image",
+        "Text",
+        "Other"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "contract": {
+          "type": "object",
+          "properties": {
+            "class": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "identifier": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "issuedIn": {
+              "type": "string"
+            },
+            "issuer": {
+              "type": "string"
+            },
+            "actedBySubject": {
+              "type": "string"
+            },
+            "actedBy": {
+              "type": "string"
+            },
+            "actedOver": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "actObjects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "act": {
+              "type": "string"
+            },
+            "beneficiaries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "actionsIsSubject": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "deonticsIssued": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role": {
+              "type": "string"
+            },
+            "parties": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "deontics": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "actions": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "objects": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "class",
+            "identifier"
+          ],
+          "additionalProperties": true
+        },
+        "kid": {
+          "type": "string"
+        },
+        "iscc": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kid",
+        "iscc",
+        "title"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "version",
+    "schema",
+    "type",
+    "name",
+    "description",
+    "image",
+    "properties"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "contentType"
+        ],
+        "properties": {
+          "contentType": {
+            "not": {
+              "const": "Video"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties": {
+            "not": {
+              "required": [
+                "contract"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

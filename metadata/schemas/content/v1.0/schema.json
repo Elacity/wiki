@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/content/v1.0/schema.json",
+  "title": "Content Metadata",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "schema": {
+      "const": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/content/v1.0/schema.json"
+    },
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "identifier": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "issuedIn": {
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "actedBySubject": {
+            "type": "string"
+          },
+          "actedBy": {
+            "type": "string"
+          },
+          "actedOver": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actObjects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "act": {
+            "type": "string"
+          },
+          "beneficiaries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actionsIsSubject": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deonticsIssued": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "role": {
+            "type": "string"
+          },
+          "parties": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "deontics": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "actions": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "objects": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "class",
+          "identifier"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "dna": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "format": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "streams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "version",
+    "schema",
+    "title",
+    "type",
+    "description",
+    "image"
+  ],
+  "additionalProperties": true
+}

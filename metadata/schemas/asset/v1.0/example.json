@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/asset/v1.0/schema.json",
+  "name": "4210523-uhd_3840_2160_24fps",
+  "description": "<p>few words that describes the video</p>",
+  "image": "ipfs://QmUCdYfKagTbiFU86ya5HnfASSSQnYX7nttjikvLtJiaBE",
+  "kid": "1c84e7e9c77f46418feade114e7eac0e",
+  "iscc": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F",
+  "media": {
+    "uri": "ipfs://QmQkjkPav1w7CY8djRzWUmUGwJaV8vqq9LCBQck357EZ71",
+    "previewURL": "ipfs://QmdB5KkhCZCJdcUYevHY9WdMroTjZXj8ssDjtt9FHoaktv/stream.mpd",
+    "contentType": "Video",
+    "size": 1382768,
+    "object": "self://content.json",
+    "protectionType": [
+      "cenc:lit-drm-sa-v1",
+      "cenc:lit-drm-v1"
+    ]
+  },
+  "properties": {
+    "chainId": 8453,
+    "ledger": "0x2fb53d4ab93112a6c0a1e54ffcd7199c6fd37412",
+    "authority": "0x8fe6bf9877B78BF0126819ff2593235E54Ee1E29",
+    "publisher": "0xf95e65b81288c70abb372125d0bf9b972828635d",
+    "contract": "self://contract.json",
+    "labelType": "Independent Creator",
+    "distribution": "Buy once, play always, resell",
+    "tags": [
+      "dDRM"
+    ],
+    "categories": [
+      "Music",
+      "Music Videos"
+    ]
+  },
+  "attributes": [
+    {
+      "trait_type": "iscc::Meta-Code",
+      "value": "1011001000111111001100010100001001110110011101011101100010010111"
+    },
+    {
+      "trait_type": "iscc::Content-Code",
+      "value": "1101100111011001100000111111000011111000111001110010011000000100"
+    },
+    {
+      "trait_type": "iscc::Data-Code",
+      "value": "1000101100110100100101100111001100010010001101000111001101000110"
+    },
+    {
+      "trait_type": "iscc::Instance-Code",
+      "value": "0101100110001011110100110001110111111001011100100010110000110000"
+    },
+    {
+      "trait_type": "duration",
+      "value": 15000
+    }
+  ]
+}
