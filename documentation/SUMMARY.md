@@ -2,6 +2,7 @@
 
 * [Overview](README.md)
 * [Versioning Standard](versioning/README.md)
+* [Metadata Standards](../metadata/schemas/README.md)
 
 ## API Layer
 

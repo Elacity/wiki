@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/access-token/v1.0/schema.json",
+  "type": "AccessToken",
+  "name": "Access Token",
+  "description": "Allow owner to access the content",
+  "image": "ipfs://QmUCdYfKagTbiFU86ya5HnfASSSQnYX7nttjikvLtJiaBE",
+  "properties": {
+    "contract": {
+      "class": "MCOPermission",
+      "type": "MCOPermission",
+      "identifier": "http://mpeg.org/permission1",
+      "metadata": {
+        "rdfs:label": "Consumer can play the media"
+      },
+      "issuedIn": "http://mpeg.org/OperativeContract",
+      "issuer": "http://mpeg.org/Autority",
+      "actedBySubject": "http://mpeg.org/Consumer",
+      "actObjects": [
+        "http://mpeg.org/Video"
+      ],
+      "act": "http://mpeg.org/play1"
+    },
+    "kid": "1c84e7e9c77f46418feade114e7eac0e",
+    "iscc": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F",
+    "title": "4210523-uhd_3840_2160_24fps"
+  }
+}

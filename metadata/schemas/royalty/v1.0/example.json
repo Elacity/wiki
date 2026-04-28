@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/royalty/v1.0/schema.json",
+  "type": "RoyaltyShare",
+  "name": "Royalty Share",
+  "decimals": 1,
+  "description": "Ensure owner to get paid on each trade with a payout equivalent to the share owned. 10 shares is equivalent to 1%",
+  "image": "ipfs://QmUCdYfKagTbiFU86ya5HnfASSSQnYX7nttjikvLtJiaBE",
+  "properties": {
+    "contract": {
+      "class": "Obligation",
+      "type": "Obligation",
+      "identifier": "http://mpeg.org/obligation2",
+      "metadata": {
+        "rdfs:label": "Enforce royalties payment",
+        "rdfs:comment": "Authority must pay the royalties to stakeholder according to owning share tokens"
+      },
+      "issuedIn": "http://mpeg.org/OperativeContract",
+      "issuer": "http://mpeg.org/Authority",
+      "act": "http://mpeg.org/pay2"
+    },
+    "kid": "1c84e7e9c77f46418feade114e7eac0e",
+    "iscc": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F",
+    "title": "4210523-uhd_3840_2160_24fps"
+  }
+}

@@ -48,6 +48,10 @@ const items = await client.nfts.fetchItems(...presets.buyNow);
 {% endcolumn %}
 {% endcolumns %}
 
+#### Metadata standards
+
+Find canonical JSON metadata schemas and examples in [Metadata Standard](../metadata/schemas/README.md).
+
 #### Keep on track of changes
 
 Get always on track of all of the changes overall the system for a better integration experience

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/plan/v1.0/schema.json",
+  "title": "Plan Metadata",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "schema": {
+      "const": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/plan/v1.0/schema.json"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string",
+      "minLength": 1
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "creator": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{40}$"
+        }
+      },
+      "required": [
+        "creator"
+      ],
+      "additionalProperties": true
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trait_type": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "trait_type",
+          "value"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": [
+    "version",
+    "schema",
+    "name",
+    "description",
+    "image",
+    "properties"
+  ],
+  "additionalProperties": true
+}

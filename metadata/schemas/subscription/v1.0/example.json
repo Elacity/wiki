@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/subscription/v1.0/schema.json",
+  "name": "6 Months - Elacity Stream",
+  "description": "6-month subscription with 15% discount",
+  "image": "ipfs://QmdtFMjLC4wtJqwHRi4CYDM8pAxpmTRzfSDVj6nkuWa5x2",
+  "properties": {
+    "subscriber": "0xaB5028bDBB0826AD6F1885478E421dB677b0001A",
+    "expiresAt": "2026-04-28T08:29:01.055Z"
+  },
+  "attributes": [
+    {
+      "trait_type": "Duration",
+      "value": "7 days"
+    }
+  ]
+}

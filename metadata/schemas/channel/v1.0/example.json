@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/channel/v1.0/schema.json",
+  "name": "Elacity Stream",
+  "description": "Welcome to Elacity Stream! This channel features exclusive content and updates.",
+  "image": "ipfs://QmdtFMjLC4wtJqwHRi4CYDM8pAxpmTRzfSDVj6nkuWa5x2",
+  "properties": {
+    "creator": "0xaB5028bDBB0826AD6F1885478E421dB677b0001A",
+    "coverImage": "ipfs://QmdtFMjLC4wtJqwHRi4CYDM8pAxpmTRzfSDVj6nkuWa5x2"
+  },
+  "attributes": [
+    {
+      "trait_type": "Type",
+      "value": 1
+    },
+    {
+      "trait_type": "Scope",
+      "value": 2
+    }
+  ]
+}

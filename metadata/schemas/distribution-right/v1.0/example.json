@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/distribution-right/v1.0/schema.json",
+  "type": "DistributionRight",
+  "name": "Distribution Right",
+  "description": "Allow owner to distribute the content via trade",
+  "image": "ipfs://QmUCdYfKagTbiFU86ya5HnfASSSQnYX7nttjikvLtJiaBE",
+  "properties": {
+    "contract": {
+      "class": "Distribute",
+      "type": "Distribute",
+      "identifier": "http://mpeg.org/resell3",
+      "actedBy": "http://mpeg.org/Consumer",
+      "actedOver": [
+        "http://mpeg.org/Video"
+      ]
+    },
+    "kid": "1c84e7e9c77f46418feade114e7eac0e",
+    "iscc": "CCWPZDTFVIYEN-CYDMM3ZOV32SH-CDVTU5RNPFOES-CRFYL1RAATD6F",
+    "title": "4210523-uhd_3840_2160_24fps"
+  }
+}

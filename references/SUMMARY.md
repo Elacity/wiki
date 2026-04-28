@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Elacity REST API v1.x](README.md)
+* [Metadata Schemas](../metadata/schemas/README.md)
 
 ## Reference
 
