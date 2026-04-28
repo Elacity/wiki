@@ -1,0 +1,70 @@
+{
+  "version": "1.1",
+  "schema": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/asset/v1.1/schema.json",
+  "name": "example-video-asset-v11",
+  "description": "Protected video asset using v1.1 metadata schema.",
+  "image": "ipfs://bafybeigdyrzt-example-image-cid",
+  "media": {
+    "uri": "ipfs://bafybeibalkjolne6hysqovipypt2zwggea3qyh43zjxvczt66zow7bt2uy",
+    "previewURL": "ipfs://bafybeibalkjolne6hysqovipypt2zwggea3qyh43zjxvczt66zow7bt2uy/stream.mpd",
+    "contentType": "Video",
+    "mimeType": "video/mp4",
+    "size": 1570024,
+    "object": "self://content.json",
+    "protectionType": [
+      "cenc:lit-aes-gcm-v3"
+    ]
+  },
+  "asset": {
+    "cid": "bafybeibalkjolne6hysqovipypt2zwggea3qyh43zjxvczt66zow7bt2uy",
+    "mimeType": "video/mp4",
+    "size": 1570024,
+    "encrypted": true,
+    "protections": [
+      {
+        "algorithm": "aes-128",
+        "protectionType": "cenc:lit-aes-gcm-v3",
+        "dataToEncryptHash": "3bfb8f23f641f7e39a0da1e47de20c745c9d09825fed8f3dc12c5048dc02686c",
+        "actionCid": "QmcNdiSuT2c2zKwhGozTgvT12uP26gAWMw2D49GvcLj2Go",
+        "authority": "0x09dBe796f40ECEffEAccf243c3d758C4c1d8D87D",
+        "chain": "base",
+        "chainId": 8453,
+        "rpc": "https://mainnet.base.org",
+        "litCiphertext": "b0028e3014e82c0622f56c1fec48ed2af655cd743b6c7d37b35b32c787f8ee58c5117fe91718d8b42a40d047f43ee102618da2ac",
+        "iv": "",
+        "litBackend": "chipotle",
+        "contentHash": "0x71944d7430c461f0cd6e7fd10cee7eb72786352a3678fc7bc0ae3d410f72aece",
+        "contentHashAlgorithm": "SHA-256"
+      }
+    ],
+    "mpdUri": "ipfs://bafybeibalkjolne6hysqovipypt2zwggea3qyh43zjxvczt66zow7bt2uy/stream.mpd",
+    "kid": "20df593f8780487fbf4f5e0b89dc948b",
+    "mediaType": "video"
+  },
+  "properties": {
+    "chainId": 8453,
+    "ledger": "0x2fb53d4ab93112a6c0a1e54ffcd7199c6fd37412",
+    "authority": "0x09dBe796f40ECEffEAccf243c3d758C4c1d8D87D",
+    "publisher": "0xf95e65b81288c70abb372125d0bf9b972828635d",
+    "contract": "self://contract.json",
+    "labelType": "Creator",
+    "distribution": "Buy Once",
+    "tags": ["dDRM"],
+    "categories": ["Video"]
+  },
+  "attributes": [
+    {
+      "trait_type": "Content-Type",
+      "value": "video/mp4"
+    },
+    {
+      "trait_type": "Encrypted",
+      "value": true
+    },
+    {
+      "trait_type": "Algorithm",
+      "value": "aes-128"
+    }
+  ],
+  "createdAt": "2026-04-28T00:00:00.000Z"
+}

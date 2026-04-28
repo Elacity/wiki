@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/asset/v1.1/schema.json",
+  "title": "Asset Metadata",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "1.1"
+    },
+    "schema": {
+      "const": "https://raw.githubusercontent.com/Elacity/wiki/main/metadata/schemas/asset/v1.1/schema.json"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "kid": {
+      "type": "string"
+    },
+    "iscc": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string",
+      "enum": [
+        "Video",
+        "Audio",
+        "Image",
+        "Text",
+        "Other"
+      ]
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "previewURL": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "object": {
+          "type": "string"
+        },
+        "protectionType": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "uri",
+        "contentType"
+      ],
+      "additionalProperties": true
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "encrypted": {
+          "type": "boolean"
+        },
+        "protections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "algorithm": {
+                "type": "string"
+              },
+              "protectionType": {
+                "type": "string"
+              },
+              "dataToEncryptHash": {
+                "type": "string"
+              },
+              "actionCid": {
+                "type": "string"
+              },
+              "authority": {
+                "type": "string"
+              },
+              "chain": {
+                "type": "string"
+              },
+              "chainId": {
+                "type": "integer"
+              },
+              "rpc": {
+                "type": "string"
+              },
+              "litCiphertext": {
+                "type": "string"
+              },
+              "iv": {
+                "type": "string"
+              },
+              "litBackend": {
+                "type": "string"
+              },
+              "contentHash": {
+                "type": "string"
+              },
+              "contentHashAlgorithm": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "algorithm",
+              "protectionType",
+              "dataToEncryptHash",
+              "actionCid",
+              "authority",
+              "chain",
+              "chainId",
+              "rpc"
+            ],
+            "additionalProperties": true
+          },
+          "minItems": 1
+        },
+        "mpdUri": {
+          "type": "string"
+        },
+        "kid": {
+          "type": "string"
+        },
+        "mediaType": {
+          "type": "string"
+        },
+        "cleartext": {
+          "type": "boolean"
+        },
+        "directPlayback": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cid",
+        "mimeType",
+        "size",
+        "encrypted"
+      ],
+      "additionalProperties": true
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "type": "integer"
+        },
+        "ledger": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "contract": {
+          "type": "string"
+        },
+        "labelType": {
+          "type": "string"
+        },
+        "distribution": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "legal": {}
+      },
+      "additionalProperties": true
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trait_type": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "trait_type",
+          "value"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "version",
+    "schema",
+    "name",
+    "description",
+    "media"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "asset"
+        ],
+        "properties": {
+          "asset": {
+            "type": "object",
+            "properties": {
+              "encrypted": {
+                "const": true
+              }
+            },
+            "required": [
+              "encrypted"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "asset": {
+            "required": [
+              "protections"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "asset"
+        ],
+        "properties": {
+          "asset": {
+            "type": "object",
+            "properties": {
+              "encrypted": {
+                "const": false
+              }
+            },
+            "required": [
+              "encrypted"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "asset": {
+            "not": {
+              "required": [
+                "protections"
+              ]
+            }
+          },
+          "media": {
+            "not": {
+              "required": [
+                "protectionType"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
