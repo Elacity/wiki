@@ -1,5 +1,5 @@
 # CentralStorage
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/storage/CentralStorage.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/storage/CentralStorage.sol)
 
 **Inherits:**
 Initializable, [IStorage](/contracts/storage/IStorage.md), [SystemTracker](/contracts/storage/SystemTracker.md), [IPTracker](/contracts/storage/IPTracker.md), [MarketplaceTracker](/contracts/storage/MarketplaceTracker.md), [ChannelRegistry](/contracts/channel/ChannelRegistry.md), [FeesInformation](/contracts/storage/FeesInformation.md)

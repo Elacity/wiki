@@ -1,5 +1,5 @@
 # StandardChannelFactory
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/channel/factories/StandardChannelFactory.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/channel/factories/StandardChannelFactory.sol)
 
 **Inherits:**
 [IChannelFactory](/contracts/channel/factories/IChannelFactory.md), [ChannelFoundationFactory](/contracts/channel/factories/ChannelFoundationFactory.md), [StorageModule](/contracts/modules/core/StorageModule.md), [BeaconUpgradeableFactory](/contracts/modules/proxy/BeaconUpgradeableFactory.md), [MintChannelFeeCollector](/contracts/modules/library/MintChannelFeeCollector.md)

@@ -1,5 +1,5 @@
 # SubscriptionModule
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/modules/subscription/SubscriptionModule.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/modules/subscription/SubscriptionModule.sol)
 
 **Inherits:**
 [ISubscribable](/contracts/modules/subscription/ISubscribable.md), [ISubscriptionManageable](/contracts/modules/subscription/ISubscriptionManageable.md), AccessControlUpgradeable, IERC1155, ERC1155Upgradeable, ERC1155SupplyUpgradeable, ERC1155URIStorageUpgradeable, [RoyaltyPayoutModule](/contracts/modules/royalty/RoyaltyPayoutModule.md), [IERC2981Enhanced](/contracts/modules/royalty/IERC2981Enhanced.md), [AccessControlExclusiveTransferrableTokens](/contracts/modules/library/AccessControlExclusiveTransferrableTokens.md), [TokenOwnershipModule](/contracts/modules/access-control/TokenOwnershipModule.md), [TradeAccessRestriction](/contracts/modules/trade/TradeAccessRestriction.md), [RewardsRecipient](/contracts/modules/payment/RewardsRecipient.md), [RoyaltyModule](/contracts/modules/royalty/RoyaltyModule.md)
@@ -173,6 +173,20 @@ function bulkUpdatePlans(UpdateAction[] calldata actions) external;
 |----|----|-----------|
 |`actions`|`UpdateAction[]`|Array of action for the mutation|
 
+
+### _requireRoyaltyBackedPlans
+
+Reverts when the channel carries a subscription plan but has no `ROYALTY_SHARE` supply.
+
+Reads the channel's own ERC-1155 supply internally so it is valid both during channel
+construction (proxy `initialize`) and afterwards — an external call back to a channel under
+construction would hit a non-contract address. Callers gate this to plan-introducing paths so
+plan-less asset-host / wrapper channels are left untouched — see V3C-3.
+
+
+```solidity
+function _requireRoyaltyBackedPlans() internal view;
+```
 
 ### setPlanTokenURI
 
@@ -429,6 +443,20 @@ Thrown when callback entrypoints are called by non-manager contracts.
 
 ```solidity
 error UnauthorizedSubscriptionManagerCaller(address caller);
+```
+
+### ChannelHasNoRoyaltyShares
+A subscription plan cannot exist on a channel with zero `ROYALTY_SHARE` supply.
+
+Royalty shares are minted only at channel creation and can never be minted afterward.
+Without them `royaltyInfo` is empty and the deferred subscription payout reverts
+`EmptyCommitError`, making the plan permanently unbuyable (V3C-3, INV-4). The guard is enforced
+whenever a plan is introduced — at channel creation (`configureChannel`) and on later additions
+(`bulkUpdatePlans`) — without over-rejecting plan-less asset-host / wrapper channels.
+
+
+```solidity
+error ChannelHasNoRoyaltyShares();
 ```
 
 ## Structs

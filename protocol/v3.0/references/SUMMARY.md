@@ -29,6 +29,8 @@
   * [TokenIdGenerator](library/TokenIdGenerator.md)
   * [TokenURIConversion](library/TokenURIConversion.md)
   * [VersionExtractor](library/VersionExtractor.md)
+* [mocks](mocks/README.md)
+  * [DeveloperAccess](mocks/DeveloperAccess.md)
 * [modules](modules/README.md)
   * [access-control](modules/access-control/README.md)
     * [IERCToken](modules/access-control/IERCToken.md)

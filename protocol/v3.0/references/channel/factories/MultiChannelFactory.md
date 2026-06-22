@@ -1,5 +1,5 @@
 # MultiChannelFactory
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/channel/factories/MultiChannelFactory.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/channel/factories/MultiChannelFactory.sol)
 
 **Inherits:**
 [IChannelFactory](/contracts/channel/factories/IChannelFactory.md), [ChannelFoundationFactory](/contracts/channel/factories/ChannelFoundationFactory.md), [StorageModule](/contracts/modules/core/StorageModule.md), [BeaconUpgradeableFactory](/contracts/modules/proxy/BeaconUpgradeableFactory.md), [MintChannelFeeCollector](/contracts/modules/library/MintChannelFeeCollector.md)
@@ -66,6 +66,28 @@ function createChannel(address creator, string memory _name, string memory _toke
 |`_name`|`string`|The name of the channel|
 |`_tokenURI`|`string`||
 |`_data`|`bytes`|Initialization and configuration data|
+
+
+### _configureChildWrappers
+
+Binds the multi-channel's child channels after acknowledgement.
+
+V3C-7 (CWE-665): wrapping is deferred out of `MultiChannel.initialize` because that runs inside
+the BeaconProxy constructor — before `cstore.ack(channel)` and before the proxy has deployed code — so
+an in-init `addWrapper` reverts `UnrecognizedContractError`. Replaying it here, after ack, lets the now
+acknowledged channel register each binding via its admin-gated `wrapChannel` (the factory holds
+`DEFAULT_ADMIN_ROLE`, granted to `msg.sender` during `initialize`).
+
+
+```solidity
+function _configureChildWrappers(address channel, bytes calldata data) internal;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`channel`|`address`|Newly created multi-channel proxy.|
+|`data`|`bytes`|ABI-encoded multi-channel creation config.|
 
 
 ### _configureTokenOwnershipAccess

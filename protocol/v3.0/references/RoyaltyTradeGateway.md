@@ -1,5 +1,5 @@
 # RoyaltyTradeGateway
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/52ca0e7824ef5fab5ebe0a131f7c6e6dd330de09/contracts/RoyaltyTradeGateway.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/RoyaltyTradeGateway.sol)
 
 **Inherits:**
 Initializable, [ProtocolVersioned](/contracts/library/ProtocolVersioned.md), AccessControlUpgradeable, [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [ReinitializerGuard](/contracts/modules/library/ReinitializerGuard.md), [TokenTradeModule](/contracts/modules/trade/TokenTradeModule.md), [TradeRestrictionExtension](/contracts/modules/trade/TradeRestrictionExtension.md)
