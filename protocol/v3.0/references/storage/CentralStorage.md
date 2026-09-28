@@ -1,8 +1,8 @@
 # CentralStorage
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/storage/CentralStorage.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/storage/CentralStorage.sol)
 
 **Inherits:**
-Initializable, [IStorage](/contracts/storage/IStorage.md), [SystemTracker](/contracts/storage/SystemTracker.md), [IPTracker](/contracts/storage/IPTracker.md), [MarketplaceTracker](/contracts/storage/MarketplaceTracker.md), [ChannelRegistry](/contracts/channel/ChannelRegistry.md), [FeesInformation](/contracts/storage/FeesInformation.md)
+Initializable, [IStorage](/contracts/storage/IStorage.md), [SystemTracker](/contracts/storage/SystemTracker.md), [IPTracker](/contracts/storage/IPTracker.md), [MarketplaceTracker](/contracts/storage/MarketplaceTracker.md), [ChannelRegistry](/contracts/channel/ChannelRegistry.md), [FeesInformation](/contracts/storage/FeesInformation.md), [ReinitializerGuard](/contracts/modules/library/ReinitializerGuard.md)
 
 **Title:**
 CentralStorage - The Central Intelligence & Data Hub of the Elacity DRM Ecosystem
@@ -40,6 +40,35 @@ docs-ignore: true
 
 ```solidity
 function initialize(address initialOwner) public initializer;
+```
+
+### initializeOfferCustody
+
+Pins historically verified custody without changing ownership or moving offers/funds.
+
+Called atomically through ProxyAdmin upgradeAndCall, or directly by the storage owner.
+Existing ownership is retained. Version 2 must be unused; activation remains disabled.
+
+
+```solidity
+function initializeOfferCustody(address legacyRoyaltyGateway, address authorityGateway, address royaltyGateway)
+    external
+    reinitializer(2);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`legacyRoyaltyGateway`|`address`|Fixed, historically verified custody of all active untagged offers.|
+|`authorityGateway`|`address`|Authorized creator of new id1 offers.|
+|`royaltyGateway`|`address`|Authorized creator of new id2 offers; may equal the legacy gateway.|
+
+
+### _hasReinitializerRole
+
+
+```solidity
+function _hasReinitializerRole(address caller) internal view override returns (bool);
 ```
 
 ### owner

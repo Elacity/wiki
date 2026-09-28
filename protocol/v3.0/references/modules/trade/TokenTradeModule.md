@@ -1,5 +1,5 @@
 # TokenTradeModule
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/modules/trade/TokenTradeModule.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/modules/trade/TokenTradeModule.sol)
 
 **Inherits:**
 Initializable, [ITokenTradable](/contracts/modules/trade/ITokenTradable.md), [ITokenOfferable](/contracts/modules/trade/ITokenOfferable.md), [TradeFoundationModule](/contracts/modules/trade/TradeFoundationModule.md), [PaymentModule](/contracts/modules/payment/PaymentModule.md)

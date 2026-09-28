@@ -1,5 +1,5 @@
 # IMarketplaceTracker
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/storage/IMarketplaceTracker.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/storage/IMarketplaceTracker.sol)
 
 **Title:**
 IMarketplaceTracker
@@ -10,6 +10,57 @@ Tracks listings, offers, participants, and marketplace fee settings.
 
 
 ## Functions
+### offerGateway
+
+Gateway holding custody for an active offer; zero for an empty record.
+
+Untagged active records use the fixed verified legacy gateway, never a mutable registry alias.
+
+
+```solidity
+function offerGateway(address op, uint256 tokenId, address offerer) external view returns (address);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`op`|`address`|Operative/token contract recorded in the shared key.|
+|`tokenId`|`uint256`|Token id recorded in the shared key.|
+|`offerer`|`address`|Offer maker recorded in the shared key.|
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|Gateway responsible for settlement/refund; zero means inactive.|
+
+
+### offerCustody
+
+Fixed custody gateways and whether new access offers may be created.
+
+
+```solidity
+function offerCustody()
+    external
+    view
+    returns (
+        address legacyRoyaltyGateway,
+        address authorityGateway,
+        address royaltyGateway,
+        bool accessOffersEnabled
+    );
+```
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`legacyRoyaltyGateway`|`address`|Fixed fallback for active untagged legacy records.|
+|`authorityGateway`|`address`|Gateway permitted to create access-token offers.|
+|`royaltyGateway`|`address`|Gateway permitted to create royalty-share offers.|
+|`accessOffersEnabled`|`bool`|Only controls new access-offer creation, not existing fills or refunds.|
+
+
 ### listings
 
 Returns raw listing fields from storage.
@@ -239,4 +290,61 @@ function setTaxInformation(uint16 _platformFee, address _feeRecipent) external;
 |`_platformFee`|`uint16`|Platform fee in basis points.|
 |`_feeRecipent`|`address`|Fee recipient address.|
 
+
+## Errors
+### OfferCustodyNotConfigured
+Custody provenance must be configured before offer mutation or active-origin resolution.
+
+
+```solidity
+error OfferCustodyNotConfigured();
+```
+
+### InvalidOfferGateway
+The caller is not the configured gateway or authorized configuration owner.
+
+
+```solidity
+error InvalidOfferGateway(address gateway);
+```
+
+### OfferGatewayMismatch
+The executing gateway differs from the active offer custody origin.
+
+
+```solidity
+error OfferGatewayMismatch(address expected, address actual);
+```
+
+### AccessOffersDisabled
+Creation of new Authority offers has not been activated.
+
+
+```solidity
+error AccessOffersDisabled();
+```
+
+### InvalidOfferToken
+The token id is outside the configured gateway's offer partition.
+
+
+```solidity
+error InvalidOfferToken(uint256 tokenId);
+```
+
+### InvalidOfferUpdate
+An update changes immutable terms, increases quantity, or has invalid creation fields.
+
+
+```solidity
+error InvalidOfferUpdate();
+```
+
+### InvalidOfferCustodyConfiguration
+Custody configuration is repeated, uninitialized, or contains invalid gateway addresses.
+
+
+```solidity
+error InvalidOfferCustodyConfiguration();
+```
 

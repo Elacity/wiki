@@ -74,6 +74,12 @@ graph TD
 4. `AssetFactory` registers operative mapping and binds content ID through tracker paths.
 5. Optional access listing can be created via authority gateway flow.
 
+Since ELACITY-2311 `AssetFactory` also calls `approveOperatorForOwner(authority)` on the new
+operative, so the creator is approved for the authority gateway in the same transaction as the
+mint; no separate `setApprovalForAll` is required before `buyAccess`. The approval is recorded on
+every protected mint, whether or not a listing is created. Secondary sellers still approve
+explicitly.
+
 ### Access purchase
 
 1. Seller lists access token through `AuthorityGateway.sellAccess`.

@@ -1,5 +1,5 @@
 # MarketplaceTracker
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/storage/MarketplaceTracker.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/storage/MarketplaceTracker.sol)
 
 **Inherits:**
 [IMarketplaceTracker](/contracts/storage/IMarketplaceTracker.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md)
@@ -204,6 +204,92 @@ function setOffer(address op, uint256 tokenId, address _from, uint256 qt, uint25
 |`payToken`|`address`|Payment token address.|
 
 
+### _checkOfferWrite
+
+Enforces custody on the original setter too: role alone cannot create, replace or erase another gateway's claim.
+
+
+```solidity
+function _checkOfferWrite(
+    MarketplaceTrackerStorage storage $,
+    address op,
+    uint256 tokenId,
+    address from,
+    uint256 qt,
+    uint256 price,
+    address payToken
+) private view;
+```
+
+### offerGateway
+
+Gateway holding custody for an active offer; zero for an empty record.
+
+Untagged active records use the fixed verified legacy gateway, never a mutable registry alias.
+
+
+```solidity
+function offerGateway(address op, uint256 tokenId, address from) public view returns (address);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`op`|`address`|Operative/token contract recorded in the shared key.|
+|`tokenId`|`uint256`|Token id recorded in the shared key.|
+|`from`|`address`||
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|Gateway responsible for settlement/refund; zero means inactive.|
+
+
+### offerCustody
+
+Fixed custody gateways and whether new access offers may be created.
+
+
+```solidity
+function offerCustody() external view returns (address, address, address, bool);
+```
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|legacyRoyaltyGateway Fixed fallback for active untagged legacy records.|
+|`<none>`|`address`|authorityGateway Gateway permitted to create access-token offers.|
+|`<none>`|`address`|royaltyGateway Gateway permitted to create royalty-share offers.|
+|`<none>`|`bool`|accessOffersEnabled Only controls new access-offer creation, not existing fills or refunds.|
+
+
+### _configureOfferCustody
+
+Called only by the root's authorized one-time initializer. Does not migrate records, balances or ownership.
+
+
+```solidity
+function _configureOfferCustody(address legacy, address authority, address royalty) internal;
+```
+
+### setAccessOffersEnabled
+
+Enables/disables new access offers; existing fills and refunds remain available.
+
+Storage owner only; does not revoke the legacy gateway's writer permission.
+
+
+```solidity
+function setAccessOffersEnabled(bool enabled) external;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`enabled`|`bool`|True only after gateway upgrades, legacy attribution and integration have been reviewed.|
+
+
 ### getOffer
 
 Get offer for a given token
@@ -271,6 +357,25 @@ function taxInformation() external view returns (uint16, address);
 |`<none>`|`uint16`|Fee in basis points over 1000.|
 |`<none>`|`address`|Recipient of the platform fee.|
 
+
+## Events
+### OfferCustodyConfigured
+Pins immutable gateway identities; legacy provenance must be independently verified before configuration.
+
+
+```solidity
+event OfferCustodyConfigured(
+    address indexed legacyRoyaltyGateway, address indexed authorityGateway, address indexed royaltyGateway
+);
+```
+
+### AccessOffersEnabled
+Records whether new Authority offers may be created.
+
+
+```solidity
+event AccessOffersEnabled(bool enabled);
+```
 
 ## Errors
 ### TaxOverflowError
@@ -381,6 +486,19 @@ struct MarketplaceTrackerStorage {
     mapping(address => mapping(uint256 => mapping(address => Offer))) offers;
     /// @notice Map of offerers for a given token (key: keccak256(op, tokenId)).
     mapping(bytes32 => EnumerableSet.AddressSet) offerers;
+    /// @notice Appended provenance; existing Offer fields and mapping slots remain unchanged.
+    /// @dev Zero origin on an active record means fixed legacy custody, never an unowned offer.
+    mapping(address => mapping(uint256 => mapping(address => address))) offerOrigin;
+    /// @notice Historically verified refund gateway for all untagged active legacy records.
+    address legacyRoyaltyGateway;
+    /// @notice Sole permitted creator of new id1 records.
+    address authorityGateway;
+    /// @notice Sole permitted creator of new id2 records.
+    address royaltyGateway;
+    /// @notice One-time configuration latch; unconfigured offer writes fail closed.
+    bool custodyConfigured;
+    /// @notice New access-offer activation only; origin-owned reductions/refunds remain available.
+    bool accessOffersEnabled;
 }
 ```
 

@@ -1,5 +1,5 @@
 # AccessTradeModule
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/modules/trade/AccessTradeModule.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/modules/trade/AccessTradeModule.sol)
 
 **Inherits:**
 Initializable, [IAccessTradable](/contracts/modules/trade/IAccessTradable.md), [TradeFoundationModule](/contracts/modules/trade/TradeFoundationModule.md), [RoyaltyPayoutModule](/contracts/modules/royalty/RoyaltyPayoutModule.md)
@@ -93,7 +93,14 @@ _handlePayout will handle the payout of a trade
 
 
 ```solidity
-function _handlePayout(IStorage store, address _op, address seller, uint256 _amount, address _payToken) internal;
+function _handlePayout(
+    IStorage store,
+    address _op,
+    address payer,
+    address seller,
+    uint256 _amount,
+    address _payToken
+) internal;
 ```
 **Parameters**
 
@@ -101,10 +108,20 @@ function _handlePayout(IStorage store, address _op, address seller, uint256 _amo
 |----|----|-----------|
 |`store`|`IStorage`|the storage contract|
 |`_op`|`address`|the address of the operative|
+|`payer`|`address`|Offer maker on acceptance, checkout caller on an ordinary buy; never the accepting seller.|
 |`seller`|`address`|the address of the seller|
 |`_amount`|`uint256`|the amount of the trade|
 |`_payToken`|`address`|the payment token of the trade|
 
+
+### _checkAccessSeller
+
+A registered access operative must answer its type; interface probing must never waive seller policy.
+
+
+```solidity
+function _checkAccessSeller(address op, address seller) internal view;
+```
 
 ### sellAccess
 
@@ -270,4 +287,20 @@ function sellersOf(address op, uint256 tokenId) external view virtual returns (a
 |----|----|-----------|
 |`<none>`|`address[]`|the addresses of the sellers|
 
+
+## Errors
+### InvalidRoyaltyAllocation
+Royalty recipients must allocate the entire pool before any access payment is made.
+
+
+```solidity
+error InvalidRoyaltyAllocation(uint256 expected, uint256 actual);
+```
+
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`expected`|`uint256`|Pool remaining after platform and reseller allocations.|
+|`actual`|`uint256`|Sum returned by the operative royalty allocation.|
 

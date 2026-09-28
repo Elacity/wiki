@@ -1,5 +1,5 @@
 # OperativePrimitive
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/operative/kind/OperativePrimitive.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/operative/kind/OperativePrimitive.sol)
 
 **Inherits:**
 [IOperative](/contracts/operative/IOperative.md), ERC1155SupplyUpgradeable, [OwnableExclusiveTransferrableTokens](/contracts/modules/library/OwnableExclusiveTransferrableTokens.md), [TradeAccessRestriction](/contracts/modules/trade/TradeAccessRestriction.md), [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [RewardsRecipient](/contracts/modules/payment/RewardsRecipient.md), [RoyaltyModule](/contracts/modules/royalty/RoyaltyModule.md), [ProtocolVersioned](/contracts/library/ProtocolVersioned.md)
@@ -42,6 +42,15 @@ bytes16 public contentId
 ```solidity
 bytes32 private constant OPERATIVE_PRIMITIVE_STORAGE_SLOT =
     0xac9fbf24d236d37ace6450911d25f79cda65e600e93cea5f200c122b53978400
+```
+
+
+### SLOT_ASSETCREATOR
+Registry slot for the `IDigitalAssetCreator` delegate contract.
+
+
+```solidity
+bytes32 private constant SLOT_ASSETCREATOR = keccak256("slot.assetCreator")
 ```
 
 
@@ -369,6 +378,29 @@ function setPaymentProcessor(address _payProc) external override onlyOwner;
 |`_payProc`|`address`|Address of the payment processor contract|
 
 
+### approveOperatorForOwner
+
+Records ERC-1155 operator approval on behalf of the operative owner.
+
+Called by the asset-creator delegate (`AssetFactory`) during mint so the creator needs
+no separate `setApprovalForAll` transaction before the authority gateway can settle a listing.
+Only the contract registered at `SLOT_ASSETCREATOR` in the shared registry may call it; being
+an acknowledged ecosystem contract is not sufficient. Ownership is transferred to the creator
+as the last step of operative creation, so `owner()` is already the creator when the delegate
+calls this in the same mint transaction.
+The holder is always `owner()`; callers cannot name another holder.
+
+
+```solidity
+function approveOperatorForOwner(address operator) external;
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`operator`|`address`|Address approved for all of the owner's tokens.|
+
+
 ### _checkOwnerLater
 
 Allows acknowledged ecosystem contracts to authorize transfers on operatives
@@ -417,6 +449,21 @@ Thrown when attempting to run initial operative minting more than once.
 ```solidity
 error OperativeTokensAlreadyMinted();
 ```
+
+### NotAssetCreator
+Thrown when `approveOperatorForOwner` is called by anything other than the registered
+asset-creator delegate.
+
+
+```solidity
+error NotAssetCreator(address caller);
+```
+
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`caller`|`address`|Address that attempted the call.|
 
 ## Structs
 ### OperativePrimitiveStorage

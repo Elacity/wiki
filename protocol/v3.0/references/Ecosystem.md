@@ -1,10 +1,10 @@
 # Constants
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/Ecosystem.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/Ecosystem.sol)
 
 ### VERSION
 
 ```solidity
-uint64 constant VERSION = 0x0000000300000901
+uint64 constant VERSION = 0x0000000300000903
 ```
 
 ### ACCESS_TOKEN

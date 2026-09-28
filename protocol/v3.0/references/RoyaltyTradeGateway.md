@@ -1,5 +1,5 @@
 # RoyaltyTradeGateway
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/RoyaltyTradeGateway.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/RoyaltyTradeGateway.sol)
 
 **Inherits:**
 Initializable, [ProtocolVersioned](/contracts/library/ProtocolVersioned.md), AccessControlUpgradeable, [ContractIntrospector](/contracts/modules/library/ContractIntrospector.md), [ReinitializerGuard](/contracts/modules/library/ReinitializerGuard.md), [TokenTradeModule](/contracts/modules/trade/TokenTradeModule.md), [TradeRestrictionExtension](/contracts/modules/trade/TradeRestrictionExtension.md)
@@ -188,6 +188,7 @@ The target contract must implement `ITradeAccessRestriction` and `IERC1155`.
 function sellToken(address _contract, uint256 tokenId, uint256 _quantity, uint256 _pricePerToken, address _payToken)
     external
     override
+    royaltyTokenOnly(tokenId)
     restrictTradeOf(_contract, tokenId);
 ```
 **Parameters**
@@ -215,6 +216,7 @@ function buyToken(address seller, address _contract, uint256 tokenId, uint256 _q
     payable
     override
     tradeEntryNonReentrant
+    royaltyTokenOnly(tokenId)
     restrictTradeOf(_contract, tokenId);
 ```
 **Parameters**
@@ -242,7 +244,7 @@ function createOffer(
     uint256 _quantity,
     uint256 _pricePerToken,
     address payToken
-) external override restrictTradeOf(_contract, tokenId);
+) external override tradeEntryNonReentrant royaltyTokenOnly(tokenId) restrictTradeOf(_contract, tokenId);
 ```
 **Parameters**
 
@@ -268,6 +270,8 @@ function createOffer(address _contract, uint256 tokenId, uint256 _quantity, uint
     external
     payable
     override
+    tradeEntryNonReentrant
+    royaltyTokenOnly(tokenId)
     restrictTradeOf(_contract, tokenId);
 ```
 **Parameters**
@@ -293,6 +297,7 @@ function acceptOffer(address from, address _contract, uint256 tokenId, uint256 _
     external
     override
     tradeEntryNonReentrant
+    royaltyTokenOnly(tokenId)
     restrictTradeOf(_contract, tokenId);
 ```
 **Parameters**
@@ -313,7 +318,7 @@ Cancels the caller's pending offer and refunds escrowed native currency (if any)
 
 
 ```solidity
-function cancelOffer(address _contract, uint256 tokenId) external override;
+function cancelOffer(address _contract, uint256 tokenId) external override tradeEntryNonReentrant;
 ```
 **Parameters**
 
@@ -322,6 +327,27 @@ function cancelOffer(address _contract, uint256 tokenId) external override;
 |`_contract`|`address`|Address of the `ERC-1155` contract the offer was made on.|
 |`tokenId`|`uint256`|Token ID the offer was made on.|
 
+
+### royaltyTokenOnly
+
+
+```solidity
+modifier royaltyTokenOnly(uint256 tokenId) ;
+```
+
+### _requireRoyaltyToken
+
+
+```solidity
+function _requireRoyaltyToken(uint256 tokenId) internal pure;
+```
+
+### _checkOfferOrigin
+
+
+```solidity
+function _checkOfferOrigin(address op, uint256 tokenId, address from) private view;
+```
 
 ## Errors
 ### ReentrantTradeEntryCall

@@ -1,5 +1,5 @@
 # DigitalAssetCommon
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/channel/kind/DigitalAssetCommon.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/channel/kind/DigitalAssetCommon.sol)
 
 **Inherits:**
 Initializable, [StorageModule](/contracts/modules/core/StorageModule.md), [ChannelConfigurable](/contracts/channel/ChannelConfigurable.md), [SubscriptionModule](/contracts/modules/subscription/SubscriptionModule.md), [MintAssetFeeCollector](/contracts/modules/library/MintAssetFeeCollector.md)

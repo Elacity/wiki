@@ -1,5 +1,5 @@
 # IOperativeEnhanced
-[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/9e5d1dcd32c5761e2bd56d37138c1de7aac83865/contracts/modules/trade/IOperativeEnhanced.sol)
+[Git Source](https://github.com/Elacity/v3-drm-protocol/blob/bc1f2ea3fd5d8b703627a7946e7d5fe7fb13f047/contracts/modules/trade/IOperativeEnhanced.sol)
 
 **Inherits:**
 [IOperative](/contracts/operative/IOperative.md), [IResellable](/contracts/modules/trade/IResellable.md)
@@ -23,5 +23,15 @@ function owner() external view returns (address);
 
 ```solidity
 function paymentProcessor() external view returns (IPaymentProcessor);
+```
+
+### approveOperatorForOwner
+
+Records ERC-1155 approval of `operator` on behalf of the operative owner.
+Callable only by the registered asset-creator delegate.
+
+
+```solidity
+function approveOperatorForOwner(address operator) external;
 ```
 

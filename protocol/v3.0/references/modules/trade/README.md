@@ -2,7 +2,9 @@
 
 ## Contracts
 
+- [AccessOfferModule](AccessOfferModule.md)
 - [AccessTradeModule](AccessTradeModule.md)
+- [IAccessOfferable](IAccessOfferable.md)
 - [IAccessTradable](IAccessTradable.md)
 - [IOperativeEnhanced](IOperativeEnhanced.md)
 - [IResellable](IResellable.md)
